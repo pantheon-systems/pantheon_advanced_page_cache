@@ -1,0 +1,6 @@
+name = Pantheon Advanced Page Cache
+description = Advanced page cache capabilities for Pantheon
+package = Performance and scalability
+core = 7.x
+
+dependencies[] = d8cache
