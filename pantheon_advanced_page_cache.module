@@ -10,11 +10,11 @@
 /**
  * Implements hook_pre_emit_cache_tags_alter().
  */
-function hook_pre_emit_cache_tags_alter(&$tags) {
+function pantheon_advanced_page_cache_pre_emit_cache_tags_alter(&$tags) {
   // Rename all _list cache tags to _emit_list to avoid clearing list tags by
   // default.
   foreach ($tags as $key => $tag) {
-    $tags[$key] = str_replace('_list', '_emit_list', $tags);
+    $tags[$key] = str_replace('_list', '_emit_list', $tag);
   }
 }
 
