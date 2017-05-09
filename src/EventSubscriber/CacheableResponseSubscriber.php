@@ -33,7 +33,7 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
       // Rename all _list cache tags to _emit_list to avoid clearing list cache
       // tags by default.
       foreach ($tags as $key => $tag) {
-        $tags[$key] = str_replace('_list', '_emit_list', $tags);
+        $tags[$key] = str_replace('_list', '_emit_list', $tag);
       }
 
       $response->headers->set('Surrogate-Key', implode(' ', $tags));
