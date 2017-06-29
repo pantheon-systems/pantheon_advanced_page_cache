@@ -14,15 +14,20 @@ jobs:
 
             - run:
                 name: login-pantheon
-                command: terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
-            - run:
-                name: whoami
-                command: terminus auth:whoami
-            - run:
-                name: list
-                command: terminus list
-
-
-            # - run:
-            #     name: login-pantheon
-            #     command: terminus multidev:create $TERMINUS_SITE.asdf
+                command: |
+                  terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
+                  terminus auth:whoami
+                  terminus list
+             - run:
+                 name: make-multidev
+                 command: |
+                 terminus multidev:create ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM}
+                 terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp
+             - run:
+                 name: Enable anonymous caching
+                 command:  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- cset system.performance cache.page.max_age 600 -y
+             - run:
+                 name: Composer require
+                 command: |
+                   terminus composer d8cdn.maxage -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
+                   terminus composer d8cdn.maxage -- require drupal/pantheon_advanced_page_cache:dev-8.x-1.x#$CIRCLE_SHA1
