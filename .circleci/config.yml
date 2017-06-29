@@ -9,6 +9,7 @@ jobs:
 
             BASH_ENV: ~/.bashrc
             TZ: "/usr/share/zoneinfo/America/Los_Angeles"
+            TERMINUS_SITE: d8cdn
 
         steps:
             - run:
