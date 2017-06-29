@@ -1,4 +1,4 @@
-FROM circleci/php:7.1-node-browsers
+FROM drupaldocker/php:7.0-cli
 
 RUN composer --working-dir=$HOME  require pantheon-systems/terminus "^1"
 RUN mkdir -p ~/.terminus/plugins
