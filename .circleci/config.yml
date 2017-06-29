@@ -22,12 +22,14 @@ jobs:
             - run:
                 name: make-multidev
                 command: |
+                  mkdir HOME/.ssh
+                  touch $HOME/.ssh/config
+                  echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
                   terminus env:create $TERMINUS_SITE.dev ${CIRCLE_BUILD_NUM}
                   terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp
             - run:
                 name: Enable anonymous caching
                 command:  |
-                  echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- cset system.performance cache.page.max_age 600 -y
             - run:
                 name: Composer require
