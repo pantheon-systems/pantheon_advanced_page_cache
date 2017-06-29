@@ -26,7 +26,9 @@ jobs:
                   terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp
             - run:
                 name: Enable anonymous caching
-                command:  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- cset system.performance cache.page.max_age 600 -y
+                command:  |
+                  echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- cset system.performance cache.page.max_age 600 -y
             - run:
                 name: Composer require
                 command: |
