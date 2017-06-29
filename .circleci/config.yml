@@ -14,13 +14,13 @@ jobs:
 
             - run:
                 name: login-pantheon
-                command: $HOME/vendor/bin/terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
+                command: terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
             - run:
                 name: whoami
-                command: $HOME/vendor/bin/terminus auth:whoami
+                command: terminus auth:whoami
             - run:
                 name: list
-                command: $HOME/vendor/bin/terminus list
+                command: terminus list
 
 
             # - run:
