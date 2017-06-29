@@ -22,7 +22,7 @@ jobs:
             - run:
                 name: make-multidev
                 command: |
-                  mkdir HOME/.ssh
+                  mkdir $HOME/.ssh
                   touch $HOME/.ssh/config
                   echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
                   terminus env:create $TERMINUS_SITE.dev ${CIRCLE_BUILD_NUM}
