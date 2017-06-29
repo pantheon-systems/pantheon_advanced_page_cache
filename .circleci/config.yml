@@ -20,7 +20,7 @@ jobs:
             - run:
                 name: make-multidev
                 command: |
-                  terminus multidev:create ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM}
+                  terminus multidev:create ${TERMINUS_SITE}.dev ${CIRCLE_BUILD_NUM} --yes
                   terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp
             - run:
                 name: Enable anonymous caching
