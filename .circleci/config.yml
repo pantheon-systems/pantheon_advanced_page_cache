@@ -29,5 +29,5 @@ jobs:
              - run:
                  name: Composer require
                  command: |
-                   terminus composer d8cdn.maxage -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
-                   terminus composer d8cdn.maxage -- require drupal/pantheon_advanced_page_cache:dev-8.x-1.x#$CIRCLE_SHA1
+                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
+                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-8.x-1.x#$CIRCLE_SHA1
