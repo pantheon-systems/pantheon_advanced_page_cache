@@ -20,7 +20,7 @@ jobs:
                 command: mkdir -p ~/.terminus/plugins
             - run:
                 name: install-terminus-plugins
-                command: composer create-project -n -d ~/.terminus/plugins pantheon-systems/terminus-composer:^1
+                command: composer create-project -n -d ~/.terminus/plugins pantheon-systems/terminus-composer-plugin:^1
             - run:
                 name: login-pantheon
                 command: $HOME/vendor/bin/terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
