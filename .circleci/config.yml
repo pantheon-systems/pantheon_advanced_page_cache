@@ -1,0 +1,26 @@
+version: 2
+# https://circleci.com/docs/configuration#machine
+jobs:
+    build:
+        docker:
+            - image: notnoopci/php:7.1.5-browsers
+        working_directory: ~/pantheon_advanced_page_cache
+        environment:
+
+            BASH_ENV: ~/.bashrc
+            TZ: "/usr/share/zoneinfo/America/Los_Angeles"
+
+        steps:
+            - run:
+                name: install-terminus
+                command: composer --working-dir=$HOME require pantheon-systems/terminus "^1"
+            - run: $HOME/vendor/bin/terminus --version
+            - run:
+                name: create-terminus-directory
+                command: mkdir -p ~/.terminus/plugins
+            - run:
+                name: install-terminus-plugins
+                command: composer create-project -n -d ~/.terminus/plugins pantheon-systems/terminus-composer:^1
+            - run:
+                name: login-pantheon
+                command: $HOME/vendor/bin/terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
