@@ -12,6 +12,7 @@ jobs:
             TERMINUS_SITE: d8cdn
 
         steps:
+            - checkout
             - run:
                 name: Composer install
                 command: |
