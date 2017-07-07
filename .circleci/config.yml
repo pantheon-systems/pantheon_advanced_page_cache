@@ -27,9 +27,6 @@ jobs:
                   echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
                   terminus env:create $TERMINUS_SITE.dev ${CIRCLE_BUILD_NUM}
                   terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp
-            - run:
-                name: Enable anonymous caching
-                command:  |
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- cset system.performance cache.page.max_age 600 -y
             - run:
@@ -37,3 +34,10 @@ jobs:
                 command: |
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-8.x-1.x#$CIRCLE_SHA1
+            - run:
+                name: Composer install
+                command: composer install
+
+
+          # Run PHP code sniff
+          # Run Behat tests
