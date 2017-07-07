@@ -7,6 +7,6 @@ RUN mkdir -p ~/.terminus/plugins
 RUN composer create-project -n -d ~/.terminus/plugins pantheon-systems/terminus-composer-plugin:^1
 
 # Why doesn't the drupaldocker/php image have drush?
-RUN git clone git@github.com:drush-ops/drush.git ~/drush
+RUN git clone https://github.com/drush-ops/drush.git ~/drush
 RUN cd ~/drush && git checkout 8.x && composer install
 RUN ln -s ~/drush/drush /usr/local/bin/drush
