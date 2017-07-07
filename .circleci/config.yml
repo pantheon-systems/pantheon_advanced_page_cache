@@ -10,7 +10,6 @@ jobs:
             BASH_ENV: ~/.bashrc
             TZ: "/usr/share/zoneinfo/America/Los_Angeles"
             TERMINUS_SITE: d8cdn
-            TERMINUS_ENV: ci-${CIRCLE_BUILD_NUM}
 
         steps:
             - checkout
@@ -38,15 +37,15 @@ jobs:
                 command: |
                   touch $HOME/.ssh/config
                   echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
-                  terminus env:create $TERMINUS_SITE.dev ${TERMINUS_ENV}
-                  terminus connection:set ${TERMINUS_SITE}.${TERMINUS_ENV} sftp
-                  terminus drush ${TERMINUS_SITE}.${TERMINUS_ENV} -- site-install -y
-                  terminus drush ${TERMINUS_SITE}.${TERMINUS_ENV} -- cset system.performance cache.page.max_age 600 -y
+                  terminus env:create $TERMINUS_SITE.dev ${CIRCLE_BUILD_NUM}
+                  terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- cset system.performance cache.page.max_age 600 -y
             - run:
                 name: Composer require
                 command: |
-                  terminus composer ${TERMINUS_SITE}.${TERMINUS_ENV} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
-                  terminus composer ${TERMINUS_SITE}.${TERMINUS_ENV} -- require drupal/pantheon_advanced_page_cache:dev-8.x-1.x#$CIRCLE_SHA1
+                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
+                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-8.x-1.x#$CIRCLE_SHA1
 
 
 
