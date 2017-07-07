@@ -22,6 +22,7 @@ jobs:
                   pwd
                   ls
                   composer install
+                  drush help
             - save_cache:
                 key: dependency-cache-{{ checksum "composer.lock" }}
                 paths:
