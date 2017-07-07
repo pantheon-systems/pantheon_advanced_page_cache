@@ -49,4 +49,4 @@ jobs:
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-8.x-1.x#$CIRCLE_SHA1
             - run:
                 name: run behat
-                command: ./run-behat.sh
+                command: ./tests/behat/run-behat.sh
