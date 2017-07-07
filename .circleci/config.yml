@@ -13,12 +13,18 @@ jobs:
 
         steps:
             - run:
+                name: Composer install
+                command: |
+                  pwd
+                  ls -al
+                  composer install
+            - run:
+                name: PHP Code Sniff
+                command: - ./vendor/bin/phpcs --report=full --extensions=php,module,inc,theme,info,install --standard=vendor/drupal/coder/coder_sniffer/Drupal . --ignore=vendor
+            - run:
                 name: login-pantheon
                 command: |
                   terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
-                  terminus auth:whoami
-                  terminus list
-                  echo ${CIRCLE_BUILD_NUM}
             - run:
                 name: make-multidev
                 command: |
@@ -34,9 +40,9 @@ jobs:
                 command: |
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-8.x-1.x#$CIRCLE_SHA1
-            - run:
-                name: Composer install
-                command: composer install
+
+
+
 
 
           # Run PHP code sniff
