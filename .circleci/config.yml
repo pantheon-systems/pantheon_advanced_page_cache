@@ -13,12 +13,18 @@ jobs:
 
         steps:
             - checkout
+            - restore_cache:
+                key: dependency-cache-{{ checksum "composer.lock" }}
             - run:
                 name: Composer install
                 command: |
                   pwd
                   ls
                   composer install
+            - save_cache:
+                key: dependency-cache-{{ checksum "composer.lock" }}
+                paths:
+                  - ~/.composer/cache
             - run:
                 name: PHP Code Sniff
                 command: composer codesniff
