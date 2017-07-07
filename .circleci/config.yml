@@ -1,7 +1,7 @@
 version: 2
 # https://circleci.com/docs/configuration#machine
 jobs:
-    build:
+    build_and_test:
         docker:
             - image: stevector/pantheon_advanced_page_cache
         working_directory: ~/pantheon_advanced_page_cache
@@ -46,16 +46,6 @@ jobs:
                 command: |
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-8.x-1.x#$CIRCLE_SHA1
-    test:
-        steps:
             - run:
                 name: run behat
                 command: ./run-behat.sh
-workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
