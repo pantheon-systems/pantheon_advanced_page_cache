@@ -7,11 +7,9 @@ jobs:
             - image: stevector/pantheon_advanced_page_cache
         working_directory: ~/pantheon_advanced_page_cache
         environment:
-
             BASH_ENV: ~/.bashrc
             TZ: "/usr/share/zoneinfo/America/Los_Angeles"
             TERMINUS_SITE: d8cdn
-
         steps:
             - checkout
             - restore_cache:
