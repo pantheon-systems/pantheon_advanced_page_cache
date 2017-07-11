@@ -10,6 +10,7 @@ jobs:
             BASH_ENV: ~/.bashrc
             TZ: "/usr/share/zoneinfo/America/Los_Angeles"
             TERMINUS_SITE: d8cdn
+            T_ENV: "ci-$CIRCLE_BUILD_NUM"
         steps:
             - checkout
             - restore_cache:
@@ -17,6 +18,7 @@ jobs:
             - run:
                 name: Composer install
                 command: |
+                  echo $T_ENV
                   composer install
                   drush help
             - save_cache:
