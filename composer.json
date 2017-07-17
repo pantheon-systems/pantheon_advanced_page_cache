@@ -3,7 +3,8 @@
     "type": "drupal-module",
     "require-dev": {
         "drush-ops/behat-drush-endpoint": "*",
-        "drupal/drupal-extension": "dev-master"
+        "drupal/drupal-extension": "dev-master",
+        "drupal/coder": "^8.2"
     },
 
 
@@ -16,8 +17,5 @@
             "url": "https://packages.drupal.org/8"
         }
     },
-    "minimum-stability": "dev",
-    "require": {
-        "drupal/coder": "^8.2"
-    }
+    "minimum-stability": "dev"
 }
