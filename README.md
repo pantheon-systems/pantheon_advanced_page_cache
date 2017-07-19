@@ -6,6 +6,8 @@ Just by turning on this module your Drupal site will start emitting the HTTP hea
 
 This module has no configuration settings of its own, just enable it and it will start sending data. To control the data being sent, see [the Drupal 8 Cache Backport module](https://www.drupal.org/project/d8cache).
 
+Also, be sure to follow the `settings.php` setup instructions for [Drupal 8 Cache Backport](http://cgit.drupalcode.org/d8cache/tree/README.txt).
+
 ### Known issues
 
 * This module can produce 503 and 502 errors when saving large numbers of entities. [The fix for this issue will likely happen in Pantheon's underlying API, not the module](https://www.drupal.org/node/2895903). Please test your normal content workflows with this module in a Pantheon Dev or Multidev environment before enabling the module in your Live environment.
