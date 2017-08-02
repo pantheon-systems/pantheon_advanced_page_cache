@@ -7,7 +7,7 @@ default:
       paths:
         - %paths.base%/features
       contexts:
-        #- FeatureContext
+        - FeatureContext
         - Drupal\DrupalExtension\Context\DrupalContext
         - Drupal\DrupalExtension\Context\DrushContext
         - Drupal\DrupalExtension\Context\MinkContext
