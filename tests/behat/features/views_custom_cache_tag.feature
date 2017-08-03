@@ -22,7 +22,7 @@ I want to use granular cache tags for Views that reflect the type of content dis
 #    And drush output should contain "Generate process complete."
 #
 #
-    And the listing pages for page and article are cached
+    And the listing pages for page and article are caching
     And I break
 #
 #

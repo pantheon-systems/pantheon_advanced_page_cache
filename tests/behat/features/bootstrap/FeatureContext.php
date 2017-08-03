@@ -110,44 +110,31 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
     }
 
 
+    public function pageIsCaching($page) {
+
+        $age = $this->getAge($page);
+        if (!empty($age)) {
+            return TRUE;
+        }
+        else {
+            sleep(3);
+            $age = $this->getAge($page);
+            if (empty($age)) {
+                throw \Exception('not cached');
+            } else {
+                return TRUE;
+            }
+
+        }
+    }
+
     /**
-     * @Given the listing pages for page and article are cached
+     * @Given the listing pages for page and article are caching
      */
     public function theListingPagesForPageAndArticleAreCached()
     {
-
-        $this->minkContext->visit('custom-cache-tags/article');
-        $age = $this->getAge();
-        print_r($age);
-        print_r("
-        
-        ");
-
-        $this->minkContext->visit('custom-cache-tags/page');
-        $age = $this->getAge();
-        print_r($age);
-        print_r("
-        
-        ");
-        sleep(2);
-
-
-        $this->minkContext->visit('custom-cache-tags/article');
-        $age = $this->getAge();
-        print_r($age);
-        print_r("
-        
-        ");
-        $this->minkContext->visit('custom-cache-tags/page');
-        $age = $this->getAge();
-        print_r($age);
-        print_r("
-        
-        ");
-
-
-
-//        throw new PendingException();
+        $this->pageIsCaching('custom-cache-tags/article');
+        $this->pageIsCaching('custom-cache-tags/page');
     }
 
 
@@ -163,13 +150,13 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
         throw new PendingException();
     }
 
-    protected function getAge() {
+    protected function getAge($page = '') {
+
+        if (!empty($page)) {
+            $this->minkContext->visit($page);
+        }
+
         return $this->minkContext->getSession()->getResponseHeader('Age');
     }
-
-
-
-
-
-
+    
 }
