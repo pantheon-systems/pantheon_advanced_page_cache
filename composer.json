@@ -4,7 +4,8 @@
     "require-dev": {
         "drush-ops/behat-drush-endpoint": "*",
         "drupal/drupal-extension": "dev-master",
-        "drupal/coder": "^8.2"
+        "drupal/coder": "^8.2",
+        "phpunit/phpunit": "^6.3"
     },
 
 
