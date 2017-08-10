@@ -13,12 +13,12 @@ final class EmailTest extends TestCase
 {
 
     /**
-     * Tests ClipCreator::extractClipTitles().
+     * Tests agetracker::getTrackedHeaders
      *
-     * @param string $body_text
-     *   The body text of a podcast_episode.
-     * @param array $extracted_titles
-     *   Clip titles extracted from body field.
+     * @param string $path
+     *   The url being tracked
+     * @param array $headers
+     *   The headers of each time the URL was checked
      *
      * @dataProvider providerPathsAndHeaders
      * @covers ::getTrackedHeaders
@@ -29,10 +29,6 @@ final class EmailTest extends TestCase
 
 
         $actual_tracked_headers = $agetracker->getTrackedHeaders($path);
-
-print_r($actual_tracked_headers);
-
-
         $this->assertEquals(array($headers), $actual_tracked_headers);
     }
     /**
@@ -45,13 +41,91 @@ print_r($actual_tracked_headers);
         $data = array();
         $data[] = [
             '/home',
-
-        array('Age' => array(3))
-];
-
+            $this->cacheLifeIncreasing(),
+        ];
+        $data[] = [
+            '/cache-got-cleared',
+            $this->cacheGotClearedHeaders(),
+        ];
 
         return $data;
     }
+
+
+    public function providerExpectedCacheClears() {
+        $data = array();
+        $data[] = [
+            '/home',
+            $this->cacheLifeIncreasing(),
+            FALSE,
+        ];
+        $data[] = [
+            '/cache-got-cleared',
+            $this->cacheGotClearedHeaders(),
+            TRUE,
+        ];
+
+        return $data;
+    }
+
+
+
+
+    /**
+     * Tests agetracker::getTrackedHeaders
+     *
+     * @param string $path
+     *   The url being tracked
+     * @param array $headers
+     *   The headers of each time the URL was checked
+     *
+     * @dataProvider providerExpectedCacheClears
+     * @covers ::wasCacheClearedBetweenLastTwoRequests
+     */
+    public function testCheckCacheClear($path, array $headers, $expected_cache_clear) {
+        $agetracker = new agetracker('');
+        $agetracker->trackHeaders($path, $headers);
+
+
+
+        $this->assertEquals($expected_cache_clear, $agetracker->wasCacheClearedBetweenLastTwoRequests($path));
+    }
+
+
+
+    protected function cacheLifeIncreasing(){
+      return             [
+          [
+              'Cache-Control' => ['max-age=600, public'],
+              'Age' => [3],
+              'X-Timer' => ['S1502402462.916272,VS0,VE1']
+          ],
+          [
+              'Cache-Control' => ['max-age=600, public'],
+              'Age' => [10],
+              'X-Timer' => ['S1502402469.916272,VS0,VE1']
+          ],
+      ];
+
+    }
+
+    protected function cacheGotClearedHeaders(){
+        return             [
+            [
+                'Cache-Control' => ['max-age=600, public'],
+                'Age' => [30],
+                'X-Timer' => ['S1502402462.916272,VS0,VE1']
+            ],
+            [
+                'Cache-Control' => ['max-age=600, public'],
+                'Age' => [4],
+                'X-Timer' => ['S1502402469.916272,VS0,VE1']
+            ],
+        ];
+
+    }
+
+
 
 
 
