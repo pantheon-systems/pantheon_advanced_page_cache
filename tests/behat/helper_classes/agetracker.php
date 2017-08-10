@@ -2,38 +2,20 @@
 declare(strict_types=1);
 
 
+namespace PantheonSystems\CDNBehatHelpers;
+use InvalidArgumentException;
 
-
-final class Email
+final class agetracker
 {
-    private $email;
 
-    private function __construct(string $email)
-    {
-        $this->ensureIsValidEmail($email);
 
-        $this->email = $email;
-    }
 
-    public static function fromString(string $email): self
-    {
-        return new self($email);
-    }
+    public function trackHeaders($path, $headers) {
+     $this->headers[$path][] = $headers;
 
-    public function __toString(): string
-    {
-        return $this->email;
-    }
+}
+   public function getTrackedHeaders($path) {
+        return $this->headers[$path];
 
-    private function ensureIsValidEmail(string $email)
-    {
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    '"%s" is not a valid email address',
-                    $email
-                )
-            );
-        }
-    }
+   }
 }

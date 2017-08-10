@@ -159,8 +159,16 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
             $this->minkContext->visit($page);
   //      }
 
+
+        print_r($this->minkContext->getSession()->getResponseHeaders());
+
         $age = $this->minkContext->getSession()->getResponseHeader('Age');
         return $age;
     }
+
+    protected function getAgeTracker() {
+
+
+}
 
 }

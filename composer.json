@@ -18,5 +18,8 @@
             "url": "https://packages.drupal.org/8"
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": { "PantheonSystems\\CDNBehatHelpers\\": "tests/behat/helper_classes/" }
+    }
 }
