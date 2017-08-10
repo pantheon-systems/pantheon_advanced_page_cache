@@ -145,18 +145,22 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
     public function theArticleNodeListingWasNotPurged()
     {
 
-        $this->minkContext->visit('custom-cache-tags/article');
-        $age = $this->getAge();
-        throw new PendingException();
+
+        $age = $this->getAge('custom-cache-tags/article');
+
+        print_r($age);
+
+        //throw new PendingException();
     }
 
-    protected function getAge($page = '') {
+    protected function getAge($page) {
 
-        if (!empty($page)) {
+//        if (!empty($page)) {
             $this->minkContext->visit($page);
-        }
+  //      }
 
-        return $this->minkContext->getSession()->getResponseHeader('Age');
+        $age = $this->minkContext->getSession()->getResponseHeader('Age');
+        return $age;
     }
-    
+
 }
