@@ -2,8 +2,6 @@
 
 namespace PantheonSystems\CDNBehatHelpers;
 
-use InvalidArgumentException;
-
 final class AgeTracker
 {
 
@@ -19,6 +17,7 @@ final class AgeTracker
             return in_array($k, $tracked_headers);
         }, ARRAY_FILTER_USE_BOTH);
     }
+
     public function getTrackedHeaders($path)
     {
         return $this->headers[$path];
