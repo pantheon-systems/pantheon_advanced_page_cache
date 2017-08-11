@@ -27,6 +27,9 @@ jobs:
                 name: PHP Code Sniff
                 command: composer codesniff
             - run:
+                name: Unit Tests for Behat helper
+                command: composer phpunit
+            - run:
                 name: login-pantheon
                 command: |
                   terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
@@ -44,7 +47,8 @@ jobs:
                 command: |
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-8.x-1.x#$CIRCLE_SHA1
-                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl devel
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl devel views_custom_cache_tag
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en -y devel_generate views_custom_cache_tag_demo
             - run:
                 name: run behat
                 command: ./tests/behat/run-behat.sh

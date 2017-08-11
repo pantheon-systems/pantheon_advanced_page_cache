@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 
 namespace PantheonSystems\CDNBehatHelpers;
 use InvalidArgumentException;
@@ -10,10 +8,14 @@ final class AgeTracker
 
     public function trackHeaders($path, $headers) {
       $this->headers[$path][] = array_filter($headers, function($v, $k) {
-    return $k == 'Age';
-}, ARRAY_FILTER_USE_BOTH);
-
-
+          // Filter out headers that won't help with debugging.
+          $tracked_headers = [
+              'Age',
+              'Cache-Control',
+              'X-Timer'
+          ];
+          return in_array($k, $tracked_headers);
+      }, ARRAY_FILTER_USE_BOTH);
    }
    public function getTrackedHeaders($path) {
         return $this->headers[$path];
@@ -30,7 +32,6 @@ final class AgeTracker
          $return = (integer) $most_recent['Age'][0] < (integer) $second_most_recent['Age'][0];
          return $return;
    }
-
 
     public function AgeIncreasedBetweenLastTwoRequests($path) {
         // Assign the headers to a new variable so that $this->headers is not modified by array_pop().
