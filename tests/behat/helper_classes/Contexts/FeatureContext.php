@@ -1,5 +1,7 @@
 <?php
 
+namespace PantheonSystems\CDNBehatHelpers\Contexts;
+
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use PantheonSystems\CDNBehatHelpers\AgeTracker;
@@ -7,8 +9,10 @@ use Drupal\DrupalExtension\Context\RawDrupalContext;
 
 /**
  * Define application features from the specific context.
+ *
+ * @todo, this class should be abstracted into it's own Behat Extension that can be used to test WordPress, D7 & D8.
  */
-class FeatureContext extends RawDrupalContext implements Context
+final class FeatureContext extends RawDrupalContext implements Context
 {
 
     /**
