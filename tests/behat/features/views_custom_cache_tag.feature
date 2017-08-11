@@ -29,3 +29,7 @@ I want to use granular cache tags for Views that reflect the type of content dis
     Then "custom-cache-tags/page" has been purged
     And "custom-cache-tags/page" is caching
     And "custom-cache-tags/article" has not been purged
+
+
+    # @todo, add scenario for demo module being turned off
+    # @todo, check actual surrogate key header.
