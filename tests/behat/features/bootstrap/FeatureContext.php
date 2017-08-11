@@ -99,7 +99,7 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
         $html = static::trimHead($html);
 
         print "::::::::::::::::::::::::::::::::::::::::::::::::\n";
-//        print $html . "\n";
+        print $html . "\n";
         print "::::::::::::::::::::::::::::::::::::::::::::::::\n";
     }
 
@@ -122,7 +122,7 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
             return TRUE;
         }
         else {
-            sleep(3);
+            sleep(2);
             $age = $this->getAge($page);
             if (empty($age)) {
                 throw new \Exception('not cached');
@@ -140,15 +140,7 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
     {
         $this->pageIsCaching('custom-cache-tags/article');
         $this->pageIsCaching('custom-cache-tags/page');
-
-
-
-        print_r($this->getAgeTracker()->getTrackedHeaders('custom-cache-tags/article'));
-
-
     }
-
-
 
     /**
      * @Given the article node listing was not purged.
@@ -159,36 +151,6 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
         $this->assertPathAgeIncreased($path);
     }
 
-
-
-
-    protected function assertPathAgeIncreased($path) {
-        $age = $this->getAge($path);
-        if (!$this->pathAgeIncreased($path)) {
-
-
-            throw new \Exception('Cache age did not increase');
-        }
-        print_r($this->getAgeTracker());
-    }
-
-
-
-     protected function assertPathHasNotBeenPurged($path) {
-         if ($this->pathHasBeenPurged($path)) {
-
-
-             throw new \Exception('Cache was cleared between requests');
-         }
-         print_r($this->getAgeTracker());
-     }
-
-    protected function assertPathHasBeenPurged($path) {
-        if (!$this->pathHasBeenPurged($path)) {
-            throw new \Exception('Cache was not cleared between requests');
-        }
-    }
-
     /**
      * @Then I see that the cache for the page node listing has been purged
      */
@@ -196,6 +158,29 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
     {
         $path = 'custom-cache-tags/page';
         $this->assertPathHasBeenPurged($path);
+    }
+
+    /**
+     * @Then the age increases again on subsequent requests to the page node listing
+     */
+    public function theAgeIncreasesAgainOnSubsequentRequestsToThePageNodeListing()
+    {
+        sleep(1);
+        $path = 'custom-cache-tags/page';
+        $this->assertPathAgeIncreased($path);
+    }
+
+    protected function assertPathAgeIncreased($path) {
+        $age = $this->getAge($path);
+        if (!$this->pathAgeIncreased($path)) {
+            throw new \Exception('Cache age did not increase');
+        }
+    }
+
+    protected function assertPathHasBeenPurged($path) {
+        if (!$this->pathHasBeenPurged($path)) {
+            throw new \Exception('Cache was not cleared between requests');
+        }
     }
 
     protected function pathAgeIncreased($path)
@@ -212,22 +197,9 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
         return $ageTracker->wasCacheClearedBetweenLastTwoRequests($path);
     }
 
-    /**
-     * @Then the age increases again on subsequent requests to the page node listing
-     */
-    public function theAgeIncreasesAgainOnSubsequentRequestsToThePageNodeListing()
-    {
-        sleep(2);
-        $path = 'custom-cache-tags/page';
-        $this->assertPathAgeIncreased($path);
-    }
-
-
     protected function getAge($page) {
 
         $this->minkContext->visit($page);
-
-
         $this->getAgeTracker()->trackHeaders($page, $this->minkContext->getSession()->getResponseHeaders());
 
         $age = $this->minkContext->getSession()->getResponseHeader('Age');
@@ -239,7 +211,5 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
             $this->ageTracker = new AgeTracker();
         }
         return $this->ageTracker;
-
     }
-
 }

@@ -26,28 +26,18 @@ final class AgeTracker
          $most_recent = array_pop($headers);
          $second_most_recent = array_pop($headers);
          // If the Age header on the most recent request is smaller than the age header on the second most recent
-         // Then the cache was cleared (@todo, or it expired)
-         // @todo, account for max age.
-
-         $return = (integer) $most_recent['Age'][0] < (integer)  $second_most_recent['Age'][0];
-
-
+         // Then the cache was cleared (@todo, or it expired (account for max age))
+         $return = (integer) $most_recent['Age'][0] < (integer) $second_most_recent['Age'][0];
          return $return;
    }
 
 
-
     public function AgeIncreasedBetweenLastTwoRequests($path) {
-
         // Assign the headers to a new variable so that $this->headers is not modified by array_pop().
         $headers = $this->headers[$path];
         $most_recent = array_pop($headers);
         $second_most_recent = array_pop($headers);
-        $return = (integer) $most_recent['Age'][0] > (integer)  $second_most_recent['Age'][0];
-
-
+        $return = (integer) $most_recent['Age'][0] > (integer) $second_most_recent['Age'][0];
         return $return;
     }
-
-
 }
