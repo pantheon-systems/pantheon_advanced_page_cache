@@ -9,7 +9,7 @@ jobs:
         environment:
             BASH_ENV: ~/.bashrc
             TZ: "/usr/share/zoneinfo/America/Los_Angeles"
-            TERMINUS_SITE: d8cdn
+            TERMINUS_SITE: d8papc
         steps:
             - checkout
             - restore_cache:
