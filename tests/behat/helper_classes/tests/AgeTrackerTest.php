@@ -20,7 +20,8 @@ final class AgeTrackerTest extends TestCase
      * @dataProvider providerPathsAndHeaders
      * @covers ::getTrackedHeaders
      */
-    public function testGetTrackedHeaders($path, array $headers_set) {
+    public function testGetTrackedHeaders($path, array $headers_set)
+    {
         $AgeTracker = new AgeTracker();
         foreach ($headers_set as $headers) {
             $AgeTracker->trackHeaders($path, $headers);
@@ -34,7 +35,8 @@ final class AgeTrackerTest extends TestCase
      * @return array
      *   An array of test data.
      */
-    public function providerPathsAndHeaders() {
+    public function providerPathsAndHeaders()
+    {
         $data = array();
         $data[] = [
             '/home',
@@ -49,17 +51,18 @@ final class AgeTrackerTest extends TestCase
     }
 
 
-    public function providerExpectedCacheClears() {
+    public function providerExpectedCacheClears()
+    {
         $data = array();
         $data[] = [
             '/home',
             $this->cacheLifeIncreasing(),
-            FALSE,
+            false,
         ];
         $data[] = [
             '/cache-got-cleared',
             $this->cacheGotClearedHeaders(),
-            TRUE,
+            true,
         ];
 
         return $data;
@@ -76,7 +79,8 @@ final class AgeTrackerTest extends TestCase
      * @dataProvider providerExpectedCacheClears
      * @covers ::wasCacheClearedBetweenLastTwoRequests
      */
-    public function testCheckCacheClear($path, array $headers_set, $expected_cache_clear) {
+    public function testCheckCacheClear($path, array $headers_set, $expected_cache_clear)
+    {
         $AgeTracker = new AgeTracker();
 
         foreach ($headers_set as $headers) {
@@ -85,10 +89,9 @@ final class AgeTrackerTest extends TestCase
         $this->assertEquals($expected_cache_clear, $AgeTracker->wasCacheClearedBetweenLastTwoRequests($path));
     }
 
-
-
-    protected function cacheLifeIncreasing(){
-      return  [
+    protected function cacheLifeIncreasing()
+    {
+        return [
           [
               'Cache-Control' => ['max-age=600, public'],
               'Age' => [3],
@@ -99,12 +102,12 @@ final class AgeTrackerTest extends TestCase
               'Age' => [10],
               'X-Timer' => ['S1502402469.916272,VS0,VE1']
           ],
-      ];
-
+        ];
     }
 
-    protected function cacheGotClearedHeaders(){
-        return             [
+    protected function cacheGotClearedHeaders()
+    {
+        return [
             [
                 'Cache-Control' => ['max-age=600, public'],
                 'Age' => [30],
@@ -116,6 +119,5 @@ final class AgeTrackerTest extends TestCase
                 'X-Timer' => ['S1502402469.916272,VS0,VE1']
             ],
         ];
-
     }
 }
