@@ -9,7 +9,7 @@ jobs:
         environment:
             BASH_ENV: ~/.bashrc
             TZ: "/usr/share/zoneinfo/America/Los_Angeles"
-            TERMINUS_SITE: d8cdn
+            TERMINUS_SITE: d8papc
         steps:
             - checkout
             - restore_cache:
@@ -26,6 +26,9 @@ jobs:
             - run:
                 name: PHP Code Sniff
                 command: composer codesniff
+            - run:
+                name: Unit Tests for Behat helper
+                command: composer phpunit
             - run:
                 name: login-pantheon
                 command: |
@@ -44,7 +47,8 @@ jobs:
                 command: |
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-8.x-1.x#$CIRCLE_SHA1
-                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl devel
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl devel views_custom_cache_tag
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en -y devel_generate views_custom_cache_tag_demo pantheon_advanced_page_cache
             - run:
                 name: run behat
                 command: ./tests/behat/run-behat.sh
