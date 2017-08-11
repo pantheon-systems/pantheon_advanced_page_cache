@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PantheonSystems\CDNBehatHelpers;
 use InvalidArgumentException;
 
-final class agetracker
+final class AgeTracker
 {
 
 

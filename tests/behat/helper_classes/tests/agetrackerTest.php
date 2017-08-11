@@ -4,16 +4,15 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 
-use PantheonSystems\CDNBehatHelpers\agetracker;
+use PantheonSystems\CDNBehatHelpers\AgeTracker;
 
 /**
- * @covers Email
+ * @covers AgeTracker
  */
-final class EmailTest extends TestCase
+final class AgeTrackerTest extends TestCase
 {
-
     /**
-     * Tests agetracker::getTrackedHeaders
+     * Tests AgeTracker::getTrackedHeaders
      *
      * @param string $path
      *   The url being tracked
@@ -24,11 +23,11 @@ final class EmailTest extends TestCase
      * @covers ::getTrackedHeaders
      */
     public function testGetTrackedHeaders($path, array $headers_set) {
-        $agetracker = new agetracker('');
+        $AgeTracker = new AgeTracker('');
         foreach ($headers_set as $headers) {
-            $agetracker->trackHeaders($path, $headers);
+            $AgeTracker->trackHeaders($path, $headers);
         }
-        $actual_tracked_headers = $agetracker->getTrackedHeaders($path);
+        $actual_tracked_headers = $AgeTracker->getTrackedHeaders($path);
         $this->assertEquals($headers_set, $actual_tracked_headers);
     }
     /**
@@ -68,11 +67,8 @@ final class EmailTest extends TestCase
         return $data;
     }
 
-
-
-
     /**
-     * Tests agetracker::getTrackedHeaders
+     * Tests AgeTracker::getTrackedHeaders
      *
      * @param string $path
      *   The url being tracked
@@ -83,12 +79,12 @@ final class EmailTest extends TestCase
      * @covers ::wasCacheClearedBetweenLastTwoRequests
      */
     public function testCheckCacheClear($path, array $headers_set, $expected_cache_clear) {
-        $agetracker = new agetracker('');
+        $AgeTracker = new AgeTracker('');
 
         foreach ($headers_set as $headers) {
-            $agetracker->trackHeaders($path, $headers);
+            $AgeTracker->trackHeaders($path, $headers);
         }
-        $this->assertEquals($expected_cache_clear, $agetracker->wasCacheClearedBetweenLastTwoRequests($path));
+        $this->assertEquals($expected_cache_clear, $AgeTracker->wasCacheClearedBetweenLastTwoRequests($path));
     }
 
 
@@ -118,28 +114,10 @@ final class EmailTest extends TestCase
             ],
             [
                 'Cache-Control' => ['max-age=600, public'],
-                'Age' => [4],
+                'Age' => [0],
                 'X-Timer' => ['S1502402469.916272,VS0,VE1']
             ],
         ];
 
     }
-
-
-
-
-
-
-    public function trackHeaders($path, $headers) {
-
-
-    }
-    public function getTrackedHeaders($path) {
-        return [];
-
-
-    }
-
-
-
 }
