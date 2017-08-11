@@ -5,8 +5,9 @@ I want to use granular cache tags for Views that reflect the type of content dis
 
 
   Background:
-    When I run drush "pml --status=enabled --type=module"
-    Then drush output should contain "views_custom_cache_tag"
+    When I run drush "en -y devel_generate views_custom_cache_tag_demo"
+    Then drush output should contain "devel_generate is already enabled."
+    Then drush output should contain "views_custom_cache_tag_demo is already enabled."
 
     When I run drush "generate-content 20 --types=page,article"
     Then drush output should contain "Finished creating 20 nodes"
@@ -21,7 +22,7 @@ I want to use granular cache tags for Views that reflect the type of content dis
     # When I make a new page node
     When I run drush "generate-content 1 --types=page"
     # It might not be worthwhile to check the output of Drush.
-    And drush output should contain "Finished creating 2 nodes"
+    And drush output should contain "1 node created"
     And drush output should contain "Generate process complete."
 
     # Then the page listing is cleared the article is not
