@@ -21,5 +21,8 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": { "PantheonSystems\\CDNBehatHelpers\\": "tests/behat/helper_classes/" }
+    },
+    "require": {
+        "doctrine/instantiator": "1.0.5"
     }
 }
