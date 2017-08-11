@@ -7,7 +7,7 @@ use Drupal\DrupalExtension\Context\MinkContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Behat\Hook\Scope\AfterStepScope;
-
+use PantheonSystems\CDNBehatHelpers\AgeTracker;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 
 
@@ -28,6 +28,10 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
 
   /** @var \Drupal\DrupalExtension\Context\MinkContext */
   private $minkContext;
+
+
+  private $ageTracker;
+
   /** @BeforeScenario */
   public function gatherContexts(BeforeScenarioScope $scope)
   {
@@ -121,7 +125,7 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
             sleep(3);
             $age = $this->getAge($page);
             if (empty($age)) {
-                throw \Exception('not cached');
+                throw new \Exception('not cached');
             } else {
                 return TRUE;
             }
@@ -136,6 +140,12 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
     {
         $this->pageIsCaching('custom-cache-tags/article');
         $this->pageIsCaching('custom-cache-tags/page');
+
+
+
+        print_r($this->getAgeTracker()->getTrackedHeaders('custom-cache-tags/article'));
+
+
     }
 
 
@@ -145,31 +155,91 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
      */
     public function theArticleNodeListingWasNotPurged()
     {
-
-
-        $age = $this->getAge('custom-cache-tags/article');
-
-        print_r($age);
-
-        //throw new PendingException();
+        $path = 'custom-cache-tags/article';
+        $this->assertPathAgeIncreased($path);
     }
+
+
+
+
+    protected function assertPathAgeIncreased($path) {
+        $age = $this->getAge($path);
+        if (!$this->pathAgeIncreased($path)) {
+
+
+            throw new \Exception('Cache age did not increase');
+        }
+        print_r($this->getAgeTracker());
+    }
+
+
+
+     protected function assertPathHasNotBeenPurged($path) {
+         if ($this->pathHasBeenPurged($path)) {
+
+
+             throw new \Exception('Cache was cleared between requests');
+         }
+         print_r($this->getAgeTracker());
+     }
+
+    protected function assertPathHasBeenPurged($path) {
+        if (!$this->pathHasBeenPurged($path)) {
+            throw new \Exception('Cache was not cleared between requests');
+        }
+    }
+
+    /**
+     * @Then I see that the cache for the page node listing has been purged
+     */
+    public function iSeeThatTheCacheForThePageNodeListingHasBeenPurged()
+    {
+        $path = 'custom-cache-tags/page';
+        $this->assertPathHasBeenPurged($path);
+    }
+
+    protected function pathAgeIncreased($path)
+    {
+        $ageTracker = $this->getAgeTracker();
+        return $ageTracker->AgeIncreasedBetweenLastTwoRequests($path);
+    }
+
+
+    protected function pathHasBeenPurged($path)
+    {
+        $age = $this->getAge($path);
+        $ageTracker = $this->getAgeTracker();
+        return $ageTracker->wasCacheClearedBetweenLastTwoRequests($path);
+    }
+
+    /**
+     * @Then the age increases again on subsequent requests to the page node listing
+     */
+    public function theAgeIncreasesAgainOnSubsequentRequestsToThePageNodeListing()
+    {
+        sleep(2);
+        $path = 'custom-cache-tags/page';
+        $this->assertPathAgeIncreased($path);
+    }
+
 
     protected function getAge($page) {
 
-//        if (!empty($page)) {
-            $this->minkContext->visit($page);
-  //      }
+        $this->minkContext->visit($page);
 
 
-        var_export($this->minkContext->getSession()->getResponseHeaders());
+        $this->getAgeTracker()->trackHeaders($page, $this->minkContext->getSession()->getResponseHeaders());
 
         $age = $this->minkContext->getSession()->getResponseHeader('Age');
         return $age;
     }
 
     protected function getAgeTracker() {
+        if (empty($this->ageTracker)) {
+            $this->ageTracker = new AgeTracker();
+        }
+        return $this->ageTracker;
 
-
-}
+    }
 
 }

@@ -2,8 +2,6 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-
-
 use PantheonSystems\CDNBehatHelpers\AgeTracker;
 
 /**
@@ -23,7 +21,7 @@ final class AgeTrackerTest extends TestCase
      * @covers ::getTrackedHeaders
      */
     public function testGetTrackedHeaders($path, array $headers_set) {
-        $AgeTracker = new AgeTracker('');
+        $AgeTracker = new AgeTracker();
         foreach ($headers_set as $headers) {
             $AgeTracker->trackHeaders($path, $headers);
         }
@@ -79,7 +77,7 @@ final class AgeTrackerTest extends TestCase
      * @covers ::wasCacheClearedBetweenLastTwoRequests
      */
     public function testCheckCacheClear($path, array $headers_set, $expected_cache_clear) {
-        $AgeTracker = new AgeTracker('');
+        $AgeTracker = new AgeTracker();
 
         foreach ($headers_set as $headers) {
             $AgeTracker->trackHeaders($path, $headers);
