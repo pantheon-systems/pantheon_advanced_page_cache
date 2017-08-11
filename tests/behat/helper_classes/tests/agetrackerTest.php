@@ -82,19 +82,19 @@ final class EmailTest extends TestCase
      * @dataProvider providerExpectedCacheClears
      * @covers ::wasCacheClearedBetweenLastTwoRequests
      */
-    public function testCheckCacheClear($path, array $headers, $expected_cache_clear) {
+    public function testCheckCacheClear($path, array $headers_set, $expected_cache_clear) {
         $agetracker = new agetracker('');
-        $agetracker->trackHeaders($path, $headers);
 
-
-
+        foreach ($headers_set as $headers) {
+            $agetracker->trackHeaders($path, $headers);
+        }
         $this->assertEquals($expected_cache_clear, $agetracker->wasCacheClearedBetweenLastTwoRequests($path));
     }
 
 
 
     protected function cacheLifeIncreasing(){
-      return             [
+      return  [
           [
               'Cache-Control' => ['max-age=600, public'],
               'Age' => [3],
