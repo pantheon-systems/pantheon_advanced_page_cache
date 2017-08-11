@@ -23,13 +23,13 @@ final class EmailTest extends TestCase
      * @dataProvider providerPathsAndHeaders
      * @covers ::getTrackedHeaders
      */
-    public function testGetTrackedHeaders($path, array $headers) {
+    public function testGetTrackedHeaders($path, array $headers_set) {
         $agetracker = new agetracker('');
-        $agetracker->trackHeaders($path, $headers);
-
-
+        foreach ($headers_set as $headers) {
+            $agetracker->trackHeaders($path, $headers);
+        }
         $actual_tracked_headers = $agetracker->getTrackedHeaders($path);
-        $this->assertEquals(array($headers), $actual_tracked_headers);
+        $this->assertEquals($headers_set, $actual_tracked_headers);
     }
     /**
      * Data provider for testExtractClipTitles.
