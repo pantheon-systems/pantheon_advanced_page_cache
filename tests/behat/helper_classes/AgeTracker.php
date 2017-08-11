@@ -26,7 +26,6 @@ final class AgeTracker
 
     public function wasCacheClearedBetweenLastTwoRequests($path)
     {
-
          // Assign the headers to a new variable so that $this->headers is not modified by array_pop().
          $headers = $this->headers[$path];
          $most_recent = array_pop($headers);

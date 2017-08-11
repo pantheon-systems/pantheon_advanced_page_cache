@@ -31,8 +31,9 @@ final class AgeTrackerTest extends TestCase
         $actual_tracked_headers = $AgeTracker->getTrackedHeaders($path);
         $this->assertEquals($headers_set, $actual_tracked_headers);
     }
+
     /**
-     * Data provider for testExtractClipTitles.
+     * Data provider for testGetTrackedHeaders.
      *
      * @return array
      *   An array of test data.
@@ -51,7 +52,6 @@ final class AgeTrackerTest extends TestCase
 
         return $data;
     }
-
 
     public function providerExpectedCacheClears()
     {
@@ -80,6 +80,7 @@ final class AgeTrackerTest extends TestCase
      *
      * @dataProvider providerExpectedCacheClears
      * @covers ::wasCacheClearedBetweenLastTwoRequests
+     * @covers ::ageIncreasedBetweenLastTwoRequests
      */
     public function testCheckCacheClear($path, array $headers_set, $expected_cache_clear)
     {
@@ -89,6 +90,7 @@ final class AgeTrackerTest extends TestCase
             $AgeTracker->trackHeaders($path, $headers);
         }
         $this->assertEquals($expected_cache_clear, $AgeTracker->wasCacheClearedBetweenLastTwoRequests($path));
+        $this->assertEquals(!$expected_cache_clear, $AgeTracker->ageIncreasedBetweenLastTwoRequests($path));
     }
 
     protected function cacheLifeIncreasing()

@@ -30,7 +30,7 @@ final class FeatureContext extends RawDrupalContext implements Context
     /** @var \Drupal\DrupalExtension\Context\MinkContext */
     private $minkContext;
 
-
+    /** @var \PantheonSystems\CDNBehatHelpers\AgeTracker; */
     private $ageTracker;
 
     /** @BeforeScenario */
@@ -45,7 +45,6 @@ final class FeatureContext extends RawDrupalContext implements Context
      */
     public function pageIsCaching($page)
     {
-
         $age = $this->getAge($page);
         if (!empty($age)) {
             return true;
