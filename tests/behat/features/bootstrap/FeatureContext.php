@@ -63,7 +63,7 @@ class FeatureContext extends RawDrupalContext implements Context
     {
         $age = $this->getAge($path);
         $ageTracker = $this->getAgeTracker();
-        if (!$ageTracker->AgeIncreasedBetweenLastTwoRequests($path)) {
+        if (!$ageTracker->ageIncreasedBetweenLastTwoRequests($path)) {
             throw new \Exception('Cache age did not increase');
         }
     }

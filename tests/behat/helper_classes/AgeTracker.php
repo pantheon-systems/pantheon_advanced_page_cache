@@ -37,7 +37,7 @@ final class AgeTracker
          return $return;
     }
 
-    public function AgeIncreasedBetweenLastTwoRequests($path)
+    public function ageIncreasedBetweenLastTwoRequests($path)
     {
         // Assign the headers to a new variable so that $this->headers is not modified by array_pop().
         $headers = $this->headers[$path];

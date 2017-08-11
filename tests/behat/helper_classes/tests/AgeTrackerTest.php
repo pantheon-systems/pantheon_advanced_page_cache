@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+namespace PantheonSystems\CDNBehatHelpers\tests;
+
 use PHPUnit\Framework\TestCase;
 use PantheonSystems\CDNBehatHelpers\AgeTracker;
 
