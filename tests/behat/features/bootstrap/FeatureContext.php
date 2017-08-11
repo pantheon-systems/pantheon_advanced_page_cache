@@ -10,6 +10,7 @@ use Behat\Behat\Hook\Scope\AfterStepScope;
 
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 
+
 /**
  * Define application features from the specific context.
  */

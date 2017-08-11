@@ -8,8 +8,6 @@ use InvalidArgumentException;
 final class AgeTracker
 {
 
-
-
     public function trackHeaders($path, $headers) {
       $this->headers[$path][] = $headers;
    }
