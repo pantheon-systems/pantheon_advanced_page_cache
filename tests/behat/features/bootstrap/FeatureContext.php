@@ -114,7 +114,9 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
         return $html;
     }
 
-
+    /**
+     * @Given :page is caching
+     */
     public function pageIsCaching($page) {
 
         $age = $this->getAge($page);
@@ -129,79 +131,34 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
             } else {
                 return TRUE;
             }
-
         }
     }
 
     /**
-     * @Given the listing pages for page and article are caching
+     * @Then :path has not been purged
      */
-    public function theListingPagesForPageAndArticleAreCached()
-    {
-        $this->pageIsCaching('custom-cache-tags/article');
-        $this->pageIsCaching('custom-cache-tags/page');
-    }
-
-    /**
-     * @Given the article node listing was not purged.
-     */
-    public function theArticleNodeListingWasNotPurged()
-    {
-        $path = 'custom-cache-tags/article';
-        $this->assertPathAgeIncreased($path);
-    }
-
-    /**
-     * @Then I see that the cache for the page node listing has been purged
-     */
-    public function iSeeThatTheCacheForThePageNodeListingHasBeenPurged()
-    {
-        $path = 'custom-cache-tags/page';
-        $this->assertPathHasBeenPurged($path);
-    }
-
-    /**
-     * @Then the age increases again on subsequent requests to the page node listing
-     */
-    public function theAgeIncreasesAgainOnSubsequentRequestsToThePageNodeListing()
-    {
-        sleep(1);
-        $path = 'custom-cache-tags/page';
-        $this->assertPathAgeIncreased($path);
-    }
-
-    protected function assertPathAgeIncreased($path) {
+    public function assertPathAgeIncreased($path) {
         $age = $this->getAge($path);
-        if (!$this->pathAgeIncreased($path)) {
+        $ageTracker = $this->getAgeTracker();
+        if (!$ageTracker->AgeIncreasedBetweenLastTwoRequests($path)) {
             throw new \Exception('Cache age did not increase');
         }
     }
 
-    protected function assertPathHasBeenPurged($path) {
-        if (!$this->pathHasBeenPurged($path)) {
+    /**
+     * @Then :path has been purged
+     */
+    public function assertPathHasBeenPurged($path) {
+        $age = $this->getAge($path);
+        $ageTracker = $this->getAgeTracker();
+        if (!$ageTracker->wasCacheClearedBetweenLastTwoRequests($path)) {
             throw new \Exception('Cache was not cleared between requests');
         }
     }
 
-    protected function pathAgeIncreased($path)
-    {
-        $ageTracker = $this->getAgeTracker();
-        return $ageTracker->AgeIncreasedBetweenLastTwoRequests($path);
-    }
-
-
-    protected function pathHasBeenPurged($path)
-    {
-        $age = $this->getAge($path);
-        $ageTracker = $this->getAgeTracker();
-        return $ageTracker->wasCacheClearedBetweenLastTwoRequests($path);
-    }
-
     protected function getAge($page) {
-
         $this->minkContext->visit($page);
         $this->getAgeTracker()->trackHeaders($page, $this->minkContext->getSession()->getResponseHeaders());
-
         $age = $this->minkContext->getSession()->getResponseHeader('Age');
         return $age;
     }
