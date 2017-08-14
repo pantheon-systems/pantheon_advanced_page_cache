@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\pantheon_advanced_page_cache\EventSubscriber\CacheableResponseSubscriber.
- */
-
 namespace Drupal\pantheon_advanced_page_cache\EventSubscriber;
 
 use Drupal\Core\Cache\CacheableResponseInterface;
@@ -12,6 +7,9 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+/**
+ * Adds Surrogate-Key header to cacheable master responses.
+ */
 class CacheableResponseSubscriber implements EventSubscriberInterface {
 
   /**

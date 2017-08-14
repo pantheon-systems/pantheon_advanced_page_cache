@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\pantheon_advanced_page_cache\CacheTagsInvalidator.
- */
-
 namespace Drupal\pantheon_advanced_page_cache;
 
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
