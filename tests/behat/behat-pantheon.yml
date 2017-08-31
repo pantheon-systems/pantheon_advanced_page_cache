@@ -7,10 +7,10 @@ default:
       paths:
         - %paths.base%/features
       contexts:
-        - PantheonSystems\CDNBehatHelpers\Contexts\FeatureContext
         - Drupal\DrupalExtension\Context\DrupalContext
         - Drupal\DrupalExtension\Context\DrushContext
         - Drupal\DrupalExtension\Context\MinkContext
+        - PantheonSystems\CDNBehatHelpers\Contexts\FeatureContext
   extensions:
     Behat\MinkExtension:
       goutte: ~

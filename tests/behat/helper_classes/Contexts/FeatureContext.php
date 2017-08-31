@@ -33,11 +33,35 @@ final class FeatureContext extends RawDrupalContext implements Context
     /** @var \PantheonSystems\CDNBehatHelpers\AgeTracker; */
     private $ageTracker;
 
+    /** @var \Drupal\DrupalExtension\Context\DrupalContext */
+    private $DrupalContext;
+
     /** @BeforeScenario */
     public function gatherContexts(BeforeScenarioScope $scope)
     {
         $environment = $scope->getEnvironment();
         $this->minkContext = $environment->getContext('Drupal\DrupalExtension\Context\MinkContext');
+        $this->DrupalContext = $environment->getContext('Drupal\DrupalExtension\Context\DrupalContext');
+    }
+
+    /**
+     * @Given there are some :type nodes
+     */
+    public function whenIGenerateSomeNodes($type, $number_of_nodes = 2)
+    {
+        $i = 0;
+        while ($i < $number_of_nodes) {
+            $this->DrupalContext->createNode($type, rand());
+            $i++;
+        }
+    }
+
+    /**
+     * @When a generate a :type node
+     */
+    public function whenIGenerateANode($type)
+    {
+        $this->DrupalContext->createNode($type, rand());
     }
 
     /**
