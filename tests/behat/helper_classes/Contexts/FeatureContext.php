@@ -50,6 +50,7 @@ final class FeatureContext extends RawDrupalContext implements Context
     public function whenIGenerateSomeNodes($type, $number_of_nodes = 2)
     {
         $i = 0;
+        // @todo, switch to calling devel_generate if there is a need for generating large numbers of nodes.
         while ($i < $number_of_nodes) {
             $this->DrupalContext->createNode($type, rand());
             $i++;

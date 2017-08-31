@@ -7,8 +7,8 @@ default:
       paths:
         - %paths.base%/features
       contexts:
-        - Drupal\DrupalExtension\Context\DrupalContext
         - Drupal\DrupalExtension\Context\DrushContext
+        - Drupal\DrupalExtension\Context\DrupalContext
         - Drupal\DrupalExtension\Context\MinkContext
         - PantheonSystems\CDNBehatHelpers\Contexts\FeatureContext
   extensions:

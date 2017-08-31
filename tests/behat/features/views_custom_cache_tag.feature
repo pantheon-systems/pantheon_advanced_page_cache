@@ -5,12 +5,9 @@ I want to use granular cache tags for Views that reflect the type of content dis
 
   Background:
 
-
-#    When I run drush "en -y devel_generate views_custom_cache_tag_demo pantheon_advanced_page_cache"
-#    Then drush output should contain "devel_generate is already enabled."
-#    And drush output should contain "views_custom_cache_tag_demo is already enabled."
-#    And drush output should contain "pantheon_advanced_page_cache is already enabled."
-
+    When I run drush "en -y views_custom_cache_tag_demo pantheon_advanced_page_cache"
+    And drush output should contain "views_custom_cache_tag_demo is already enabled."
+    And drush output should contain "pantheon_advanced_page_cache is already enabled."
 
   @api
   Scenario: Node type-based expiration
