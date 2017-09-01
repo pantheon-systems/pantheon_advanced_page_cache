@@ -71,6 +71,8 @@ final class FeatureContext extends RawDrupalContext implements Context
     public function pageIsCaching($page)
     {
         $age = $this->getAge($page);
+        // A zero age doesn't necessarily mean the page is not caching.
+        // A second request may show a higher age.
         if (!empty($age)) {
             return true;
         } else {
