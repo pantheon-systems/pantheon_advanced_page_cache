@@ -52,7 +52,7 @@ final class FeatureContext extends RawDrupalContext implements Context
         $i = 0;
         // @todo, switch to calling devel_generate if there is a need for generating large numbers of nodes.
         while ($i < $number_of_nodes) {
-            $this->DrupalContext->createNode($type, rand());
+            $this->whenIGenerateANode($type);
             $i++;
         }
     }
@@ -62,7 +62,14 @@ final class FeatureContext extends RawDrupalContext implements Context
      */
     public function whenIGenerateANode($type)
     {
-        $this->DrupalContext->createNode($type, rand());
+        // Create a node with an HTML form for faster process.
+        // Significantly faster than make nodes over SSH/Drush.
+        // Depends on a node type with no required fields beyond title.
+        $random_node_title = "Random Node Title: " . rand();
+        $this->minkContext->visit('node/add/' . $type);
+        $this->minkContext->fillField('Title', $random_node_title);
+        $this->minkContext->pressButton('Save');
+        $this->minkContext->assertTextVisible($random_node_title);
     }
 
     /**
