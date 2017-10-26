@@ -7,7 +7,7 @@ final class AgeTracker
 
     public function trackHeaders($path, $headers)
     {
-        $headers = array_change_key_case ($headers);
+        $headers = array_change_key_case($headers, CASE_LOWER);
         $this->headers[$path][] = array_filter($headers, function ($v, $k) {
             // Filter out headers that won't help with debugging.
             $tracked_headers = [

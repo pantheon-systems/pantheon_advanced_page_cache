@@ -70,6 +70,9 @@ final class FeatureContext extends RawDrupalContext implements Context
         $this->minkContext->fillField('Title', $random_node_title);
         $this->minkContext->pressButton('Save');
         $this->minkContext->assertTextVisible($random_node_title);
+        // @todo, remove this sleep if possible. Added because this faster node generation results in
+        // The tests running faster than the CDN can clear cache.
+        sleep(1);
     }
 
     /**
