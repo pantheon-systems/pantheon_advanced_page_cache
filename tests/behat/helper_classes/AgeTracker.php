@@ -1,6 +1,7 @@
 <?php
 
 namespace PantheonSystems\CDNBehatHelpers;
+
 use Behat\Mink\Session;
 
 final class AgeTracker
@@ -14,18 +15,15 @@ final class AgeTracker
             'cache-control',
             'x-timer'
         ];
-
     }
-    public function trackSessionHeaders($path, Session $session) {
-
+    public function trackSessionHeaders($path, Session $session)
+    {
         $tracked_headers = [];
         foreach ($this->headersToTrack() as $header_name) {
-          $tracked_headers[$header_name] = $session->getResponseHeader($header_name);
-
-      }
+            $tracked_headers[$header_name] = $session->getResponseHeader($header_name);
+        }
         $this->headers[$path][] = $tracked_headers;
-}
-
+    }
 
     public function trackHeaders($path, $headers)
     {
