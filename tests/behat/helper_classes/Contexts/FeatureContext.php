@@ -123,7 +123,8 @@ final class FeatureContext extends RawDrupalContext implements Context
     protected function getAge($page)
     {
         $this->minkContext->visit($page);
-        $this->getAgeTracker()->trackHeaders($page, $this->minkContext->getSession()->getResponseHeaders());
+        $this->getAgeTracker()->trackSessionHeaders($page, $this->minkContext->getSession());
+       // $this->getAgeTracker()->trackHeaders($page, $this->minkContext->getSession()->getResponseHeaders());
         $age = $this->minkContext->getSession()->getResponseHeader('Age');
         return $age;
     }

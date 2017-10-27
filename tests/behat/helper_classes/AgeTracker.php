@@ -2,8 +2,28 @@
 
 namespace PantheonSystems\CDNBehatHelpers;
 
+use Behat\Mink\Session;
+
 final class AgeTracker
 {
+
+
+    public function headersToTrack()
+    {
+        return [
+            'age',
+            'cache-control',
+            'x-timer'
+        ];
+    }
+    public function trackSessionHeaders($path, Session $session)
+    {
+        $tracked_headers = [];
+        foreach ($this->headersToTrack() as $header_name) {
+            $tracked_headers[$header_name] = $session->getResponseHeader($header_name);
+        }
+        $this->headers[$path][] = $tracked_headers;
+    }
 
     public function trackHeaders($path, $headers)
     {
@@ -19,6 +39,7 @@ final class AgeTracker
         }, ARRAY_FILTER_USE_BOTH);
     }
 
+
     public function getTrackedHeaders($path)
     {
         return $this->headers[$path];
@@ -32,7 +53,7 @@ final class AgeTracker
          $second_most_recent = array_pop($headers);
          // If the age header on the most recent request is smaller than the age header on the second most recent
          // Then the cache was cleared (@todo, or it expired (account for max age))
-         $return = (integer) $most_recent['age'] < (integer) $second_most_recent['age'];
+         $return = (integer) $most_recent['age'][0] < (integer) $second_most_recent['age'][0];
          return $return;
     }
 
@@ -42,7 +63,7 @@ final class AgeTracker
         $headers = $this->headers[$path];
         $most_recent = array_pop($headers);
         $second_most_recent = array_pop($headers);
-        $return = (integer) $most_recent['age'] > (integer) $second_most_recent['age'];
+        $return = (integer) $most_recent['age'][0] > (integer) $second_most_recent['age'][0];
         return $return;
     }
 }
