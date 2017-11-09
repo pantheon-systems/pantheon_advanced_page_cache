@@ -47,7 +47,7 @@ final class FeatureContext extends RawDrupalContext implements Context
         $this->minkContext = $environment->getContext('Drupal\DrupalExtension\Context\MinkContext');
         $this->DrupalContext = $environment->getContext('Drupal\DrupalExtension\Context\DrupalContext');
         $mink = $this->minkContext->getMink();
-        $client = new \Goutte\Client( ['HTTP_HOST' => 'pantheon.io']);
+        $client = new \Goutte\Client( ['HTTP_HOST' => parse_url($this->minkContext->getMinkParameters()["base_url"])['host']]);
         $driver = new  BrowserKitDriver($client);
         $anonymous_session = new Session($driver);
         $mink->registerSession('anonymous', $anonymous_session);
