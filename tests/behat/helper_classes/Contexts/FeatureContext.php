@@ -6,6 +6,10 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use PantheonSystems\CDNBehatHelpers\AgeTracker;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
+use Behat\Mink\Driver\GoutteDriver;
+use Behat\Mink\Session;
+use Behat\Mink\Driver\BrowserKitDriver;
+use Symfony\Component\BrowserKit\Client;
 
 /**
  * Define application features from the specific context.
@@ -42,6 +46,11 @@ final class FeatureContext extends RawDrupalContext implements Context
         $environment = $scope->getEnvironment();
         $this->minkContext = $environment->getContext('Drupal\DrupalExtension\Context\MinkContext');
         $this->DrupalContext = $environment->getContext('Drupal\DrupalExtension\Context\DrupalContext');
+        $mink = $this->minkContext->getMink();
+        $client = new \Goutte\Client( ['HTTP_HOST' => 'pantheon.io']);
+        $driver = new  BrowserKitDriver($client);
+        $anonymous_session = new Session($driver);
+        $mink->registerSession('anonymous', $anonymous_session);
     }
 
     /**
@@ -122,10 +131,10 @@ final class FeatureContext extends RawDrupalContext implements Context
 
     protected function getAge($page)
     {
-        $this->minkContext->visit($page);
-        $this->getAgeTracker()->trackSessionHeaders($page, $this->minkContext->getSession());
-       // $this->getAgeTracker()->trackHeaders($page, $this->minkContext->getSession()->getResponseHeaders());
-        $age = $this->minkContext->getSession()->getResponseHeader('Age');
+        $session_name = 'anonymous';
+        $this->minkContext->getSession($session_name)->visit($page);
+        $this->getAgeTracker()->trackSessionHeaders($page, $this->minkContext->getSession($session_name));
+        $age = $this->minkContext->getSession($session_name)->getResponseHeader('Age');
         return $age;
     }
 
