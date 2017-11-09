@@ -47,8 +47,8 @@ final class FeatureContext extends RawDrupalContext implements Context
         $this->minkContext = $environment->getContext('Drupal\DrupalExtension\Context\MinkContext');
         $this->DrupalContext = $environment->getContext('Drupal\DrupalExtension\Context\DrupalContext');
         $mink = $this->minkContext->getMink();
-        $host = parse_url($this->minkContext->getMinkParameters()["base_url"])['host']];
-        $client = new \Goutte\Client( ['HTTP_HOST' => $host);
+        $host = parse_url($this->minkContext->getMinkParameters()["base_url"])['host'];
+        $client = new \Goutte\Client(['HTTP_HOST' => $host]);
         $driver = new  BrowserKitDriver($client);
         $anonymous_session = new Session($driver);
         $mink->registerSession('anonymous', $anonymous_session);
