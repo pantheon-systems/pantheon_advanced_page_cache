@@ -10,7 +10,7 @@ use Behat\Mink\Driver\GoutteDriver;
 use Behat\Mink\Session;
 use Behat\Mink\Driver\BrowserKitDriver;
 #use Symfony\Component\BrowserKit\Client;
-use         Behat\Mink\Driver\Goutte\Client;
+use Behat\Mink\Driver\Goutte\Client;
 
 /**
  * Define application features from the specific context.
