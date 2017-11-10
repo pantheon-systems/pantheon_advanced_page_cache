@@ -6,11 +6,9 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use PantheonSystems\CDNBehatHelpers\AgeTracker;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
-use Behat\Mink\Driver\GoutteDriver;
 use Behat\Mink\Session;
 use Behat\Mink\Driver\BrowserKitDriver;
-#use Symfony\Component\BrowserKit\Client;
-use         Behat\Mink\Driver\Goutte\Client;
+use Behat\Mink\Driver\Goutte\Client;
 
 /**
  * Define application features from the specific context.
@@ -47,12 +45,9 @@ final class FeatureContext extends RawDrupalContext implements Context
         $environment = $scope->getEnvironment();
         $this->minkContext = $environment->getContext('Drupal\DrupalExtension\Context\MinkContext');
         $this->DrupalContext = $environment->getContext('Drupal\DrupalExtension\Context\DrupalContext');
+
         $mink = $this->minkContext->getMink();
-      //  $host = parse_url($this->minkContext->getMinkParameters()["base_url"])['host'];
-       # $client = new \Goutte\Client(['HTTP_HOST' => $host]);
         $client = new Client();
-
-
         $driver = new  BrowserKitDriver($client, $this->minkContext->getMinkParameters()["base_url"]);
         $anonymous_session = new Session($driver);
         $mink->registerSession('anonymous', $anonymous_session);
@@ -97,10 +92,10 @@ final class FeatureContext extends RawDrupalContext implements Context
         $age = $this->getAge($page);
         // A zero age doesn't necessarily mean the page is not caching.
         // A second request may show a higher age.
-        if (!empty($age) && FALSE) {
+        if (!empty($age)) {
             return true;
         } else {
-            sleep(8);
+            sleep(2);
             $age = $this->getAge($page);
             if (empty($age)) {
                 throw new \Exception('not cached');
