@@ -48,12 +48,12 @@ final class FeatureContext extends RawDrupalContext implements Context
         $this->minkContext = $environment->getContext('Drupal\DrupalExtension\Context\MinkContext');
         $this->DrupalContext = $environment->getContext('Drupal\DrupalExtension\Context\DrupalContext');
         $mink = $this->minkContext->getMink();
-        $host = parse_url($this->minkContext->getMinkParameters()["base_url"])['host'];
+      //  $host = parse_url($this->minkContext->getMinkParameters()["base_url"])['host'];
        # $client = new \Goutte\Client(['HTTP_HOST' => $host]);
-        $client = new Client(['HTTP_HOST' => $host]);
+        $client = new Client();
 
 
-        $driver = new  BrowserKitDriver($client);
+        $driver = new  BrowserKitDriver($client, $this->minkContext->getMinkParameters()["base_url"]);
         $anonymous_session = new Session($driver);
         $mink->registerSession('anonymous', $anonymous_session);
     }
@@ -97,10 +97,10 @@ final class FeatureContext extends RawDrupalContext implements Context
         $age = $this->getAge($page);
         // A zero age doesn't necessarily mean the page is not caching.
         // A second request may show a higher age.
-        if (!empty($age)) {
+        if (!empty($age) && FALSE) {
             return true;
         } else {
-            sleep(2);
+            sleep(8);
             $age = $this->getAge($page);
             if (empty($age)) {
                 throw new \Exception('not cached');
@@ -137,7 +137,8 @@ final class FeatureContext extends RawDrupalContext implements Context
     protected function getAge($page)
     {
         $session_name = 'anonymous';
-        $this->minkContext->getSession($session_name)->visit($page);
+         $this->visitPath($page, $session_name);
+        // $this->minkContext->getSession($session_name)->visit($page);
         $this->getAgeTracker()->trackSessionHeaders($page, $this->minkContext->getSession($session_name));
         $age = $this->minkContext->getSession($session_name)->getResponseHeader('Age');
         return $age;
