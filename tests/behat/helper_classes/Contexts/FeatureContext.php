@@ -100,7 +100,7 @@ final class FeatureContext extends RawDrupalContext implements Context
         if (!empty($age)) {
             return true;
         } else {
-            sleep(2);
+            sleep(4);
             $age = $this->getAge($page);
             if (empty($age)) {
                 throw new \Exception('not cached');
