@@ -17,7 +17,7 @@ I want to use granular cache tags for Views that reflect the type of content dis
     And "custom-cache-tags/article" is caching
 
     # When I make a new page node
-    When a generate a "page" node
+    When I generate a "page" node
     # Then the page listing is cleared the article is not
     Then "custom-cache-tags/page" has been purged
     And "custom-cache-tags/page" is caching

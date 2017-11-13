@@ -67,7 +67,7 @@ final class FeatureContext extends RawDrupalContext implements Context
     }
 
     /**
-     * @When a generate a :type node
+     * @When I generate a :type node
      */
     public function whenIGenerateANode($type)
     {
