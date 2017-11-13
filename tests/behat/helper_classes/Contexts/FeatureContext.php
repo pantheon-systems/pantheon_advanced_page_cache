@@ -76,7 +76,7 @@ final class FeatureContext extends RawDrupalContext implements Context
         // Depends on a node type with no required fields beyond title.
         $random_node_title = "Random Node Title: " . rand();
         $this->minkContext->visit('node/add/' . $type);
-        $this->minkContext->fillField('Title', $random_node_title);
+        $this->minkContext->fillField('title', $random_node_title);
         $this->minkContext->pressButton('Save');
         $this->minkContext->assertTextVisible($random_node_title);
         // @todo, remove this sleep if possible. Added because this faster node generation results in
