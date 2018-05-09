@@ -23,4 +23,4 @@ I need a notification when my header is truncated.
     And I have purged the dblog
     When I visit "/frontpage"
     And I visit the reports page
-    The I don't see pantheon_advanced_page_cache
+    Then I don't see pantheon_advanced_page_cache
