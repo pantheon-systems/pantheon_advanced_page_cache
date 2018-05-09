@@ -12,17 +12,17 @@ jobs:
             TERMINUS_SITE: d7papc
         steps:
             - checkout
-#            - restore_cache:
-#                key: dependency-cache-{{ checksum "tests/composer.lock" }}
-#            - run:
-#                name: Composer install
-#                command: |
-#                  cd tests && composer install
-#                  drush help
-#            - save_cache:
-#                key: dependency-cache-{{ checksum "tests/composer.lock" }}
-#                paths:
-#                  - ~/.composer/cache
+            - restore_cache:
+                key: dependency-cache-{{ checksum "tests/composer.lock" }}
+            - run:
+                name: Composer install
+                command: |
+                  cd tests && composer install
+                  drush help
+            - save_cache:
+                key: dependency-cache-{{ checksum "tests/composer.lock" }}
+                paths:
+                  - ~/.composer/cache
 #            - run:
 #                name: PHP Code Sniff
 #                command: composer codesniff
@@ -53,6 +53,8 @@ jobs:
             - run:
                 name: Add and enable Pantheon Advanced Page Cache
                 command: |
+                  git config --global user.email "circleci@example.com"
+                  git config --global user.name "CircleCI"
                   cd /tmp && git clone $(terminus connection:info ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} --field=git_url) ${TERMINUS_SITE}
                   cd ${TERMINUS_SITE}
                   git checkout ${CIRCLE_BUILD_NUM}
