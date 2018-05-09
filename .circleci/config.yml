@@ -50,7 +50,7 @@ jobs:
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- views-enable frontpage
                   # Don't enable this module until settings.php has been changed.
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl d8cache -y
-                  terminus env:commit $TERMINUS_SITE.$TERMINUS_ENV --message="adding contrib modules" --force
+                  terminus env:commit ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} --message="adding contrib modules" --force
             - run:
                 name: Add and enable Pantheon Advanced Page Cache
                 command: |
