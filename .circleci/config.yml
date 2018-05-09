@@ -42,16 +42,18 @@ jobs:
                   terminus env:create $TERMINUS_SITE.dev ${CIRCLE_BUILD_NUM}
                   terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y
-                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- cset system.performance cache.page.max_age 600 -y
-            - run:
-                name: Composer require
-                command: |
-                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
-                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-8.x-1.x#$CIRCLE_SHA1
-                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drush-ops/behat-drush-endpoint
-                  # drush dl is faster than composer require so use it where possible.
-                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl devel-8.x-1.0-rc2 views_custom_cache_tag
-                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en -y devel_generate views_custom_cache_tag_demo pantheon_advanced_page_cache
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl views -y
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en views -y
+                  terminus drush $TERMINUS_SITE.$TERMINUS_ENV -- views-enable frontpage
+#            - run:
+#                name: Composer require
+#                command: |
+#                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
+#                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-8.x-1.x#$CIRCLE_SHA1
+#                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drush-ops/behat-drush-endpoint
+#                  # drush dl is faster than composer require so use it where possible.
+#                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl devel-8.x-1.0-rc2 views_custom_cache_tag
+#                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en -y devel_generate views_custom_cache_tag_demo pantheon_advanced_page_cache
             - run:
                 name: run behat
                 command: ./tests/behat/run-behat.sh
