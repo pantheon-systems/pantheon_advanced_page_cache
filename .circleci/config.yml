@@ -82,4 +82,4 @@ jobs:
 #                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en -y devel_generate views_custom_cache_tag_demo pantheon_advanced_page_cache
             - run:
                 name: run behat
-                command: ./tests/behat/run-behat.sh
+                command: cd tests && ./behat/run-behat.sh
