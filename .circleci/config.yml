@@ -40,11 +40,16 @@ jobs:
                   touch $HOME/.ssh/config
                   echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
                   terminus env:create $TERMINUS_SITE.dev ${CIRCLE_BUILD_NUM}
+            - run:
+                name: Set up site
+                command: |
                   terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl views -y
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en views -y
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- views-enable frontpage
+                  # Don't enable this module until settings.php has been changed.
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl d8cache -y
             - run:
                 name: Add and enable Pantheon Advanced Page Cache
                 command: |
@@ -56,9 +61,14 @@ jobs:
                   git status
                   git add sites/all/modules/pantheon_advanced_page_cache/
                   git commit -m 'Adding pantheon_advanced_page_cache'
+                  cat ~/pantheon_advanced_page_cache/tests/settings.d8cache.txt >> sites/default/settings.php
+                  git status
+                  git add sites/default/settings.php
+                  git commit -m 'd8cache changes to settings.php'
+
                   terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} git
                   git push
-                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en pantheon_advanced_page_cache -y
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en d8cache pantheon_advanced_page_cache -y
 
 #                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
 #                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-8.x-1.x#$CIRCLE_SHA1
