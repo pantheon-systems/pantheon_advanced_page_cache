@@ -12,23 +12,23 @@ jobs:
             TERMINUS_SITE: d7papc
         steps:
             - checkout
-            - restore_cache:
-                key: dependency-cache-{{ checksum "tests/composer.lock" }}
-            - run:
-                name: Composer install
-                command: |
-                  cd tests && composer install
-                  drush help
-            - save_cache:
-                key: dependency-cache-{{ checksum "tests/composer.lock" }}
-                paths:
-                  - ~/.composer/cache
-            - run:
-                name: PHP Code Sniff
-                command: composer codesniff
-            - run:
-                name: Unit Tests for Behat helper
-                command: composer phpunit
+#            - restore_cache:
+#                key: dependency-cache-{{ checksum "tests/composer.lock" }}
+#            - run:
+#                name: Composer install
+#                command: |
+#                  cd tests && composer install
+#                  drush help
+#            - save_cache:
+#                key: dependency-cache-{{ checksum "tests/composer.lock" }}
+#                paths:
+#                  - ~/.composer/cache
+#            - run:
+#                name: PHP Code Sniff
+#                command: composer codesniff
+#            - run:
+#                name: Unit Tests for Behat helper
+#                command: composer phpunit
             - run:
                 name: login-pantheon
                 command: |
@@ -44,10 +44,22 @@ jobs:
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl views -y
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en views -y
-                  terminus drush $TERMINUS_SITE.$TERMINUS_ENV -- views-enable frontpage
-#            - run:
-#                name: Composer require
-#                command: |
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- views-enable frontpage
+            - run:
+                name: Add and enable Pantheon Advanced Page Cache
+                command: |
+                  cd /tmp && git clone $(terminus connection:info ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} --field=git_url) ${TERMINUS_SITE}
+                  cd ${TERMINUS_SITE}
+                  git checkout ${CIRCLE_BUILD_NUM}
+                  mkdir sites/all/modules/pantheon_advanced_page_cache
+                  cp -r ~/pantheon_advanced_page_cache/* sites/all/modules/pantheon_advanced_page_cache/
+                  git status
+                  git add sites/all/modules/pantheon_advanced_page_cache/
+                  git commit -m 'Adding pantheon_advanced_page_cache'
+                  terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} git
+                  git push
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en pantheon_advanced_page_cache -y
+
 #                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
 #                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-8.x-1.x#$CIRCLE_SHA1
 #                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drush-ops/behat-drush-endpoint
