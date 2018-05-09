@@ -3,6 +3,9 @@
     "drupal/drupal-extension": "~3.0"
 },
   "config": {
-    "bin-dir": "bin/"
+    "bin-dir": "bin/",
+    "platform": {
+      "php": "7.0.20"
+    }
   }
 }
