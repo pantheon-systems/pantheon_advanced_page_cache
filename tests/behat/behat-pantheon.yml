@@ -10,7 +10,7 @@ default:
         - Drupal\DrupalExtension\Context\DrushContext
         - Drupal\DrupalExtension\Context\DrupalContext
         - Drupal\DrupalExtension\Context\MinkContext
-        - PantheonSystems\CDNBehatHelpers\Contexts\FeatureContext
+        # - PantheonSystems\CDNBehatHelpers\Contexts\FeatureContext
   extensions:
     Behat\MinkExtension:
       goutte: ~
