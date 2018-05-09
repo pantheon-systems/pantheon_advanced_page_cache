@@ -54,6 +54,7 @@ jobs:
             - run:
                 name: Add and enable Pantheon Advanced Page Cache
                 command: |
+                  terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} git
                   git config --global user.email "circleci@example.com"
                   git config --global user.name "CircleCI"
                   cd /tmp && git clone $(terminus connection:info ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} --field=git_url) ${TERMINUS_SITE}
@@ -61,7 +62,7 @@ jobs:
                   git checkout ${CIRCLE_BUILD_NUM}
                   mkdir sites/all/modules/pantheon_advanced_page_cache
                   cp -r ~/pantheon_advanced_page_cache/* sites/all/modules/pantheon_advanced_page_cache/
-                  rm -rf sites/all/modules/pantheon_advanced_page_cache/vendor
+                  rm -rf sites/all/modules/pantheon_advanced_page_cache/tests/vendor
                   git status
                   git add sites/all/modules/pantheon_advanced_page_cache/
                   git commit -m 'Adding pantheon_advanced_page_cache'
@@ -69,8 +70,6 @@ jobs:
                   git status
                   git add sites/default/settings.php
                   git commit -m 'd8cache changes to settings.php'
-
-                  terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} git
                   git push
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en d8cache pantheon_advanced_page_cache -y
 
