@@ -50,6 +50,7 @@ jobs:
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- views-enable frontpage
                   # Don't enable this module until settings.php has been changed.
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl d8cache -y
+                  terminus env:commit $TERMINUS_SITE.$TERMINUS_ENV --message="adding contrib modules" --force
             - run:
                 name: Add and enable Pantheon Advanced Page Cache
                 command: |
@@ -60,6 +61,7 @@ jobs:
                   git checkout ${CIRCLE_BUILD_NUM}
                   mkdir sites/all/modules/pantheon_advanced_page_cache
                   cp -r ~/pantheon_advanced_page_cache/* sites/all/modules/pantheon_advanced_page_cache/
+                  rm -rf sites/all/modules/pantheon_advanced_page_cache/vendor
                   git status
                   git add sites/all/modules/pantheon_advanced_page_cache/
                   git commit -m 'Adding pantheon_advanced_page_cache'
