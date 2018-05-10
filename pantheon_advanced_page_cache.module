@@ -4,9 +4,6 @@
  * Main module file for the Pantheon Advanced Page Cache.
  */
 
-// -----------------------------------------------------------------------
-// Core Hooks
-
 /**
  * Implements hook_pre_emit_cache_tags_alter().
  */
@@ -38,7 +35,7 @@ function pantheon_advanced_page_cache_emit_cache_tags($tags) {
  * Implements hook_invalidate_cache_tags().
  */
 function pantheon_advanced_page_cache_invalidate_cache_tags($tags) {
-  if (function_exists( 'pantheon_clear_edge_keys')) {
+  if (function_exists('pantheon_clear_edge_keys')) {
     pantheon_clear_edge_keys($tags);
   }
 }
