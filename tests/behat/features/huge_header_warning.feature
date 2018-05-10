@@ -3,36 +3,24 @@ In order to understand the caching behavior of my site
 As an administrator
 I need a notification when my header is truncated.
 
-  Background:
-
-    ##When I run drush "en -y pantheon_advanced_page_cache"
-    # @todo, enable front page view
-   ### And drush output should contain "pantheon_advanced_page_cache is already enabled."
-
   @api
   Scenario: Warning message.
-
-
-    #Given I am logged in as a user with the "administrator" role
-    Given I visit "user"
-    And I fill in "Username" with "admin2"
-    And I fill in "Password" with "asdf"
-    And I press "Log in"
-
-
-
-
-    Given there are 10 article nodes with a huge number of taxonomy terms each
-    And I break
+    Given I run drush "dis -y pantheon_advanced_page_cache_test"
+    And I am logged in as a user with the "administrator" role
+    And there are 10 article nodes with a huge number of taxonomy terms each
     When I visit "/frontpage"
-    And I visit the report page
-    And I click the link in the row for pantheon_advanced_page_cache
-    Then I see the warning message
-    And I see "/frontpage" in the referrer row
+    And I visit "admin/reports/dblog"
+    And I click "More cache tags were present than could be passed in..." in the "pantheon_advanced_page_cache" row
+    Then I should see "More cache tags were present than could be passed in the Surrogate-Key HTTP Header due to length constraints"
 
-  Scenario: Warning message.
-    Given there are some "article" nodes with a huge number of taxonomy terms each
-    And I have purged the dblog
+    @api
+  Scenario: No warning message after enabling test module.
+    Given I run drush "en -y pantheon_advanced_page_cache_test"
+    And I run drush "cc" "all"
+    And I am logged in as a user with the "administrator" role
+    And I visit "admin/reports/dblog"
+    And I press "Clear log messages"
+    And there are 10 article nodes with a huge number of taxonomy terms each
     When I visit "/frontpage"
-    And I visit the reports page
-    Then I don't see pantheon_advanced_page_cache
+    And I visit "admin/reports/dblog"
+    Then I should not see "pantheon_advanced_page_cache"
