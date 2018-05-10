@@ -6,6 +6,7 @@ I need a notification when my header is truncated.
   @api
   Scenario: Warning message.
     Given I run drush "dis -y pantheon_advanced_page_cache_test"
+    Given I run drush "en -y pantheon_advanced_page_cache"
     And I am logged in as a user with the "administrator" role
     And there are 10 article nodes with a huge number of taxonomy terms each
     When I visit "/frontpage"

@@ -43,19 +43,13 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
            $this->WhenIGenerateAnArticleWithLotsOfTerms();
            $i++;
        }
-
-
     }
-
 
     /**
      * @When a generate a :type node
      */
     public function WhenIGenerateAnArticleWithLotsOfTerms()
     {
-        // Create a node with an HTML form for faster process.
-        // Significantly faster than make nodes over SSH/Drush.
-        // Depends on a node type with no required fields beyond title.
         $random_node_title = "Random Node Title: " . rand();
         $this->minkContext->visit('node/add/article');
         $this->minkContext->fillField('Title', $random_node_title);
@@ -78,5 +72,4 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
         }
         return implode(",", $random_three_letter_combos);
     }
-
 }
