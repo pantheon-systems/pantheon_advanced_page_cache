@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Create a drush alias file so that Behat tests can be executed against Pantheon.
-#terminus aliases
+terminus aliases
 # Drush Behat driver fails without this option.
-#echo "\$options['strict'] = 0;" >> ~/.drush/pantheon.aliases.drushrc.php
+echo "\$options['strict'] = 0;" >> ~/.drush/pantheon.aliases.drushrc.php
 
 #TERMINUS_ENV=$CIRCLE_BUILD_NUM
 
