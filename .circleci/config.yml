@@ -23,9 +23,9 @@ jobs:
                 key: dependency-cache-{{ checksum "tests/composer.lock" }}
                 paths:
                   - ~/.composer/cache
-#            - run:
-#                name: PHP Code Sniff
-#                command: composer codesniff
+            - run:
+                name: PHP Code Sniff
+                command: composer codesniff
 #            - run:
 #                name: Unit Tests for Behat helper
 #                command: composer phpunit
