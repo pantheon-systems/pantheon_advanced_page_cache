@@ -6,11 +6,30 @@ use Drupal\Core\Cache\CacheableResponseInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Psr\Log\LoggerInterface;
+use Drupal\Core\Logger\RfcLogLevel;
 
 /**
  * Adds Surrogate-Key header to cacheable master responses.
  */
 class CacheableResponseSubscriber implements EventSubscriberInterface {
+
+    /**
+     * The logger instance.
+     *
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * Constructs a new DefaultExceptionHtmlSubscriber.
+     *
+     * @param \Psr\Log\LoggerInterface $logger
+     *   The logger service.
+     */
+    public function __construct(LoggerInterface $logger) {
+        $this->logger = $logger;
+    }
 
   /**
    * Adds Surrogate-Key header to cacheable master responses.
@@ -34,7 +53,16 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
         $tags[$key] = str_replace('_list', '_emit_list', $tag);
       }
 
-      $response->headers->set('Surrogate-Key', implode(' ', $tags));
+
+    $tags_string = implode(' ', $tags);
+    if (32000 < strlen($tags_string)) {
+        $tags_string = substr($tags_string, 0, 32000);
+        // The string might have cut of in the middle of a tag.
+        // So now find the the last occurence of a space and cut to that length.
+        $tags_string = substr($tags_string, 0, strrpos($tags_string, ' '));
+        $this->logger->log(RfcLogLevel::WARNING, 'More cache tags were present than could be passed in the Surrogate-Key HTTP Header due to length constraints. To avoid a 502 error the list of surrogate keys was trimmed to a maximum length of 32,000 characters. Removing keys beyond 32,000 means that this page will not be cleared from cache when the removed keys are cleared (usually by entity save operations). See https://www.drupal.org/project/pantheon_advanced_page_cache/issues/2911747 for more information about how you can filter out redundant or unnecessary cache metadata.');
+    }
+      $response->headers->set('Surrogate-Key', $tags_string);
     }
   }
 
