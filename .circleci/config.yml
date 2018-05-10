@@ -25,7 +25,7 @@ jobs:
                   - ~/.composer/cache
             - run:
                 name: PHP Code Sniff
-                command: composer codesniff
+                command: cd tests && composer codesniff
 #            - run:
 #                name: Unit Tests for Behat helper
 #                command: composer phpunit
