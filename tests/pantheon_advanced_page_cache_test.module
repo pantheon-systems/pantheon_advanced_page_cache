@@ -1,0 +1,20 @@
+<?php
+/**
+ * @file
+ * Provides testing functionality.
+ */
+
+/**
+ * Implements hook_pre_emit_cache_tags_alter().
+ */
+function pantheon_advanced_page_cache_test_pre_emit_cache_tags_alter(&$tags) {
+  if (in_array("views:frontpage.page", $tags)) {
+    $new_tags = array();
+    foreach ($tags as $tag) {
+      if (strpos($tag, "taxonomy_term:") === FALSE) {
+        $new_tags[] = $tag;
+      }
+    }
+    $tags = $new_tags;
+  }
+}
