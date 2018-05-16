@@ -5,13 +5,20 @@ I need a notification when my header is truncated.
 
   @api
   Scenario: Warning message.
-    Given I run drush "dis -y pantheon_advanced_page_cache_test"
-    Given I run drush "en -y pantheon_advanced_page_cache"
-    And I am logged in as a user with the "administrator" role
+#    Given I run drush "dis -y pantheon_advanced_page_cache_test"
+#    Given I run drush "en -y pantheon_advanced_page_cache"
+#    And I am logged in as a user with the "administrator" role
+
+    Given I visit "/user"
+    And I fill in "Username" with "admin2"
+    And I fill in "Password" with "asdf"
+    And I press "Log in"
+
     And there are 10 article nodes with a huge number of taxonomy terms each
-    When I visit "/frontpage"
+    And I break
+    When I visit "/node"
     And I visit "admin/reports/dblog"
-    And I click "More cache tags were present than could be passed in..." in the "pantheon_advanced_page_cache" row
+    And I click "More cache tags were present than could be passed in…" in the "pantheon_advanced_page_cache" row
     Then I should see "More cache tags were present than could be passed in the Surrogate-Key HTTP Header due to length constraints"
 
     @api
