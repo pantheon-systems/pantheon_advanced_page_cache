@@ -21,9 +21,9 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
    *   The event to process.
    */
   public function onRespond(FilterResponseEvent $event) {
-      $response->headers->set('whhhhaaaaat', 'huuuuh');
-      print_r('haha!');
-      die();
+
+//dsm(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
+
     if (!$event->isMasterRequest()) {
       return;
     }
@@ -32,7 +32,6 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
 
     if ($response instanceof CacheableResponseInterface) {
         $tags = $response->getCacheableMetadata()->getCacheTags();
-        print_r($tags);
 
 
       if (in_array("config:views.view.frontpage", $tags)) {
@@ -52,7 +51,7 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
    * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
-    $events[KernelEvents::RESPONSE][] = ['onRespond'];
+    $events[KernelEvents::RESPONSE][] = ['onRespond', 100];
     return $events;
   }
 
