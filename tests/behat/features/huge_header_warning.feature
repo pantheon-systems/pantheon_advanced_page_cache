@@ -5,11 +5,14 @@ I need a notification when my header is truncated.
 
   @api
   Scenario: Warning message.
-#    Given I run drush "dis -y pantheon_advanced_page_cache_test"
-#    Given I run drush "en -y pantheon_advanced_page_cache"
-#    And I am logged in as a user with the "administrator" role
+    Given I run drush "pm-uninstall -y pantheon_advanced_page_cache_test"
+    Given I run drush "en -y pantheon_advanced_page_cache"
+    And I am logged in as a user with the "administrator" role
 
-
+    Given I visit "/user"
+    And I fill in "Username" with "admin2"
+    And I fill in "Password" with "asdf"
+    And I press "Log in"
 
     And there are 10 article nodes with a huge number of taxonomy terms each
     And I break
@@ -26,6 +29,6 @@ I need a notification when my header is truncated.
     And I visit "admin/reports/dblog"
     And I press "Clear log messages"
     And there are 10 article nodes with a huge number of taxonomy terms each
-    When I visit "/frontpage"
+    When I visit "/node"
     And I visit "admin/reports/dblog"
     Then I should not see "pantheon_advanced_page_cache"
