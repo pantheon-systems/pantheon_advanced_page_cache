@@ -41,7 +41,7 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
     {
         $i = 0;
         while ($i < $number_of_nodes) {
-            $this->WhenIGenerateAnArticleWithLotsOfTerms();
+            $this->whenIGenerateAnArticleWithLotsOfTerms();
             $i++;
         }
     }
@@ -49,7 +49,7 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
     /**
      * @When a generate an article with lots of terms
      */
-    public function WhenIGenerateAnArticleWithLotsOfTerms()
+    public function whenIGenerateAnArticleWithLotsOfTerms()
     {
         $random_node_title = "Random Node Title: " . rand();
         $this->minkContext->visit('node/add/article');
@@ -64,11 +64,11 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
      */
     private function generateRandomTaxonomyString()
     {
-        $all_letters = explode(' ', 'a b c d e f g h i j k l m n o p q r s t u v w x y z');
+        $letters = explode(' ', 'a b c d e f g h i j k l m n o p q r s t u v w x y z');
         $i = 0;
         $random_three_letter_combos = array();
         while ($i < 250) {
-            $random_three_letter_combos[] = $all_letters[rand(0, 25)] . $all_letters[rand(0, 25)] . $all_letters[rand(0, 25)];
+            $random_three_letter_combos[] = $letters[rand(0, 25)] . $letters[rand(0, 25)] . $letters[rand(0, 25)];
             $i++;
         }
         return implode(",", $random_three_letter_combos);
