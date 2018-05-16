@@ -42,6 +42,8 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
       return;
     }
 
+      print_r('main mod');
+
     $response = $event->getResponse();
 
     if ($response instanceof CacheableResponseInterface) {

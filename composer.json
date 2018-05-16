@@ -9,7 +9,8 @@
     "scripts": {
       "codesniff": [
           "phpcs --report=full --extensions=php,module,inc,theme,info,install --standard=vendor/drupal/coder/coder_sniffer/Drupal src",
-          "phpcs  tests  --standard=PSR2"
+          "phpcs --report=full --extensions=php,module,inc,theme,info,install --standard=vendor/drupal/coder/coder_sniffer/Drupal tests/modules",
+          "phpcs  tests/behat  --standard=PSR2"
       ],
       "phpunit": "phpunit tests --colors=always"
     },

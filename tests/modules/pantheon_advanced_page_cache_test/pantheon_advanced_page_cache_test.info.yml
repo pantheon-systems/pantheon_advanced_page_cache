@@ -1,5 +1,5 @@
 name: Pantheon Advanced Page Cache Test
 description: 'Used during automated test of Pantheon Advanced Page Cache'
-package: Performance and scalability
+package: Testing
 type: module
 core: 8.x
