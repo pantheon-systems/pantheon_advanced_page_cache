@@ -6,8 +6,6 @@ use Drupal\Core\Cache\CacheableResponseInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Psr\Log\LoggerInterface;
-use Drupal\Core\Logger\RfcLogLevel;
 
 /**
  * Adds Surrogate-Key header to cacheable master responses.
@@ -21,9 +19,6 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
    *   The event to process.
    */
   public function onRespond(FilterResponseEvent $event) {
-
-//dsm(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
-
     if (!$event->isMasterRequest()) {
       return;
     }
@@ -31,17 +26,16 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
     $response = $event->getResponse();
 
     if ($response instanceof CacheableResponseInterface) {
-        $tags = $response->getCacheableMetadata()->getCacheTags();
-
+      $tags = $response->getCacheableMetadata()->getCacheTags();
 
       if (in_array("config:views.view.frontpage", $tags)) {
-          $new_tags = array();
-          foreach ($tags as $tag) {
-              if (strpos($tag, "taxonomy_term:") === FALSE) {
-                  $new_tags[] = $tag;
-              }
+        $new_tags = [];
+        foreach ($tags as $tag) {
+          if (strpos($tag, "taxonomy_term:") === FALSE) {
+            $new_tags[] = $tag;
           }
-          $response->getCacheableMetadata()->setCacheTags( $new_tags);
+        }
+        $response->getCacheableMetadata()->setCacheTags($new_tags);
       }
 
     }
