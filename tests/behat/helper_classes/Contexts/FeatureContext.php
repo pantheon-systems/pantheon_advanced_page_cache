@@ -166,6 +166,4 @@ final class FeatureContext extends RawDrupalContext implements Context
         }
         return implode(",", $random_three_letter_combos);
     }
-
-
 }
