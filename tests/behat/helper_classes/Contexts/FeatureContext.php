@@ -126,7 +126,6 @@ final class FeatureContext extends RawDrupalContext implements Context
         return $this->ageTracker;
     }
 
-
     /**
      * @Given there are :numnber_of_nodes article nodes with a huge number of taxonomy terms each
      */
