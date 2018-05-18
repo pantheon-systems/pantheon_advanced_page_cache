@@ -8,7 +8,7 @@ This module has no configuration settings of its own, just enable it and it will
 
 Also, be sure to follow the `settings.php` setup instructions for [Drupal 8 Cache Backport](http://cgit.drupalcode.org/d8cache/tree/README.txt).
 
-### Debugging
+## Debugging
 
 By default, Pantheon's infrastructure strips out the `Surrogate-Key` response header before responses are served to clients. The contents of this header can be viewed as `Surrogate-Key-Raw` by adding on a debugging header to the request.
 
@@ -20,6 +20,13 @@ A direct way of inspecting headers is with `curl -I`. This command will make a r
 
 `curl -IH "Pantheon-Debug:1" https://dev-cache-tags-demo.pantheonsite.io/ | grep -i Surrogate-Key-Raw`
 
-### Feedback and collaboration
+## Limit on header size
+
+Pantheon's nginx configuration limits total header size to 32k.
+This module caps the `Surrogate-Key` at 25,000 bytes to minimize the chances that a very long `Surrogate-Key` header combines with other long headers to trigger a 502 error.
+This limit can be reached if your site renders thousands of entities in a single response.
+You will see warning messages in your log directing you to [the issue queue](https://www.drupal.org/project/pantheon_advanced_page_cache/issues/2973861) if this limit.
+
+## Feedback and collaboration
 
 For real time discussion of the module find Pantheon developers in our [Power Users Slack channel](https://pantheon.io/docs/power-users/). Bug reports and feature requests should be posted in [the drupal.org issue queue.](https://www.drupal.org/project/issues/pantheon_advanced_page_cache?categories=All) For code changes, please submit pull requests against the [GitHub repository](https://github.com/pantheon-systems/pantheon_advanced_page_cache) rather than posting patches to drupal.org.
