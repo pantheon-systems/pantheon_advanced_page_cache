@@ -25,7 +25,7 @@ A direct way of inspecting headers is with `curl -I`. This command will make a r
 Pantheon's nginx configuration limits total header size to 32k.
 This module caps the `Surrogate-Key` at 25,000 bytes to minimize the chances that a very long `Surrogate-Key` header combines with other long headers to trigger a 502 error.
 This limit can be reached if your site renders thousands of entities in a single response.
-You will see warning messages in your log directing you to [the issue queue](https://www.drupal.org/project/pantheon_advanced_page_cache/issues/2973861) if this limit.
+You will see warning messages in your log directing you to [the issue queue](https://www.drupal.org/project/pantheon_advanced_page_cache/issues/2973861) if this limit is reached.
 
 ## Feedback and collaboration
 
