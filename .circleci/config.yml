@@ -33,7 +33,7 @@ jobs:
                 name: login-pantheon
                 command: |
                   terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
-                 # terminus env:list --field=id  $TERMINUS_SITE | grep -Eo '[0-9]{1,9}' | sort -k1n | sed '1!G;h;$!d' | sed 1,7d | xargs -n1 -I ENV terminus env:delete --yes $TERMINUS_SITE.ENV
+                  terminus env:list --field=id  $TERMINUS_SITE | grep -Eo '[0-9]{1,9}' | sort -k1n | sed '1!G;h;$!d' | sed 1,7d | xargs -n1 -I ENV terminus env:delete --yes $TERMINUS_SITE.ENV
             - run:
                 name: make-multidev
                 command: |
