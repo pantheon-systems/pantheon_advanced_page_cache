@@ -74,16 +74,3 @@ jobs:
             - run:
                 name: run behat
                 command: cd tests && ./behat/run-behat.sh
-workflows:
-   version: 2
-   nightly:
-     triggers:
-       - schedule:
-           cron: "0 0 * * *"
-           filters:
-             branches:
-               only:
-                 - 7.x-1.x
-                 - 8.x-1.x
-     jobs:
-       - build
