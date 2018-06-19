@@ -1,5 +1,7 @@
 # Pantheon Advanced Page Cache
 
+[![CircleCI](https://circleci.com/gh/pantheon-systems/pantheon_advanced_page_cache/tree/7.x-1.x.svg?style=svg)](https://circleci.com/gh/pantheon-systems/pantheon_advanced_page_cache/tree/7.x-1.x)
+
 Pantheon Advanced Page Cache module is a bridge between [Drupal cache metadata via the Drupal 8 Cache Backport module](https://www.drupal.org/project/d8cache) and the [Pantheon Global CDN](https://pantheon.io/docs/global-cdn/).
 
 Just by turning on this module your Drupal site will start emitting the HTTP headers necessary to make the Pantheon Global CDN aware of data underlying the response. Then, when the underlying data changes (nodes and taxonomy terms are updated, user permissions changed) this module will clear only the relevant pages from the edge cache.
