@@ -4,7 +4,7 @@ jobs:
     # @todo, separate build and test phases.
     build:
         docker:
-            - image: stevector/pantheon_advanced_page_cache
+            - image: quay.io/pantheon-public/build-tools-ci:1.x
         working_directory: ~/pantheon_advanced_page_cache
         environment:
             BASH_ENV: ~/.bashrc
@@ -33,7 +33,7 @@ jobs:
                 name: login-pantheon
                 command: |
                   terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
-                  terminus env:list --field=id  $TERMINUS_SITE | grep -Eo '[0-9]{1,9}' | sort -k1n | sed '1!G;h;$!d' | sed 1,7d | xargs -n1 -I ENV terminus env:delete --yes $TERMINUS_SITE.ENV
+                  terminus env:list --field=id $TERMINUS_SITE | grep -v '[a-z]' | grep -Eo '[0-9]{1,9}' | sort --numeric-sort --reverse | sed 1,7d | xargs -n1 -I ENV terminus env:delete --yes $TERMINUS_SITE.ENV
             - run:
                 name: make-multidev
                 command: |

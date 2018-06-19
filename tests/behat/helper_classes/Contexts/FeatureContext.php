@@ -135,4 +135,44 @@ final class FeatureContext extends RawDrupalContext implements Context
         }
         return $this->ageTracker;
     }
+
+    /**
+     * @Given there are :numnber_of_nodes article nodes with a huge number of taxonomy terms each
+     */
+    public function thereAreArticleNodesWithAHugeNumberOfTaxonomyTermsEach($number_of_nodes)
+    {
+        $i = 0;
+        while ($i < $number_of_nodes) {
+            $this->whenIGenerateAnArticleWithLotsOfTerms();
+            $i++;
+        }
+    }
+
+    /**
+     * @When a generate an article with lots of terms
+     */
+    public function whenIGenerateAnArticleWithLotsOfTerms()
+    {
+        $random_node_title = "Random Node Title: " . rand();
+        $this->minkContext->visit('node/add/article');
+        $this->minkContext->fillField('Title', $random_node_title);
+        $this->minkContext->fillField('Tags', $this->generateRandomTaxonomyString());
+        $this->minkContext->pressButton('Save');
+        $this->minkContext->assertTextVisible($random_node_title);
+    }
+
+    /**
+     * Generates a long string of tags used on node add form.
+     */
+    private function generateRandomTaxonomyString()
+    {
+        $letters = explode(' ', 'a b c d e f g h i j k l m n o p q r s t u v w x y z');
+        $i = 0;
+        $random_three_letter_combos = array();
+        while ($i < 250) {
+            $random_three_letter_combos[] = $letters[rand(0, 25)] . $letters[rand(0, 25)] . $letters[rand(0, 25)];
+            $i++;
+        }
+        return implode(",", $random_three_letter_combos);
+    }
 }
