@@ -97,14 +97,14 @@ final class AgeTrackerTest extends TestCase
     {
         return [
           [
-              'Cache-Control' => ['max-age=600, public'],
-              'Age' => [3],
-              'X-Timer' => ['S1502402462.916272,VS0,VE1']
+              'cache-control' => 'max-age=600, public',
+              'age' => 3,
+              'x-timer' => 'S1502402462.916272,VS0,VE1'
           ],
           [
-              'Cache-Control' => ['max-age=600, public'],
-              'Age' => [10],
-              'X-Timer' => ['S1502402469.916272,VS0,VE1']
+              'cache-control' => 'max-age=600, public',
+              'age' => 10,
+              'x-timer' => 'S1502402469.916272,VS0,VE1'
           ],
         ];
     }
@@ -113,14 +113,14 @@ final class AgeTrackerTest extends TestCase
     {
         return [
             [
-                'Cache-Control' => ['max-age=600, public'],
-                'Age' => [30],
-                'X-Timer' => ['S1502402462.916272,VS0,VE1']
+                'cache-control' => 'max-age=600, public',
+                'age' => 30,
+                'x-timer' => 'S1502402462.916272,VS0,VE1'
             ],
             [
-                'Cache-Control' => ['max-age=600, public'],
-                'Age' => [0],
-                'X-Timer' => ['S1502402469.916272,VS0,VE1']
+                'cache-control' => 'max-age=600, public',
+                'age' => 0,
+                'x-timer' => 'S1502402469.916272,VS0,VE1'
             ],
         ];
     }
