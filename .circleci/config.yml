@@ -42,7 +42,7 @@ jobs:
             - run:
                 name: make-multidev
                 command: |
-                  terminus env:create $TERMINUS_SITE.dev ${CIRCLE_BUILD_NUM}
+                  terminus env:create $TERMINUS_SITE.dev ${CIRCLE_BUILD_NUM} || echo "mystery errors were being thrown by env:create so I am adding this OR (https://circleci.com/gh/pantheon-systems/pantheon_advanced_page_cache/610)"
             - run:
                 name: site install
                 command: |
