@@ -35,11 +35,17 @@ jobs:
                   terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
                   terminus env:list --field=id $TERMINUS_SITE | grep -v '[a-z]' | grep -Eo '[0-9]{1,9}' | sort --numeric-sort --reverse | sed 1,7d | xargs -n1 -I ENV terminus env:delete --yes $TERMINUS_SITE.ENV
             - run:
-                name: make-multidev
+                name: ssh
                 command: |
                   touch $HOME/.ssh/config
-                  echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
+                  echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"                  
+            - run:
+                name: make-multidev
+                command: |
                   terminus env:create $TERMINUS_SITE.dev ${CIRCLE_BUILD_NUM}
+            - run:
+                name: site install
+                command: |
                   terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- cset system.performance cache.page.max_age 600 -y
