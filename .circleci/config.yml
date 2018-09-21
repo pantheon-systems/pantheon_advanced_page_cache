@@ -54,7 +54,7 @@ jobs:
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- cset system.performance cache.page.max_age 600 -y
                   # Giving anon users permission to make nodes makes the Behat test execute much faster.
                   # Perms are changed back at the end of the build.
-                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- role-add-perm anonymous "create page content,create article content"
+
             - run:
                 name: Composer require
                 command: |
@@ -63,8 +63,12 @@ jobs:
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-8.x-1.x#$CIRCLE_SHA1
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drush-ops/behat-drush-endpoint
                   # drush dl is faster than composer require so use it where possible.
-                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl devel-8.x-1.0-rc2 views_custom_cache_tag
-                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en -y devel_generate views_custom_cache_tag_demo pantheon_advanced_page_cache
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl views_custom_cache_tag
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en -y views_custom_cache_tag_demo pantheon_advanced_page_cache
+            - run:
+                name: allow anon content creation
+                command: |
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- role-add-perm anonymous "create page content,create article content"
             - run:
                 name: run behat
                 command: ./tests/behat/run-behat.sh
