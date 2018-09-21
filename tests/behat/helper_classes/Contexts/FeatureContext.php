@@ -71,7 +71,11 @@ final class FeatureContext extends RawDrupalContext implements Context
         $this->minkContext->assertTextVisible($random_node_title);
         // @todo, remove this sleep if possible. Added because this faster node generation results in
         // The tests running faster than the CDN can clear cache.
-        sleep(1);
+        sleep(2);
+        // It seems that sessions get set when adding nodes but are removed
+        // on the next page load. So load another page before caching
+        // behavior is set.
+        $this->minkContext->visit('/');
     }
 
     /**
