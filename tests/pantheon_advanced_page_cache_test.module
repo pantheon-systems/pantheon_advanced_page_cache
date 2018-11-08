@@ -24,3 +24,18 @@ function pantheon_advanced_page_cache_test_pre_emit_cache_tags_alter(&$tags) {
     $tags = $new_tags;
   }
 }
+
+/**
+ * Implements hook_entity_update().
+ */
+function pantheon_advanced_page_cache_test_entity_presave($entity, $entity_type) {
+$tids_to_clear = [];
+  if (!empty($entity->field_tags[LANGUAGE_NONE][0]['tid'])) {
+    foreach($entity->field_tags[LANGUAGE_NONE] as $field_value) {
+      if (!empty($field_value['tid'])) {
+        $tids_to_clear[] = 'taxonomy_term:' . $field_value['tid'];
+      }
+    }
+  }
+  drupal_invalidate_cache_tags($tids_to_clear);
+}
