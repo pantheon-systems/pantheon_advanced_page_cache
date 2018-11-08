@@ -55,18 +55,13 @@ class FeatureContext extends RawDrupalContext implements Context, SnippetAccepti
         $this->minkContext->fillField('Title', $random_node_title);
         $this->minkContext->fillField('Tags', $this->generateRandomTaxonomyString());
         $this->minkContext->pressButton('Save');
-
         try  {
             $this->minkContext->assertTextVisible($random_node_title);
-
-    } catch(\Behat\Mink\Exception\ResponseTextException $e) {
- $html = $this->minkContext->getSession()->getPage()->getContent();
-
-
- print_r($html);
+        } catch(\Behat\Mink\Exception\ResponseTextException $e) {
+           $html = $this->minkContext->getSession()->getPage()->getContent();
+           print_r($html);
         }
         $this->minkContext->assertTextVisible($random_node_title);
-
     }
 
     /**
