@@ -22,12 +22,16 @@ A direct way of inspecting headers is with `curl -I`. This command will make a r
 
 `curl -IH "Pantheon-Debug:1" https://dev-cache-tags-demo.pantheonsite.io/ | grep -i Surrogate-Key-Raw`
 
-## Limit on header size
+## Limit on Header Size
 
 Pantheon's nginx configuration limits total header size to 32k.
 This module caps the `Surrogate-Key` at 25,000 bytes to minimize the chances that a very long `Surrogate-Key` header combines with other long headers to trigger a 502 error.
 This limit can be reached if your site renders thousands of entities in a single response.
 You will see warning messages in your log directing you to [the issue queue](https://www.drupal.org/project/pantheon_advanced_page_cache/issues/2973861) if this limit is reached.
-## Feedback and collaboration
+
+## _list Cache Tags
+By default whenever any entity is changed Drupal will trigger a cache purge for the cache tag `{entity_type}_list` (eg. if a node is changed then cached content tagged with `node_list` is purged). This module intercepts responses that have been marked as cachable and modifys any associated `_list` cache tags to end in `_emit_list` instead. Because of this `{entity_type}_list` purge events will fail to purge content that might be purged in other environments. If you want content with the `{entity_type}_list` tag to be purged then you must deliberately purge `{entity_type}_emit_list` instead.
+
+## Feedback and Collaboration
 
 For real time discussion of the module find Pantheon developers in our [Power Users Slack channel](https://pantheon.io/docs/power-users/). Bug reports and feature requests should be posted in [the drupal.org issue queue.](https://www.drupal.org/project/issues/pantheon_advanced_page_cache?categories=All) For code changes, please submit pull requests against the [GitHub repository](https://github.com/pantheon-systems/pantheon_advanced_page_cache) rather than posting patches to drupal.org.
