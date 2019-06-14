@@ -63,7 +63,7 @@ jobs:
                 command: |
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config minimum-stability dev
-                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-8.x-1.x#$CIRCLE_SHA1
+                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-${CIRCLE_BRANCH}#${CIRCLE_SHA1}
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drush-ops/behat-drush-endpoint
                   # drush dl is faster than composer require so use it where possible.
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl views_custom_cache_tag
