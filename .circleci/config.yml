@@ -43,7 +43,7 @@ jobs:
                   touch $HOME/.ssh/config
                   echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
             - run:
-                name: apply upstream updates
+                name: apply upstream updates in dev
                 command: |
                   terminus upstream:updates:apply $TERMINUS_SITE
             - run:
