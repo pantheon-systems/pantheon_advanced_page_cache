@@ -7,11 +7,11 @@
   },
   "require": {
     "drupal/drupal-extension": "~3.0",
-    "drupal/coder": "^8.3"
+    "drupal/coder": "^7.2"
   },
   "scripts": {
     "codesniff": [
-      "phpcs --report=full --extensions=php,module,inc,theme,info,install --standard=vendor/drupal/coder/coder_sniffer/Drupal --ignore=vendor,behat .."
+      "phpcs --report=full --extensions=php,module,inc,theme,info,install --standard=vendor/drupal/coder/coder_sniffer/Drupal --ignore=vendor  --ignore=behat .."
     ]
   },
   "config": {
