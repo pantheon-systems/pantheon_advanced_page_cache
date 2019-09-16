@@ -42,7 +42,7 @@ jobs:
                   echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
             - run:
                 name: apply upstream updates in dev
-                command: terminus upstream:updates:apply $TERMINUS_SITE
+                command: terminus connection:set $TERMINUS_SITE.dev git && terminus upstream:updates:apply $TERMINUS_SITE && terminus connection:set $TERMINUS_SITE.dev sftp
             - run:
                 name: make-multidev
                 command: terminus env:create $TERMINUS_SITE.dev ${CIRCLE_BUILD_NUM} || echo "mystery errors were being thrown by env:create so I am adding this OR (https://circleci.com/gh/pantheon-systems/pantheon_advanced_page_cache/610)"
