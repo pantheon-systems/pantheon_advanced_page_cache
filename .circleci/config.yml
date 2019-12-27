@@ -57,6 +57,11 @@ jobs:
             - run:
                 name: Composer require
                 command: |
+                  # composer will write to the default directory 
+                  $(terminus connection:info d8-papc.1114  --field=sftp_command) <<EOF
+                  chmod 755 code/sites/default
+                  exit
+                  EOF
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require --dev drush-ops/behat-drush-endpoint
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-${CIRCLE_BRANCH}#${CIRCLE_SHA1}
