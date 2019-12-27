@@ -57,9 +57,9 @@ jobs:
             - run:
                 name: Composer require
                 command: |
+                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require --dev drush-ops/behat-drush-endpoint
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-${CIRCLE_BRANCH}#${CIRCLE_SHA1}
-                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drush-ops/behat-drush-endpoint
                   # drush dl is faster than "composer require" so use it where possible.
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl views_custom_cache_tag
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en -y views_custom_cache_tag_demo pantheon_advanced_page_cache
