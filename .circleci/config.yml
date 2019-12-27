@@ -58,7 +58,7 @@ jobs:
                 name: Composer require
                 command: |
                   # composer will write to the default directory 
-                  $(terminus connection:info d8-papc.1114  --field=sftp_command) <<EOF
+                  $(terminus connection:info ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} --field=sftp_command) <<EOF
                   chmod 755 code/sites/default
                   exit
                   EOF
