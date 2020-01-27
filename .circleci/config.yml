@@ -66,7 +66,9 @@ jobs:
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-${CIRCLE_BRANCH}#${CIRCLE_SHA1}
                   # drush dl is faster than "composer require" so use it where possible.
-                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl views_custom_cache_tag
+                  # @todo, investigate why views_custom_cache_tag 1.2 is incompatible with Drupal Core 8.8
+                  # https://git.drupalcode.org/project/views_custom_cache_tag/commit/9c786113c5a4d0523b1cd751d6c741053efe49fa#aced98486de9f082784c7a1fae9f1134406f628e_3_2
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl views_custom_cache_tag-1.1
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en -y views_custom_cache_tag_demo pantheon_advanced_page_cache
             - run:
                 name: allow anon content creation
