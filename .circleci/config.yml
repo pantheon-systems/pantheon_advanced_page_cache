@@ -4,6 +4,7 @@ jobs:
     # @todo, separate build and test phases.
     build:
         docker:
+            # @todo, update container
             - image: quay.io/pantheon-public/build-tools-ci:1.x
         working_directory: ~/pantheon_advanced_page_cache
         environment:
