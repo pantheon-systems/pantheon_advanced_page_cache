@@ -5,7 +5,7 @@ default:
   suites:
     default:
       paths:
-        - %paths.base%/features
+        - "%paths.base%/features"
       contexts:
         - Drupal\DrupalExtension\Context\DrushContext
         - Drupal\DrupalExtension\Context\DrupalContext
@@ -14,11 +14,11 @@ default:
   extensions:
     Behat\MinkExtension:
       goutte: ~
-# Supplied by env variable.
-#     base_url: http://dev-d8cdn.pantheonsite.io/
+    # Supplied by env variable.
+    #     base_url: http://dev-d8cdn.pantheonsite.io/
     Drupal\DrupalExtension:
       blackbox: ~
       api_driver: 'drush'
       drush:
-# Supplied by env variable.
-#     alias: '@pantheon.d8cdn.dev'
+        alias: 'self'
+        binary: "terminus drush $TERMINUS_SITE.$TERMINUS_ENV -- "
