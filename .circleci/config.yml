@@ -72,13 +72,16 @@ jobs:
 
             - run:
                 name: Composer require papc
+                command: |
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-${CIRCLE_BRANCH}#${CIRCLE_SHA1}
             - run:
                 name: composer require drupal/views_custom_cache_tag
+                command: |
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/views_custom_cache_tag
             - run:
                 name: en -y views_custom_cache_tag_demo pantheon_advanced_page_cache
+                command: |
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en -y views_custom_cache_tag_demo pantheon_advanced_page_cache
             - run:
                 name: allow anon content creation
