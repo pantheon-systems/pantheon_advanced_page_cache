@@ -52,31 +52,38 @@ jobs:
                   terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- cset system.performance cache.page.max_age 600 -y
-                  # Giving anon users permission to make nodes makes the Behat test execute much faster.
-                  # Perms are changed back at the end of the build.
+
             - run:
-                name: Composer require
+                name: Permissions
                 command: |
                   # composer will write to the default directory 
                   $(terminus connection:info ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} --field=sftp_command) <<EOF
                   chmod 755 code/sites/default
                   exit
                   EOF
-                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require --dev drush-ops/behat-drush-endpoint
+
+            - run:
+                name: Composer require papc
+                command: |
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-${CIRCLE_BRANCH}#${CIRCLE_SHA1}
-                  # drush dl is faster than "composer require" so use it where possible.
-                  # @todo, investigate why views_custom_cache_tag 1.2 is incompatible with Drupal Core 8.8
-                  # https://git.drupalcode.org/project/views_custom_cache_tag/commit/9c786113c5a4d0523b1cd751d6c741053efe49fa#aced98486de9f082784c7a1fae9f1134406f628e_3_2
-                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl views_custom_cache_tag-1.1
+            - run:
+                name: composer require drupal/views_custom_cache_tag
+                command: |
+                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/views_custom_cache_tag
+            - run:
+                name: en -y views_custom_cache_tag_demo pantheon_advanced_page_cache
+                command: |
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en -y views_custom_cache_tag_demo pantheon_advanced_page_cache
             - run:
+                # Giving anon users permission to make nodes makes the Behat test execute much faster.
+                # Perms are changed back at the end of the build.
                 name: allow anon content creation
                 command: |
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- role-add-perm anonymous "create page content,create article content"
             - run:
                 name: run behat
-                command: ./tests/behat/run-behat.sh
+                command: export TERMINUS_ENV=$CIRCLE_BUILD_NUM && ./tests/behat/run-behat.sh
             - run:
                 name: Cleanup
                 command: |
