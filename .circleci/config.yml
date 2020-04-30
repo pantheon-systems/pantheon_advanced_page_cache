@@ -66,11 +66,6 @@ jobs:
                   EOF
 
             - run:
-                name: Composer require drush-ops/behat-drush-endpoint
-                command: |
-                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require --dev drush-ops/behat-drush-endpoint
-
-            - run:
                 name: Composer require papc
                 command: |
                   terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
