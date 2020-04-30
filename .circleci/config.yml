@@ -54,8 +54,7 @@ jobs:
                   terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- cset system.performance cache.page.max_age 600 -y
-                  # Giving anon users permission to make nodes makes the Behat test execute much faster.
-                  # Perms are changed back at the end of the build.
+
             - run:
                 name: Permissions
                 command: |
@@ -79,6 +78,8 @@ jobs:
                 command: |
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en -y views_custom_cache_tag_demo pantheon_advanced_page_cache
             - run:
+                # Giving anon users permission to make nodes makes the Behat test execute much faster.
+                # Perms are changed back at the end of the build.
                 name: allow anon content creation
                 command: |
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- role-add-perm anonymous "create page content,create article content"
