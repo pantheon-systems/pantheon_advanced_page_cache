@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-TERMINUS_ENV=$CIRCLE_BUILD_NUM
+# TERMINUS_ENV=$CIRCLE_BUILD_NUM
 
 terminus drush $TERMINUS_SITE.$TERMINUS_ENV -- status
 

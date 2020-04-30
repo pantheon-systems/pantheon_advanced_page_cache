@@ -25,6 +25,13 @@ jobs:
                 paths:
                   - ~/.composer/cache
             - run:
+                name: run behat
+                command: export TERMINUS_ENV=1255 && ./tests/behat/run-behat.sh
+
+            - run:
+                name: exit 1
+                command: exit 1
+            - run:
                 name: PHP Code Sniff
                 command: composer codesniff
             - run:
