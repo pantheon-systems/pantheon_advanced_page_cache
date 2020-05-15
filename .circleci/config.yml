@@ -1,8 +1,12 @@
-version: 2
-# https://circleci.com/docs/configuration#machine
+version: 2.1
+workflows:
+  version: 2
+  build_push_test:
+    jobs:
+      - build_and_test
 jobs:
     # @todo, separate build and test phases.
-    build:
+    build_and_test:
         docker:
             # @todo, update container
             - image: quay.io/pantheon-public/build-tools-ci:1.x
