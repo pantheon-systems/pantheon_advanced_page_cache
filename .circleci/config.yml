@@ -4,12 +4,13 @@ jobs:
     # @todo, separate build and test phases.
     build:
         docker:
+            # @todo, update container
             - image: quay.io/pantheon-public/build-tools-ci:1.x
         working_directory: ~/pantheon_advanced_page_cache
         environment:
             BASH_ENV: ~/.bashrc
             TZ: "/usr/share/zoneinfo/America/Los_Angeles"
-            TERMINUS_SITE: d8-papc
+            TERMINUS_SITE: d9-papc2
         steps:
             - checkout
             - restore_cache:
@@ -41,6 +42,7 @@ jobs:
                   touch $HOME/.ssh/config
                   echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
             - run:
+                # @todo, update core update mechanism for D9
                 name: apply upstream updates in dev
                 command: terminus connection:set $TERMINUS_SITE.dev git && terminus upstream:updates:apply $TERMINUS_SITE && terminus connection:set $TERMINUS_SITE.dev sftp
             - run:
@@ -58,7 +60,7 @@ jobs:
                 command: |
                   # composer will write to the default directory 
                   $(terminus connection:info ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} --field=sftp_command) <<EOF
-                  chmod 755 code/sites/default
+                  chmod 755 code/web/sites/default
                   exit
                   EOF
 

@@ -3,11 +3,6 @@ In order to keep as many pages cached as possible when content is updated
 As an administrator
 I want to use granular cache tags for Views that reflect the type of content displayed by the View.
 
-  Background:
-
-    When I run drush "en -y views_custom_cache_tag_demo pantheon_advanced_page_cache"
-    And drush output should contain "views_custom_cache_tag_demo is already enabled."
-    And drush output should contain "pantheon_advanced_page_cache is already enabled."
   @api
   Scenario: Node type-based expiration
     Given there are some "page" nodes
