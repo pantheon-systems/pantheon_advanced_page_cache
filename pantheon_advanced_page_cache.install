@@ -9,5 +9,5 @@
  * Implements hook_install().
  */
 function pantheon_advanced_page_cache_install() {
-  variable_set('pantheon_advanced_page_cache_override_list_tags', FALSE)
+  variable_set('pantheon_advanced_page_cache_override_list_tags', FALSE);
 }
