@@ -22,9 +22,15 @@ A direct way of inspecting headers is with `curl -I`. This command will make a r
 
 `curl -IH "Pantheon-Debug:1" https://dev-cache-tags-demo.pantheonsite.io/ | grep -i Surrogate-Key-Raw`
 
-## listing tags
+## Changing Listing Tags
 
-terminus drush d9-papc2.1289  -- config:set pantheon_advanced_page_cache.settings --input-format=yaml   "override_list_tags" "false"
+Prior to the 1.1 release, this module would change the cache tags used on default listings.
+This changing of was done to make cache hits more likely but resulted in [confusing cache clearing behavior](https://www.drupal.org/project/pantheon_advanced_page_cache/issues/2944229).
+Sites that installed this module prior to 1.1 should uninstall and reinstall or run this command to update their settings.
+
+```
+terminus drush [MACHINE-NAME-OF-SITE].[ENV-NAME] -- config:set pantheon_advanced_page_cache.settings --input-format=yaml   "override_list_tags" "false"
+```
 
 ## Limit on header size
 
