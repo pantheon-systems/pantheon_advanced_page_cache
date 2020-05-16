@@ -45,7 +45,7 @@ jobs:
                 command: |
                   terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp
                   # sleep to avoid inconsistent errors on site-install.
-                  sleep 30
+                  sleep 60
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl views -y
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en views -y
