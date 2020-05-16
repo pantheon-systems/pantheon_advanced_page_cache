@@ -44,13 +44,12 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
 
   /**
    * Returns whether entity_list tags should be overridden.
-   * 
+   *
    * Overriding these tags was the initial behavior of the 1.0 version of this
    * module. That is no longer recommended.
    */
   public function getOverrideListTagsSetting() {
     $config = $this->configFactory->get('pantheon_advanced_page_cache.settings');
-    
     // Only return FALSE if this config value is really set to false.
     // A null value should return TRUE for backwards compatibility.
     if ($config->get('override_list_tags') === FALSE) {
