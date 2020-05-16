@@ -22,6 +22,11 @@ A direct way of inspecting headers is with `curl -I`. This command will make a r
 
 `curl -IH "Pantheon-Debug:1" https://dev-cache-tags-demo.pantheonsite.io/ | grep -i Surrogate-Key-Raw`
 
+## listing tags
+
+@todo
+
+
 ## Limit on header size
 
 Pantheon's nginx configuration limits total header size to 32k.
