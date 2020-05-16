@@ -24,8 +24,7 @@ A direct way of inspecting headers is with `curl -I`. This command will make a r
 
 ## listing tags
 
-@todo
-
+terminus drush d9-papc2.1289  -- config:set pantheon_advanced_page_cache.settings --input-format=yaml   "override_list_tags" "false"
 
 ## Limit on header size
 
