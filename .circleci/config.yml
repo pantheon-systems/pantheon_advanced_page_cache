@@ -51,7 +51,7 @@ jobs:
 
             - run:
                 name: Add modules to site
-                command: ./.circleci/scripts/setup-d8-repo.sh
+                command: ./.circleci/scripts/setup-drupal-repo.sh
 
             - run:
                 name: site install
