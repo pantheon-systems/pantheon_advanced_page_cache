@@ -4,7 +4,7 @@ set -e
 export TERMINUS_ENV=$CIRCLE_BUILD_NUM
 
 # Bring the code down to Circle so that modules can be added via composer.
-git clone $(terminus connection:info ${TERMINUS_SITE}.${TERMINUS_ENV} --field=git_url) drupal-site
+git clone $(terminus connection:info ${TERMINUS_SITE}.dev --field=git_url) drupal-site
 cd drupal-site
 git checkout $TERMINUS_ENV
 
