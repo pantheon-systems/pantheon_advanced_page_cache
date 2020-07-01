@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-
 export TERMINUS_ENV=$CIRCLE_BUILD_NUM
 
 # Bring the code down to Circle so that modules can be added via composer.
