@@ -15,6 +15,8 @@ composer -- require drupal/views_custom_cache_tag "drupal/pantheon_advanced_page
 rm -rf web/modules/contrib/pantheon_advanced_page_cache/.git/
 
 # Make a git commit
+git config --global user.email "$GitEmail"
+git config --global user.name "Circle CI"
 git add .
 git commit -m 'Result of build step'
 git push --set-upstream origin $TERMINUS_ENV
