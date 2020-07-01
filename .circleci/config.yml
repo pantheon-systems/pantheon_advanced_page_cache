@@ -5,7 +5,7 @@ jobs:
     build:
         docker:
             # @todo, update container
-            - image: quay.io/pantheon-public/build-tools-ci:1.x
+            - image: quay.io/pantheon-public/build-tools-ci:6.x
         working_directory: ~/pantheon_advanced_page_cache
         environment:
             BASH_ENV: ~/.bashrc
