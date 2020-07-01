@@ -20,6 +20,11 @@ jobs:
                 command: |
                   composer install
                   drush help
+            - run:
+            name: Git Config
+            command: |
+                git config --global user.email "$GitEmail"
+                git config --global user.name "Circle CI"
             - save_cache:
                 key: dependency-cache-{{ checksum "composer.lock" }}
                 paths:
