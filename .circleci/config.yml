@@ -48,6 +48,11 @@ jobs:
             - run:
                 name: make-multidev
                 command: terminus env:create $TERMINUS_SITE.dev ${CIRCLE_BUILD_NUM} || echo "mystery errors were being thrown by env:create so I am adding this OR (https://circleci.com/gh/pantheon-systems/pantheon_advanced_page_cache/610)"
+
+            - run:
+                name: Add modules to site
+                command: ./.circleci/scripts/setup-d8-repo.sh
+
             - run:
                 name: site install
                 command: |
@@ -56,26 +61,7 @@ jobs:
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- cset system.performance cache.page.max_age 600 -y
 
             - run:
-                name: Permissions
-                command: |
-                  # composer will write to the default directory 
-                  $(terminus connection:info ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} --field=sftp_command) <<EOF
-                  chmod 755 code/web/sites/default
-                  exit
-                  EOF
-
-            - run:
-                name: Composer require papc
-                command: |
-                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config cache-dir "/tmp"
-                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
-                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-${CIRCLE_BRANCH}#${CIRCLE_SHA1}
-            - run:
-                name: composer require drupal/views_custom_cache_tag
-                command: |
-                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/views_custom_cache_tag
-            - run:
-                name: en -y views_custom_cache_tag_demo pantheon_advanced_page_cache
+                name: Enable modules
                 command: |
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en -y views_custom_cache_tag_demo pantheon_advanced_page_cache
             - run:
