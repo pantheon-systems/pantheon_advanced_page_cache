@@ -5,7 +5,7 @@ jobs:
     build:
         docker:
             # @todo, update container
-            - image: quay.io/pantheon-public/build-tools-ci:1.x
+            - image: quay.io/pantheon-public/build-tools-ci:6.x
         working_directory: ~/pantheon_advanced_page_cache
         environment:
             BASH_ENV: ~/.bashrc
@@ -13,22 +13,22 @@ jobs:
             TERMINUS_SITE: d9-papc2
         steps:
             - checkout
-            - restore_cache:
-                key: dependency-cache-{{ checksum "composer.lock" }}
+#             - restore_cache:
+#                 key: dependency-cache-{{ checksum "composer.lock" }}
             - run:
                 name: Composer install
                 command: |
                   composer install
-                  drush help
+                  #drush help
             - run:
                 name: Git Config
                 command: |
                   git config --global user.email "$GitEmail"
                   git config --global user.name "Circle CI"
-            - save_cache:
-                key: dependency-cache-{{ checksum "composer.lock" }}
-                paths:
-                  - ~/.composer/cache
+#             - save_cache:
+#                 key: dependency-cache-{{ checksum "composer.lock" }}
+#                 paths:
+#                   - ~/.composer/cache
             - run:
                 name: PHP Code Sniff
                 command: composer codesniff
