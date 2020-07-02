@@ -1,80 +1,72 @@
 version: 2
 # https://circleci.com/docs/configuration#machine
 jobs:
-    # @todo, separate build and test phases.
     build:
         docker:
-            # @todo, update container
-            - image: quay.io/pantheon-public/build-tools-ci:1.x
-        working_directory: ~/pantheon_advanced_page_cache
+            - image: quay.io/pantheon-public/build-tools-ci:6.x
         environment:
-            BASH_ENV: ~/.bashrc
-            TZ: "/usr/share/zoneinfo/America/Los_Angeles"
             TERMINUS_SITE: d9-papc2
         steps:
+            - run:
+                name: login-pantheon
+                command: terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
+            # Start making a multidev right away in the background so that
+            # this slow step is done as soon as possible.
+            - run:
+                name: make-multidev
+                command: |
+                    terminus env:create $TERMINUS_SITE.dev ${CIRCLE_BUILD_NUM} || echo "mystery errors were being thrown by env:create so I am adding this OR (https://circleci.com/gh/pantheon-systems/pantheon_advanced_page_cache/610)"
+                    touch multidev-made.txt
+                background: true
             - checkout
-            - restore_cache:
-                key: dependency-cache-{{ checksum "composer.lock" }}
             - run:
                 name: Composer install
                 command: |
                   composer install
-                  drush help
-            - save_cache:
-                key: dependency-cache-{{ checksum "composer.lock" }}
-                paths:
-                  - ~/.composer/cache
+            - run:
+                name: Git Config
+                command: |
+                  git config --global user.email "$GitEmail"
+                  git config --global user.name "Circle CI"
+            - run:
+                # this configuration prevents a prompt from stopping git pushes.
+                name: ssh config
+                command: |
+                  touch $HOME/.ssh/config
+                  echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
             - run:
                 name: PHP Code Sniff
                 command: composer codesniff
             - run:
                 name: Unit Tests for Behat helper
                 command: composer phpunit
+#             - run:
+#                 # @todo, update core update mechanism for D9
+#                 name: apply upstream updates in dev
+#                 command: terminus connection:set $TERMINUS_SITE.dev git && terminus upstream:updates:apply $TERMINUS_SITE && terminus connection:set $TERMINUS_SITE.dev sftp
+
             - run:
-                name: login-pantheon
-                command: terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
+                name: Add modules to site
+                command: ./.circleci/scripts/setup-drupal-repo.sh
+
             - run:
-                name: delete old sites
-                command: terminus env:list --field=id $TERMINUS_SITE | grep -v '[a-z]' | grep -Eo '[0-9]{1,9}' | sort --numeric-sort --reverse | sed 1,7d | xargs -n1 -I ENV terminus env:delete --yes $TERMINUS_SITE.ENV
-            - run:
-                name: ssh
+                name: Wait for multidev creation to be completed before doing site install.
                 command: |
-                  touch $HOME/.ssh/config
-                  echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
-            - run:
-                # @todo, update core update mechanism for D9
-                name: apply upstream updates in dev
-                command: terminus connection:set $TERMINUS_SITE.dev git && terminus upstream:updates:apply $TERMINUS_SITE && terminus connection:set $TERMINUS_SITE.dev sftp
-            - run:
-                name: make-multidev
-                command: terminus env:create $TERMINUS_SITE.dev ${CIRCLE_BUILD_NUM} || echo "mystery errors were being thrown by env:create so I am adding this OR (https://circleci.com/gh/pantheon-systems/pantheon_advanced_page_cache/610)"
+                    while [ ! -f multidev-made.txt ]
+                    do
+                      sleep 2
+                    done
+                    exit 0
+
             - run:
                 name: site install
                 command: |
                   terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp
-                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y --quiet
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- cset system.performance cache.page.max_age 600 -y
 
             - run:
-                name: Permissions
-                command: |
-                  # composer will write to the default directory 
-                  $(terminus connection:info ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} --field=sftp_command) <<EOF
-                  chmod 755 code/web/sites/default
-                  exit
-                  EOF
-
-            - run:
-                name: Composer require papc
-                command: |
-                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
-                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/pantheon_advanced_page_cache:dev-${CIRCLE_BRANCH}#${CIRCLE_SHA1}
-            - run:
-                name: composer require drupal/views_custom_cache_tag
-                command: |
-                  terminus composer ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- require drupal/views_custom_cache_tag
-            - run:
-                name: en -y views_custom_cache_tag_demo pantheon_advanced_page_cache
+                name: Enable modules
                 command: |
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en -y views_custom_cache_tag_demo pantheon_advanced_page_cache
             - run:
