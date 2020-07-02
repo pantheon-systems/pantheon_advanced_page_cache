@@ -16,7 +16,9 @@ jobs:
                 command: terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
             - run:
                 name: make-multidev
-                command: terminus env:create $TERMINUS_SITE.dev ${CIRCLE_BUILD_NUM} || echo "mystery errors were being thrown by env:create so I am adding this OR (https://circleci.com/gh/pantheon-systems/pantheon_advanced_page_cache/610)"
+                command: |
+                    terminus env:create $TERMINUS_SITE.dev ${CIRCLE_BUILD_NUM} || echo "mystery errors were being thrown by env:create so I am adding this OR (https://circleci.com/gh/pantheon-systems/pantheon_advanced_page_cache/610)"
+                    touch multidev-made.txt
                 background: true
 
 
@@ -52,10 +54,18 @@ jobs:
 #                 name: apply upstream updates in dev
 #                 command: terminus connection:set $TERMINUS_SITE.dev git && terminus upstream:updates:apply $TERMINUS_SITE && terminus connection:set $TERMINUS_SITE.dev sftp
 
-
             - run:
                 name: Add modules to site
                 command: ./.circleci/scripts/setup-drupal-repo.sh
+
+            - run:
+                name: Wait for multidev creation to be completed before doing site install.
+                command: |
+                    while [ ! -f multidev-made.txt ]
+                    do
+                      sleep 2
+                    done
+                    exit 0
 
             - run:
                 name: site install
