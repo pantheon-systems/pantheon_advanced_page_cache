@@ -1,20 +1,16 @@
 version: 2
 # https://circleci.com/docs/configuration#machine
 jobs:
-    # @todo, separate build and test phases.
     build:
         docker:
-            # @todo, update container
             - image: quay.io/pantheon-public/build-tools-ci:6.x
-        working_directory: ~/pantheon_advanced_page_cache
+#        working_directory: ~/pantheon_advanced_page_cache
         environment:
-            BASH_ENV: ~/.bashrc
-            TZ: "/usr/share/zoneinfo/America/Los_Angeles"
+ #           BASH_ENV: ~/.bashrc
+#            TZ: "/usr/share/zoneinfo/America/Los_Angeles"
             TERMINUS_SITE: d9-papc2
         steps:
             - checkout
-#             - restore_cache:
-#                 key: dependency-cache-{{ checksum "composer.lock" }}
             - run:
                 name: Composer install
                 command: |
@@ -25,10 +21,12 @@ jobs:
                 command: |
                   git config --global user.email "$GitEmail"
                   git config --global user.name "Circle CI"
-#             - save_cache:
-#                 key: dependency-cache-{{ checksum "composer.lock" }}
-#                 paths:
-#                   - ~/.composer/cache
+            - run:
+                # this configuration prevents a prompt from stopping git pushes.
+                name: ssh config
+                command: |
+                  touch $HOME/.ssh/config
+                  echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
             - run:
                 name: PHP Code Sniff
                 command: composer codesniff
@@ -38,14 +36,10 @@ jobs:
             - run:
                 name: login-pantheon
                 command: terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
-#             - run:
-#                 name: delete old sites
-#                 command: terminus env:list --field=id $TERMINUS_SITE | grep -v '[a-z]' | grep -Eo '[0-9]{1,9}' | sort --numeric-sort --reverse | sed 1,7d | xargs -n1 -I ENV terminus env:delete --yes $TERMINUS_SITE.ENV
             - run:
-                name: ssh
-                command: |
-                  touch $HOME/.ssh/config
-                  echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
+                name: delete old sites
+                command: terminus env:list --field=id $TERMINUS_SITE | grep -v '[a-z]' | grep -Eo '[0-9]{1,9}' | sort --numeric-sort --reverse | sed 1,7d | xargs -n1 -I ENV terminus env:delete --yes $TERMINUS_SITE.ENV
+
 #             - run:
 #                 # @todo, update core update mechanism for D9
 #                 name: apply upstream updates in dev
@@ -62,7 +56,7 @@ jobs:
                 name: site install
                 command: |
                   terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp
-                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} --  --quiet site-install -y
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y --quiet
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- cset system.performance cache.page.max_age 600 -y
 
             - run:
