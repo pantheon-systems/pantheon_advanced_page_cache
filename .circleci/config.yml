@@ -4,26 +4,21 @@ jobs:
     build:
         docker:
             - image: quay.io/pantheon-public/build-tools-ci:6.x
-#        working_directory: ~/pantheon_advanced_page_cache
         environment:
- #           BASH_ENV: ~/.bashrc
-#            TZ: "/usr/share/zoneinfo/America/Los_Angeles"
             TERMINUS_SITE: d9-papc2
         steps:
-
             - run:
                 name: login-pantheon
                 command: terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
+            # Start making a multidev right away in the background so that
+            # this slow step is done as soon as possible.
             - run:
                 name: make-multidev
                 command: |
                     terminus env:create $TERMINUS_SITE.dev ${CIRCLE_BUILD_NUM} || echo "mystery errors were being thrown by env:create so I am adding this OR (https://circleci.com/gh/pantheon-systems/pantheon_advanced_page_cache/610)"
                     touch multidev-made.txt
                 background: true
-
-
             - checkout
-
             - run:
                 name: Composer install
                 command: |
@@ -45,10 +40,6 @@ jobs:
             - run:
                 name: Unit Tests for Behat helper
                 command: composer phpunit
-            # - run:
-            #     name: delete old sites
-            #     command: terminus env:list --field=id $TERMINUS_SITE | grep -v '[a-z]' | grep -Eo '[0-9]{1,9}' | sort --numeric-sort --reverse | sed 1,7d | xargs -n1 -I ENV terminus env:delete --yes $TERMINUS_SITE.ENV
-
 #             - run:
 #                 # @todo, update core update mechanism for D9
 #                 name: apply upstream updates in dev
