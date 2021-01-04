@@ -31,7 +31,7 @@ You will see warning messages in your log directing you to [the issue queue](htt
 
 ## Changing Listing Tags
 
-Prior to the 1.1 release, this module would change the cache tags used on default listings.
+Prior to the 1.2 release, this module would change the cache tags used on default listings.
 This changing of was done to make cache hits more likely but resulted in [confusing cache clearing behavior](https://www.drupal.org/project/pantheon_advanced_page_cache/issues/2944229).
 Sites that installed this module prior to 1.1 should uninstall and reinstall or run this command to update their settings.
 
