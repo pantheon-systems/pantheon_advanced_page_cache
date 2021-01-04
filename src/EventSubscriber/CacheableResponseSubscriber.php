@@ -34,7 +34,7 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
    *
    * @param \Psr\Log\LoggerInterface $logger
    *   The logger service.
-   * @param \Drupal\Core\Config\ConfigFactory $configFactory
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   Configuration for this module.
    */
   public function __construct(LoggerInterface $logger, ConfigFactoryInterface $config_factory = NULL) {
