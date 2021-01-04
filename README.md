@@ -22,6 +22,16 @@ A direct way of inspecting headers is with `curl -I`. This command will make a r
 
 `curl -IH "Pantheon-Debug:1" https://dev-cache-tags-demo.pantheonsite.io/ | grep -i Surrogate-Key-Raw`
 
+## Changing Listing Tags
+
+Prior to the 1.2 release, this module would change the cache tags used on default listings.
+This changing of was done to make cache hits more likely but resulted in [confusing cache clearing behavior](https://www.drupal.org/project/pantheon_advanced_page_cache/issues/2944229).
+Sites that installed this module prior to 1.2 should uninstall and reinstall or run this command to update their settings.
+
+```
+terminus drush [MACHINE-NAME-OF-SITE].[ENV-NAME] -- config:set pantheon_advanced_page_cache.settings --input-format=yaml   "override_list_tags" "false"
+```
+
 ## Limit on header size
 
 Pantheon's nginx configuration limits total header size to 32k.
