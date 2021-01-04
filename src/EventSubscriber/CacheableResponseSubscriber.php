@@ -43,7 +43,7 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
       $config_factory = \Drupal::service('config.factory');
     }
     $this->logger = $logger;
-    $this->configFactory = $configFactory;
+    $this->configFactory = $config_factory;
   }
 
   /**
