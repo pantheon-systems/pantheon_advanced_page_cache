@@ -44,7 +44,8 @@ jobs:
                 name: Set up site
                 command: |
                   terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp
-                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y
+                  # try installing twice to avoid inconsistent errors on site-install.
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y ||  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- dl views -y
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- en views -y
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- views-enable frontpage

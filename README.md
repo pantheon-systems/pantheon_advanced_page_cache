@@ -29,6 +29,16 @@ This module caps the `Surrogate-Key` at 25,000 bytes to minimize the chances tha
 This limit can be reached if your site renders thousands of entities in a single response.
 You will see warning messages in your log directing you to [the issue queue](https://www.drupal.org/project/pantheon_advanced_page_cache/issues/2973861) if this limit is reached.
 
+## Changing Listing Tags
+
+Prior to the 1.2 release, this module would change the cache tags used on default listings.
+This changing of was done to make cache hits more likely but resulted in [confusing cache clearing behavior](https://www.drupal.org/project/pantheon_advanced_page_cache/issues/2944229).
+Sites that installed this module prior to 1.1 should uninstall and reinstall or run this command to update their settings.
+
+```
+terminus drush [MACHINE-NAME-OF-SITE].[ENV-NAME] -- vset pantheon_advanced_page_cache_override_list_tags FALSE
+```
+
 ## Feedback and collaboration
 
 For real time discussion of the module find Pantheon developers in our [Power Users Slack channel](https://pantheon.io/docs/power-users/). Bug reports and feature requests should be posted in [the drupal.org issue queue.](https://www.drupal.org/project/issues/pantheon_advanced_page_cache?categories=All) For code changes, please submit pull requests against the [GitHub repository](https://github.com/pantheon-systems/pantheon_advanced_page_cache) rather than posting patches to drupal.org.

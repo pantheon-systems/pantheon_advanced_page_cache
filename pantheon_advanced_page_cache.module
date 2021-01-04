@@ -11,8 +11,10 @@
 function pantheon_advanced_page_cache_pre_emit_cache_tags_alter(&$tags) {
   // Rename all _list cache tags to _emit_list to avoid clearing list tags by
   // default.
-  foreach ($tags as $key => $tag) {
-    $tags[$key] = str_replace('_list', '_emit_list', $tag);
+  if (variable_get('pantheon_advanced_page_cache_override_list_tags', TRUE)) {
+    foreach ($tags as $key => $tag) {
+      $tags[$key] = str_replace('_list', '_emit_list', $tag);
+    }
   }
 }
 
