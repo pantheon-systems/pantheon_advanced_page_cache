@@ -37,7 +37,11 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
    * @param \Drupal\Core\Config\ConfigFactory $configFactory
    *   Configuration for this module.
    */
-  public function __construct(LoggerInterface $logger, ConfigFactory $configFactory) {
+  public function __construct(LoggerInterface $logger, ConfigFactoryInterface $config_factory = NULL) {
+    if (!$config_factory instanceof ConfigFactoryInterface) {
+      @trigger_error('Not passing the config factory service as the second parameter to ' . __METHOD__ . ' is deprecated in pantheon_advanced_page_cache:1.2.0 and will throw a type error in pantheon_advanced_page_cache:2.0.0. Pass an instance of \\Drupal\\Core\\Config\\ConfigFactoryInterface. See https://www.drupal.org/node/2944229', E_USER_DEPRECATED);
+      $config_factory = \Drupal::service('config.factory');
+    }
     $this->logger = $logger;
     $this->configFactory = $configFactory;
   }
