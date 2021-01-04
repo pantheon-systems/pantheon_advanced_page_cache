@@ -59,9 +59,7 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
     if ($config->get('override_list_tags') === FALSE) {
       return FALSE;
     }
-    else {
-      return TRUE;
-    }
+    return TRUE;
   }
 
   /**
