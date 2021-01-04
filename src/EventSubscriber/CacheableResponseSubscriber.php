@@ -25,7 +25,7 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
   /**
    * Configuration Factory.
    *
-   * @var \Drupal\Core\Config\ConfigFactory
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   protected $configFactory;
 
