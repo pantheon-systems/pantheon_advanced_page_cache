@@ -1,7 +1,7 @@
 # Schema for the configuration files of the Pantheon Advanced Page Cache module.
 
 pantheon_advanced_page_cache.settings:
-  type: config_entity
+  type: config_object
   label: 'Pantheon Advanced Page Cache settings'
   mapping:
     override_list_tags:
