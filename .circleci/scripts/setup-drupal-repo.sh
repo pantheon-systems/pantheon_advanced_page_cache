@@ -7,7 +7,7 @@ git clone $(terminus connection:info ${TERMINUS_SITE}.dev --field=git_url) --bra
 cd drupal-site
 
 
-composer -- config repositories.papc vcs https://@github.com:pantheon-systems/pantheon_advanced_page_cache.git
+composer -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
 # Composer require the given commit of this module
 composer -- require drupal/views_custom_cache_tag "drupal/pantheon_advanced_page_cache:dev-${CIRCLE_BRANCH}#${CIRCLE_SHA1}"
 
