@@ -7,9 +7,11 @@ git clone $(terminus connection:info ${TERMINUS_SITE}.dev --field=git_url) --bra
 cd drupal-site
 
 
+composer update "pantheon-upstreams/upstream-configuration"
+
 composer -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
 # Composer require the given commit of this module
-composer -- require drupal/views_custom_cache_tag "drupal/pantheon_advanced_page_cache:dev-${CIRCLE_BRANCH}#${CIRCLE_SHA1}"   "pantheon-upstreams/upstream-configuration:self.version"
+composer -- require drupal/views_custom_cache_tag "drupal/pantheon_advanced_page_cache:dev-${CIRCLE_BRANCH}#${CIRCLE_SHA1}"
 
 # Don't commit a submodule
 rm -rf web/modules/contrib/pantheon_advanced_page_cache/.git/
