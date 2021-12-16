@@ -3,9 +3,9 @@ version: 2
 jobs:
     build:
         docker:
-            - image: quay.io/pantheon-public/build-tools-ci:6.x
+            - image: quay.io/pantheon-public/build-tools-ci:7.x
         environment:
-            TERMINUS_SITE: d9-papc2
+            TERMINUS_SITE: d9-papc3
         steps:
             - run:
                 name: login-pantheon
