@@ -3,7 +3,7 @@ version: 2
 jobs:
     build:
         docker:
-            - image: quay.io/pantheon-public/build-tools-ci:8.x-php8.0
+            - image: quay.io/pantheon-public/build-tools-ci:7.x
         environment:
             TERMINUS_SITE: d9-papc3
         steps:
