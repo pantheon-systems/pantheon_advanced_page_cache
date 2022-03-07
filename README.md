@@ -1,6 +1,8 @@
 # Pantheon Advanced Page Cache
 
 [![CircleCI](https://circleci.com/gh/pantheon-systems/pantheon_advanced_page_cache.svg?style=svg)](https://circleci.com/gh/pantheon-systems/pantheon_advanced_page_cache)
+[![Actively Maintained](https://img.shields.io/badge/Pantheon-Actively_Maintained-yellow?logo=pantheon&color=FFDC28)](https://pantheon.io/docs/oss-support-levels#actively-maintained)
+
 
 Pantheon Advanced Page Cache module is a bridge between [Drupal cache metadata](https://www.drupal.org/docs/8/api/cache-api/cache-api) and the [Pantheon Global CDN](https://pantheon.io/docs/global-cdn/).
 
