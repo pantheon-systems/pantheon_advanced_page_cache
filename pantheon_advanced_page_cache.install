@@ -6,7 +6,10 @@
  */
 
 /**
- * Set override_list_tags to TRUE for backwards compatibility. We recommend manually changing to FALSE for more consistent clearing. See README.
+ * Set override_list_tags to TRUE for backwards compatibility.
+ *
+ * We recommend manually changing to FALSE for more consistent clearing. See
+ * README.
  */
 function pantheon_advanced_page_cache_update_8001() {
   \Drupal::configFactory()

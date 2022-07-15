@@ -3,7 +3,7 @@
 namespace Drupal\pantheon_advanced_page_cache\EventSubscriber;
 
 use Drupal\Core\Cache\CacheableResponseInterface;
-use Symfony\Component\HttpKernel\Event\ResponseEvent ;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Psr\Log\LoggerInterface;
