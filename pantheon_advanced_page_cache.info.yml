@@ -2,4 +2,4 @@ name: Pantheon Advanced Page Cache
 description: 'Advanced page cache capabilities for Pantheon.'
 package: Performance and scalability
 type: module
-core_version_requirement: ^9.4
+core_version_requirement: ^9.4 || ^10

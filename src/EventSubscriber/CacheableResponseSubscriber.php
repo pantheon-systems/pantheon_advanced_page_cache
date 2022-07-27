@@ -3,7 +3,7 @@
 namespace Drupal\pantheon_advanced_page_cache\EventSubscriber;
 
 use Drupal\Core\Cache\CacheableResponseInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Psr\Log\LoggerInterface;
@@ -37,11 +37,7 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   Configuration for this module.
    */
-  public function __construct(LoggerInterface $logger, ConfigFactoryInterface $config_factory = NULL) {
-    if (!$config_factory instanceof ConfigFactoryInterface) {
-      @trigger_error('Not passing the config factory service as the second parameter to ' . __METHOD__ . ' is deprecated in pantheon_advanced_page_cache:8.x-1.2 and will throw a type error in pantheon_advanced_page_cache:8.x-2.0. Pass an instance of \\Drupal\\Core\\Config\\ConfigFactoryInterface. See https://www.drupal.org/node/2944229', E_USER_DEPRECATED);
-      $config_factory = \Drupal::service('config.factory');
-    }
+  public function __construct(LoggerInterface $logger, ConfigFactoryInterface $config_factory) {
     $this->logger = $logger;
     $this->configFactory = $config_factory;
   }
@@ -65,10 +61,10 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
   /**
    * Adds Surrogate-Key header to cacheable master responses.
    *
-   * @param \Symfony\Component\HttpKernel\Event\FilterResponseEvent $event
+   * @param \Symfony\Component\HttpKernel\Event\ResponseEvent $event
    *   The event to process.
    */
-  public function onRespond(FilterResponseEvent $event) {
+  public function onRespond(ResponseEvent $event) {
     if (!$event->isMasterRequest()) {
       return;
     }
