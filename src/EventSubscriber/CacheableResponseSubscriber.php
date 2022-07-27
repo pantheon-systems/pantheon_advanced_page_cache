@@ -37,7 +37,7 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   Configuration for this module.
    */
-  public function __construct(LoggerInterface $logger, ConfigFactoryInterface $config_factory = NULL) {
+  public function __construct(LoggerInterface $logger, ConfigFactoryInterface $config_factory) {
     $this->logger = $logger;
     $this->configFactory = $config_factory;
   }
