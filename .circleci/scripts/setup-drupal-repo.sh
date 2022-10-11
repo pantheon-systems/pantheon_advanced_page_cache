@@ -24,7 +24,7 @@ if [ $CIRCLE_BRANCH = "2.x" ]; then
   export BRANCH_PART="2.x-dev"
 fi
 # Composer require the given commit of this module
-composer -- require drupal/views_custom_cache_tag "drupal/pantheon_advanced_page_cache:${BRANCH_PART}#${CIRCLE_SHA1}"
+composer -- require "drupal/views_custom_cache_tag:1.x-dev" "drupal/pantheon_advanced_page_cache:${BRANCH_PART}#${CIRCLE_SHA1}"
 
 # Don't commit a submodule
 rm -rf web/modules/contrib/pantheon_advanced_page_cache/.git/
