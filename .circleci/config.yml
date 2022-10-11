@@ -2,6 +2,9 @@ version: 2.1
 # https://circleci.com/docs/configuration#machine
 jobs:
     build:
+        parameters:
+            base-env:
+                type: string
         docker:
             - image: quay.io/pantheon-public/build-tools-ci:7.x
         environment:
