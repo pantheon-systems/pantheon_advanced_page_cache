@@ -6,6 +6,9 @@ jobs:
             - image: quay.io/pantheon-public/build-tools-ci:7.x
         environment:
             TERMINUS_SITE: d9-papc3
+        matrix:
+            parameters:
+              base-env: [dev, drupal10]
         steps:
             - run:
                 name: login-pantheon
@@ -15,7 +18,7 @@ jobs:
             - run:
                 name: make-multidev
                 command: |
-                    terminus env:create $TERMINUS_SITE.dev ${CIRCLE_BUILD_NUM} || echo "mystery errors were being thrown by env:create so I am adding this OR (https://circleci.com/gh/pantheon-systems/pantheon_advanced_page_cache/610)"
+                    terminus env:create $TERMINUS_SITE.<< parameters.base-env >> ${CIRCLE_BUILD_NUM} || echo "mystery errors were being thrown by env:create so I am adding this OR (https://circleci.com/gh/pantheon-systems/pantheon_advanced_page_cache/610)"
                     touch multidev-made.txt
                 background: true
             - checkout
