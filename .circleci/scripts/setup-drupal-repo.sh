@@ -10,6 +10,8 @@ fi
 git clone $(terminus connection:info ${TERMINUS_SITE}.dev --field=git_url) --branch $TERMINUS_BASE_ENV drupal-site
 cd drupal-site
 
+git checkout -b $TERMINUS_ENV
+
 # requiring other modules below was throwing an error if this dependency was not updated first.
 # I think because the composer.lock file for the site has dev-master as the version for this
 # dependency. But the CI process calling this file runs against a different branch name thanks to the
