@@ -2,8 +2,12 @@
 set -e
 export TERMINUS_ENV=$CIRCLE_BUILD_NUM
 
+if [ "$TERMINUS_BASE_ENV" = "dev" ]; then
+  export TERMINUS_BASE_ENV=master
+fi
+
 # Bring the code down to Circle so that modules can be added via composer.
-git clone $(terminus connection:info ${TERMINUS_SITE}.dev --field=git_url) --branch $TERMINUS_ENV drupal-site
+git clone $(terminus connection:info ${TERMINUS_SITE}.dev --field=git_url) --branch $TERMINUS_BASE_ENV drupal-site
 cd drupal-site
 
 # requiring other modules below was throwing an error if this dependency was not updated first.
