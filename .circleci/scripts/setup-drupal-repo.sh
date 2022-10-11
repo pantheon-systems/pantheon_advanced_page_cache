@@ -13,8 +13,14 @@ cd drupal-site
 composer update "pantheon-upstreams/upstream-configuration"
 
 composer -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
+
+# dev-2.x does not match anything, should be 2.x-dev as per https://getcomposer.org/doc/articles/aliases.md#branch-alias.
+BRANCH_PART = "dev-${CIRCLE_BRANCH}"
+if [ $CIRCLE_BRANCH = "2.x" ]; then
+  BRANCH_PART = "2.x-dev"
+fi
 # Composer require the given commit of this module
-composer -- require drupal/views_custom_cache_tag "drupal/pantheon_advanced_page_cache:${CIRCLE_BRANCH}-dev#${CIRCLE_SHA1}"
+composer -- require drupal/views_custom_cache_tag "drupal/pantheon_advanced_page_cache:${BRANCH_PART}#${CIRCLE_SHA1}"
 
 # Don't commit a submodule
 rm -rf web/modules/contrib/pantheon_advanced_page_cache/.git/
