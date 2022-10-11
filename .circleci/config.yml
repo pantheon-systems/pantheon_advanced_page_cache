@@ -6,7 +6,7 @@ jobs:
             base-env:
                 type: string
         docker:
-            - image: quay.io/pantheon-public/build-tools-ci:7.x
+            - image: quay.io/pantheon-public/build-tools-ci:8.x-php8.1
         environment:
             TERMINUS_SITE: d9-papc3
             TERMINUS_BASE_ENV: << parameters.base-env >>
