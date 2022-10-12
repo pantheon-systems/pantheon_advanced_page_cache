@@ -64,7 +64,7 @@ jobs:
 
             - run:
                 name: Push changes to new multidev
-                command: git push --set-upstream origin $CIRCLE_BUILD_NUM
+                command: git push --set-upstream origin $CIRCLE_BUILD_NUM -f
                 working_directory: drupal-site
 
             - run:
