@@ -2,4 +2,4 @@ name: Pantheon Advanced Page Cache Test
 description: 'Used during automated test of Pantheon Advanced Page Cache'
 package: Testing
 type: module
-core_version_requirement: ^8 || ^9 || ^10
+core_version_requirement: ^9.4 || ^10
