@@ -63,6 +63,11 @@ jobs:
                     exit 0
 
             - run:
+                name: Push changes to new multidev
+                command: git push --set-upstream origin $CIRCLE_BUILD_NUM
+                working_directory: drupal-site
+
+            - run:
                 name: site install
                 command: |
                   terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp

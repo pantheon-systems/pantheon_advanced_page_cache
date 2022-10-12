@@ -34,4 +34,3 @@ rm -rf web/modules/contrib/pantheon_advanced_page_cache/.git/
 # Make a git commit
 git add .
 git commit -m 'Result of build step'
-git push --set-upstream origin $TERMINUS_ENV
