@@ -1,11 +1,15 @@
-version: 2
+version: 2.1
 # https://circleci.com/docs/configuration#machine
 jobs:
     build:
+        parameters:
+            base-env:
+                type: string
         docker:
-            - image: quay.io/pantheon-public/build-tools-ci:7.x
+            - image: quay.io/pantheon-public/build-tools-ci:8.x-php7.4
         environment:
             TERMINUS_SITE: d9-papc3
+            TERMINUS_BASE_ENV: << parameters.base-env >>
         steps:
             - run:
                 name: login-pantheon
@@ -15,7 +19,7 @@ jobs:
             - run:
                 name: make-multidev
                 command: |
-                    terminus env:create $TERMINUS_SITE.dev ${CIRCLE_BUILD_NUM} || echo "mystery errors were being thrown by env:create so I am adding this OR (https://circleci.com/gh/pantheon-systems/pantheon_advanced_page_cache/610)"
+                    terminus env:create $TERMINUS_SITE.$TERMINUS_BASE_ENV ${CIRCLE_BUILD_NUM} || echo "mystery errors were being thrown by env:create so I am adding this OR (https://circleci.com/gh/pantheon-systems/pantheon_advanced_page_cache/610)"
                     touch multidev-made.txt
                 background: true
             - checkout
@@ -59,10 +63,16 @@ jobs:
                     exit 0
 
             - run:
+                name: Push changes to new multidev
+                command: git push --set-upstream origin $CIRCLE_BUILD_NUM -f
+                working_directory: drupal-site
+
+            - run:
                 name: site install
                 command: |
+                  terminus build:workflow:wait ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM}
                   terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp
-                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y --quiet
+                  terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- cset system.performance cache.page.max_age 600 -y
 
             - run:
@@ -82,3 +92,11 @@ jobs:
                 name: Cleanup
                 command: |
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- role-remove-perm anonymous "create page content,create article content"
+
+workflows:
+  build:
+    jobs:
+      - build:
+          matrix:
+            parameters:
+              base-env: [dev, drupal10]
