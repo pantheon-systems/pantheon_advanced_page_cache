@@ -69,7 +69,9 @@ jobs:
 
             - run:
                 name: site install
+                # Sleep for 60 seconds to give some room for sync_code job to finish. @todo improve!
                 command: |
+                  sleep 60
                   terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- cset system.performance cache.page.max_age 600 -y
