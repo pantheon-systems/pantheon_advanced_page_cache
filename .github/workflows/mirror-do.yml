@@ -1,0 +1,29 @@
+name: Mirror to Drupal.org
+on:
+  push:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    name: Checkout & push to remote
+    if: ${{ github.repository == 'pantheon-systems/pantheon_advanced_page_cache' }}
+    env:
+      BRANCH: ${{ github.ref_name }}
+      WORKSPACE: ${{ github.workspace }}
+      DRUPAL_ORG_REMOTE: ${{ secrets.DRUPAL_ORG_REMOTE }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+          if_key_exists: ignore
+      - name: Pushes to drupal.org repository
+        run: |
+          cd $WORKSPACE
+          git remote add drupalorg $DRUPAL_ORG_REMOTE
+          git push drupalorg $BRANCH
