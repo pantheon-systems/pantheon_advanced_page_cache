@@ -72,6 +72,7 @@ jobs:
                 command: |
                   terminus build:workflow:wait ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM}
                   terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp
+                  sleep 10
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- cset system.performance cache.page.max_age 600 -y
 
