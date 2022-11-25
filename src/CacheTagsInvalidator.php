@@ -17,6 +17,9 @@ class CacheTagsInvalidator implements CacheTagsInvalidatorInterface {
    */
   protected $requestStack;
 
+  /**
+   * Construct.
+   */
   public function __construct(RequestStack $request_stack) {
     $this->requestStack = $request_stack;
   }
@@ -26,7 +29,8 @@ class CacheTagsInvalidator implements CacheTagsInvalidatorInterface {
    */
   public function invalidateTags(array $tags) {
     $do_not_run_urls = [
-      // There is a weird interaction with metatag that clear local_tasks key and therefore lots of cached pages.
+      // There is a weird interaction with metatag that clear local_tasks key
+      // and therefore lots of cached pages.
       '/core/install.php',
     ];
     if (in_array($this->requestStack->getCurrentRequest()->getBaseUrl(), $do_not_run_urls)) {
