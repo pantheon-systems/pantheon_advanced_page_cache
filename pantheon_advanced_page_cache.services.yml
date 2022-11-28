@@ -4,6 +4,7 @@ services:
     arguments: ['pantheon_advanced_page_cache']
   pantheon_advanced_page_cache.cache_tags.invalidator:
     class: Drupal\pantheon_advanced_page_cache\CacheTagsInvalidator
+    arguments: ['@request_stack']
     tags:
       - { name: cache_tags_invalidator }
   pantheon_advanced_page_cache.cacheable_response_subscriber:
