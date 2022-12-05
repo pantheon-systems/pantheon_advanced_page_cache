@@ -1,11 +1,22 @@
-name: Mirror to Drupal.org
+name: Pantheon Advanced Page Cache
 on:
   push:
 
 jobs:
+  phpcompatibility:
+    runs-on: ubuntu-latest
+    name: PHP Compatibility
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: PHPCompatibility
+        uses: pantheon-systems/phpcompatibility-action@v1
+        with:
+          test-versions: 7.4-
   mirror:
     runs-on: ubuntu-latest
     name: Checkout & push to remote
+    needs: [phpcompatibility]
     if: ${{ github.repository == 'pantheon-systems/pantheon_advanced_page_cache' }}
     env:
       BRANCH: ${{ github.ref_name }}
