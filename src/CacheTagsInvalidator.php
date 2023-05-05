@@ -33,7 +33,8 @@ class CacheTagsInvalidator implements CacheTagsInvalidatorInterface {
       // and therefore lots of cached pages.
       '/core/install.php',
     ];
-    if (in_array($this->requestStack->getCurrentRequest()->getBaseUrl(), $do_not_run_urls)) {
+    $current_request = $this->requestStack->getCurrentRequest();
+    if ($current_request && in_array($current_request->getBaseUrl(), $do_not_run_urls)) {
       return;
     }
     if (function_exists('pantheon_clear_edge_keys')) {
