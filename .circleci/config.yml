@@ -15,6 +15,7 @@ jobs:
             - run:
                 name: login-pantheon
                 command: terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
+            - checkout
             - run: 
                 name: Ensure a multidev is available
                 command: bash .circleci/scripts/ensure-available-multidev.sh "$TERMINUS_SITE"
@@ -26,7 +27,6 @@ jobs:
                     terminus env:create $TERMINUS_SITE.$TERMINUS_BASE_ENV ${CIRCLE_BUILD_NUM} || echo "mystery errors were being thrown by env:create so I am adding this OR (https://circleci.com/gh/pantheon-systems/pantheon_advanced_page_cache/610)"
                     touch multidev-made.txt
                 background: true
-            - checkout
             - run:
                 name: Composer install
                 command: |
