@@ -29,8 +29,10 @@ MAX_CDE_COUNT="$(terminus site:info "${SITE_NAME}" --field='Max Multidevs')"
 echo "Max Multidev Count: ${MAX_CDE_COUNT}"
 
 DOMAINS="$(terminus env:list "${SITE_NAME}" --format=string --fields=ID,Created)"
-# Filter out dev, test, or live
-FILTERED_DOMAINS=$(echo "$DOMAINS" | grep -vE '\b(dev|test|live)\b')
+
+# Filter out dev, test, live, or 'drupal10'.
+# Any other envs that we should avoid deleting should be included in this grep.
+FILTERED_DOMAINS=$(echo "$DOMAINS" | grep -vE '\b(dev|test|live|drupal10)\b')
 
 # Count current environments
 CDE_COUNT="$(echo "$FILTERED_DOMAINS" | wc -l)"
