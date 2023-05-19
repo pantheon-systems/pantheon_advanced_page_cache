@@ -4,10 +4,25 @@ IFS=$'\n\t'
 ###
 # Given a site name, ensure we can create a new multidev, or delete the oldest one.
 ###
+
+usage_exit(){
+    echo "usage: $0 site_name multidev_count"
+    exit 1
+}
+
 SITE_NAME="${1:-}"
 if [[ -z "${SITE_NAME}" ]];then
     echo "Missing Site Name"
-    exit 1
+    usage_exit
+fi
+
+NUMBER_OF_CDES_REQUIRED="${2:-}"
+if [[ "${NUMBER_OF_CDES_REQUIRED}" == "" ]]; then
+    echo "No multidev count provided, assuming 1."
+    NUMBER_OF_CDES_REQUIRED=1
+elif ! [[ $NUMBER_OF_CDES_REQUIRED =~ ^[0-9]+$ ]]; then
+    echo "The variable is not an integer."
+    usage_exit
 fi
 
 MAX_CDE_COUNT="$(terminus site:info "${SITE_NAME}" --field='Max Multidevs')"
@@ -22,17 +37,23 @@ CDE_COUNT="$(echo "$FILTERED_DOMAINS" | wc -l)"
 # remove whitespace to make the arithmetic work
 CDE_COUNT="${CDE_COUNT//[[:blank:]]/}"
 
-echo "There are currently ${CDE_COUNT}/${MAX_CDE_COUNT} multidevs"
+echo "There are currently ${CDE_COUNT}/${MAX_CDE_COUNT} multidevs. I need ${NUMBER_OF_CDES_REQUIRED}."
 
-if [[ "${CDE_COUNT}" -lt "${MAX_CDE_COUNT}" ]]; then
+POTENTIAL_CDE_COUNT=$((CDE_COUNT + NUMBER_OF_CDES_REQUIRED))
+if [[ "${POTENTIAL_CDE_COUNT}" -le "${MAX_CDE_COUNT}" ]]; then
   echo "There are enough multidevs"
   exit
 fi
 
-echo "There are not enough multidevs, deleting the oldest one."
+NUMBER_OF_CDES_TO_DELETE=$((POTENTIAL_CDE_COUNT - MAX_CDE_COUNT))
+echo "There are not enough multidevs, deleting the oldest ${NUMBER_OF_CDES_TO_DELETE}."
 
 # Sort the list by the timestamps
 SORTED_DOMAINS=$(echo "$FILTERED_DOMAINS" | sort -n -k2)
-# Extract the top name from the sorted list
-ENV_TO_REMOVE=$(echo "$SORTED_DOMAINS" | head -n 1 | cut -f1)
-terminus multidev:delete --delete-branch "${SITE_NAME}.${ENV_TO_REMOVE}" --yes
+
+# Delete as many multidevs as we need to make room for testing.
+for (( i = 1; i<=${NUMBER_OF_CDES_TO_DELETE}; i++ )); do
+    ENV_TO_REMOVE="$(echo "$SORTED_DOMAINS" | head -n "$i" | tail -n 1 | cut -f1)"
+    echo "Removing ${ENV_TO_REMOVE}"
+    terminus multidev:delete --delete-branch "${SITE_NAME}.${ENV_TO_REMOVE}" --yes
+done
