@@ -19,6 +19,7 @@ jobs:
             TERMINUS_SITE: d9-papc3
         steps:
             - login-pantheon
+            - checkout
             - run: 
                 name: Ensure enough multidev environments are available
                 command: bash .circleci/scripts/ensure-available-multidev.sh "$TERMINUS_SITE" 2
@@ -32,7 +33,6 @@ jobs:
             TERMINUS_BASE_ENV: << parameters.base-env >>
         steps:
             - login-pantheon
-            - checkout
             # Start making a multidev right away in the background so that
             # this slow step is done as soon as possible.
             - run:
@@ -41,6 +41,7 @@ jobs:
                     terminus env:create $TERMINUS_SITE.$TERMINUS_BASE_ENV ${CIRCLE_BUILD_NUM} || echo "mystery errors were being thrown by env:create so I am adding this OR (https://circleci.com/gh/pantheon-systems/pantheon_advanced_page_cache/610)"
                     touch multidev-made.txt
                 background: true
+            - checkout
             - run:
                 name: Composer install
                 command: |
