@@ -1,5 +1,6 @@
 version: 2.1
 # https://circleci.com/docs/configuration#machine
+
 jobs:
     build:
         parameters:
@@ -14,6 +15,9 @@ jobs:
             - run:
                 name: login-pantheon
                 command: terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
+            - run: 
+                name: Ensure a multidev is available
+                command: bash .circleci/scripts/ensure-available-multidev.sh "$TERMINUS_SITE"
             # Start making a multidev right away in the background so that
             # this slow step is done as soon as possible.
             - run:
