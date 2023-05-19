@@ -116,10 +116,11 @@ jobs:
 workflows:
   build:
     jobs:
-      - ensure_multidevs
+      - ensure_multidevs:
+          name: Ensure There are Enough Multidevs
       - build:
           requires:
-            - ensure_multidevs
+            - Ensure There are Enough Multidevs
           matrix:
             parameters:
               base-env: [dev, drupal10]

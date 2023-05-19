@@ -52,7 +52,7 @@ echo "There are not enough multidevs, deleting the oldest ${NUMBER_OF_CDES_TO_DE
 SORTED_DOMAINS=$(echo "$FILTERED_DOMAINS" | sort -n -k2)
 
 # Delete as many multidevs as we need to make room for testing.
-for (( i = 1; i<=${NUMBER_OF_CDES_TO_DELETE}; i++ )); do
+for (( i = 1; i<=NUMBER_OF_CDES_TO_DELETE; i++ )); do
     ENV_TO_REMOVE="$(echo "$SORTED_DOMAINS" | head -n "$i" | tail -n 1 | cut -f1)"
     echo "Removing ${ENV_TO_REMOVE}"
     terminus multidev:delete --delete-branch "${SITE_NAME}.${ENV_TO_REMOVE}" --yes
