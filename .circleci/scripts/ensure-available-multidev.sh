@@ -43,12 +43,12 @@ echo "There are currently ${CDE_COUNT}/${MAX_CDE_COUNT} multidevs. I need ${NUMB
 
 POTENTIAL_CDE_COUNT=$((CDE_COUNT + NUMBER_OF_CDES_REQUIRED))
 if [[ "${POTENTIAL_CDE_COUNT}" -le "${MAX_CDE_COUNT}" ]]; then
-  echo "There are enough multidevs"
+  echo "There are enough multidevs."
   exit
 fi
 
 NUMBER_OF_CDES_TO_DELETE=$((POTENTIAL_CDE_COUNT - MAX_CDE_COUNT))
-echo "There are not enough multidevs, deleting the oldest ${NUMBER_OF_CDES_TO_DELETE}."
+echo "There are not enough multidevs, deleting the oldest ${NUMBER_OF_CDES_TO_DELETE} environment(s)."
 
 # Sort the list by the timestamps
 SORTED_DOMAINS=$(echo "$FILTERED_DOMAINS" | sort -n -k2)
@@ -56,6 +56,6 @@ SORTED_DOMAINS=$(echo "$FILTERED_DOMAINS" | sort -n -k2)
 # Delete as many multidevs as we need to make room for testing.
 for (( i = 1; i<=NUMBER_OF_CDES_TO_DELETE; i++ )); do
     ENV_TO_REMOVE="$(echo "$SORTED_DOMAINS" | head -n "$i" | tail -n 1 | cut -f1)"
-    echo "Removing ${ENV_TO_REMOVE}"
+    echo "Removing '${ENV_TO_REMOVE}'."
     terminus multidev:delete --delete-branch "${SITE_NAME}.${ENV_TO_REMOVE}" --yes
 done
