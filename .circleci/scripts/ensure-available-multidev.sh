@@ -25,6 +25,8 @@ elif ! [[ $NUMBER_OF_CDES_REQUIRED =~ ^[0-9]+$ ]]; then
     usage_exit
 fi
 
+terminus --version
+
 MAX_CDE_COUNT="$(terminus site:info "${SITE_NAME}" --field='Max Multidevs')"
 echo "Max Multidev Count: ${MAX_CDE_COUNT}"
 
