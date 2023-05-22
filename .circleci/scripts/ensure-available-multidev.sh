@@ -46,16 +46,13 @@ if [[ "${POTENTIAL_CDE_COUNT}" -le "${MAX_CDE_COUNT}" ]]; then
   exit
 fi
 
+NUMBER_OF_CDES_TO_DELETE=$((POTENTIAL_CDE_COUNT - MAX_CDE_COUNT))
+echo "There are not enough multidevs, deleting the oldest ${NUMBER_OF_CDES_TO_DELETE} environment(s)."
+
 # Filter out any multidev environments that should never be deleted.
 # This is seperate from filtering out dev/test/live above as they still count towards 'Max Multidev'.
 # Then, sort the list by the timestamps
 SORTED_DOMAINS=$(echo "$CDE_DOMAINS" | grep -vE '\b(drupal10)\b' | sort -n -k2)
-echo "Domains safe to delete:"
-echo $SORTED_DOMAINS
-echo
-
-NUMBER_OF_CDES_TO_DELETE=$((POTENTIAL_CDE_COUNT - MAX_CDE_COUNT))
-echo "There are not enough multidevs, deleting the oldest ${NUMBER_OF_CDES_TO_DELETE} environment(s)."
 
 # Delete as many multidevs as we need to make room for testing.
 for (( i = 1; i<=NUMBER_OF_CDES_TO_DELETE; i++ )); do
