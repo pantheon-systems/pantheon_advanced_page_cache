@@ -1,19 +1,38 @@
 version: 2.1
 # https://circleci.com/docs/configuration#machine
+executors:
+  build-tools:
+    docker:
+      - image: quay.io/pantheon-public/build-tools-ci:8.x-php7.4
+
+commands:
+    login-pantheon:
+        steps:
+            - run:
+                name: Login with Terminus
+                command: terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
+
 jobs:
+    ensure_multidevs:
+        executor: build-tools
+        environment:
+            TERMINUS_SITE: d9-papc3
+        steps:
+            - login-pantheon
+            - checkout
+            - run: 
+                name: Ensure enough multidev environments are available
+                command: bash .circleci/scripts/ensure-available-multidev.sh "$TERMINUS_SITE" 2
     build:
         parameters:
             base-env:
                 type: string
-        docker:
-            - image: quay.io/pantheon-public/build-tools-ci:8.x-php7.4
+        executor: build-tools
         environment:
             TERMINUS_SITE: d9-papc3
             TERMINUS_BASE_ENV: << parameters.base-env >>
         steps:
-            - run:
-                name: login-pantheon
-                command: terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
+            - login-pantheon
             # Start making a multidev right away in the background so that
             # this slow step is done as soon as possible.
             - run:
@@ -97,7 +116,11 @@ jobs:
 workflows:
   build:
     jobs:
+      - ensure_multidevs:
+          name: Ensure There are Enough Multidevs
       - build:
+          requires:
+            - Ensure There are Enough Multidevs
           matrix:
             parameters:
               base-env: [dev, drupal10]
