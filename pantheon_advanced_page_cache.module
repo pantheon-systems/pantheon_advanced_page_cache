@@ -12,7 +12,7 @@ use Drupal\image\Entity\ImageStyle;
 function pantheon_advanced_page_cache_file_update(EntityInterface $file) {
   // Don't try this if we're not in a Pantheon environment.
   if (function_exists('pantheon_clear_edge_paths')) {
-    // No matter what, the file's base URL needs to be cleared out .
+    // No matter what, the file's base URL needs to be cleared out.
     $paths_to_clear = [$file->createFileUrl()];
 
     // If this is an image, we need to clear the edge cache paths for every
