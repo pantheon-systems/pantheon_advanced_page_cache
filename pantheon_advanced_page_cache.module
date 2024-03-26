@@ -8,6 +8,8 @@ use Drupal\image\Entity\ImageStyle;
  *
  * Clears edge cache by file url. If this is not done, changing file contents
  * does not actually change the file that gets served until the cache times out.
+ *
+ * Issue: #3337669
  */
 function pantheon_advanced_page_cache_file_update(EntityInterface $file) {
   // Don't try this if we're not in a Pantheon environment.
