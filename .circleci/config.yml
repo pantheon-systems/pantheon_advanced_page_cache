@@ -123,4 +123,4 @@ workflows:
             - Ensure There are Enough Multidevs
           matrix:
             parameters:
-              base-env: [dev, drupal10]
+              base-env: [dev, drupal10, drupal11]
