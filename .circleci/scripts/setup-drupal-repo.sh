@@ -27,7 +27,7 @@ composer -- require "drupal/views_custom_cache_tag:1.x-dev"
 
 # Add this project, but not via Composer
 mkdir -p web/modules/circle/pantheon_advanced_page_cache
-cp -R "$PROJECT_DIR/*" web/modules/circle/pantheon_advanced_page_cache
+cp -R "$PROJECT_DIR/"* web/modules/circle/pantheon_advanced_page_cache
 
 # Make a git commit
 git add .
