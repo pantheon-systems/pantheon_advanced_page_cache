@@ -3,8 +3,8 @@ set -e
 export TERMINUS_ENV=$CIRCLE_BUILD_NUM
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-CIRCLE_DIR=$("$(dirname -- "${SCRIPT_DIR}")")
-PROJECT_DIR=$("$(dirname -- "${CIRCLE_DIR}")")
+CIRCLE_DIR="$(dirname -- "${SCRIPT_DIR}")"
+PROJECT_DIR="$(dirname -- "${CIRCLE_DIR}")"
 
 if [ "$TERMINUS_BASE_ENV" = "dev" ]; then
   export TERMINUS_BASE_ENV=master
