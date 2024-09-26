@@ -11,8 +11,8 @@ if [ "$TERMINUS_BASE_ENV" = "dev" ]; then
 fi
 
 # Bring the code down to Circle so that modules can be added via composer.
-git clone $(terminus connection:info ${TERMINUS_SITE}.dev --field=git_url) --branch $TERMINUS_BASE_ENV drupal-site
-cd drupal-site
+git clone $(terminus connection:info ${TERMINUS_SITE}.dev --field=git_url) --branch $TERMINUS_BASE_ENV "$HOME/drupal-site"
+cd "$HOME/drupal-site"
 
 git checkout -b $TERMINUS_ENV
 
