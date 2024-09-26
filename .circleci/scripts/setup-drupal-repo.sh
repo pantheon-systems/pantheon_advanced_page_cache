@@ -18,7 +18,7 @@ git checkout -b $TERMINUS_ENV
 # git clone command above.
 composer update "pantheon-upstreams/upstream-configuration"
 
-composer -- config repositories.papc vcs git@github.com:pantheon-systems/pantheon_advanced_page_cache.git
+composer -- config repositories.papc vcs https://github.com/pantheon-systems/pantheon_advanced_page_cache.git
 
 # dev-2.x does not match anything, should be 2.x-dev as per https://getcomposer.org/doc/articles/aliases.md#branch-alias.
 export BRANCH_PART="dev-${CIRCLE_BRANCH}"
