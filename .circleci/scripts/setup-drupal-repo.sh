@@ -2,6 +2,10 @@
 set -e
 export TERMINUS_ENV=$CIRCLE_BUILD_NUM
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+CIRCLE_DIR=$("$(dirname -- "${SCRIPT_DIR}")")
+PROJECT_DIR=$("$(dirname -- "${CIRCLE_DIR}")")
+
 if [ "$TERMINUS_BASE_ENV" = "dev" ]; then
   export TERMINUS_BASE_ENV=master
 fi
@@ -18,18 +22,15 @@ git checkout -b $TERMINUS_ENV
 # git clone command above.
 composer update "pantheon-upstreams/upstream-configuration"
 
-composer -- config repositories.papc vcs https://github.com/pantheon-systems/pantheon_advanced_page_cache.git
+# Composer require views_custom_cache_tag
+composer -- require "drupal/views_custom_cache_tag:1.x-dev"
 
-# dev-2.x does not match anything, should be 2.x-dev as per https://getcomposer.org/doc/articles/aliases.md#branch-alias.
-export BRANCH_PART="dev-${CIRCLE_BRANCH}"
-if [ $CIRCLE_BRANCH = "2.x" ]; then
-  export BRANCH_PART="2.x-dev"
-fi
-# Composer require the given commit of this module
-composer -- require "drupal/views_custom_cache_tag:1.x-dev" "drupal/pantheon_advanced_page_cache:${BRANCH_PART}#${CIRCLE_SHA1}"
+# Add this project, but not via Composer
+mkdir -p web/modules/circle
+cp -R "$PROJECT_DIR" web/modules/circle
 
 # Don't commit a submodule
-rm -rf web/modules/contrib/pantheon_advanced_page_cache/.git/
+rm -rf web/modules/circle/pantheon_advanced_page_cache/.git/
 
 # Make a git commit
 git add .
