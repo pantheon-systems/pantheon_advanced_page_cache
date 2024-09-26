@@ -11,8 +11,8 @@ if [ "$TERMINUS_BASE_ENV" = "dev" ]; then
 fi
 
 # Bring the code down to Circle so that modules can be added via composer.
-git clone $(terminus connection:info ${TERMINUS_SITE}.dev --field=git_url) --branch $TERMINUS_BASE_ENV "$HOME/drupal-site"
-cd "$HOME/drupal-site"
+git clone $(terminus connection:info ${TERMINUS_SITE}.dev --field=git_url) --branch $TERMINUS_BASE_ENV drupal-site
+cd drupal-site
 
 git checkout -b $TERMINUS_ENV
 
@@ -27,7 +27,7 @@ composer -- require "drupal/views_custom_cache_tag:1.x-dev"
 
 # Add this project, but not via Composer
 mkdir -p web/modules/circle/pantheon_advanced_page_cache
-cp -R "$PROJECT_DIR/"* web/modules/circle/pantheon_advanced_page_cache
+rsync -av --exclude='vendor' --exclude='drupal-site' "$PROJECT_DIR/"* web/modules/circle/pantheon_advanced_page_cache
 
 # Make a git commit
 git add .
