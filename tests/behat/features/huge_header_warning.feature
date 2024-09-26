@@ -5,7 +5,6 @@ I need a notification when my header is truncated.
 
   @api
   Scenario: Warning message.
-    Given I run drush "pm-uninstall -y pantheon_advanced_page_cache_test"
     Given I run drush "en -y pantheon_advanced_page_cache"
     And I am logged in as a user with the "administrator" role
 
