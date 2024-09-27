@@ -89,7 +89,7 @@ jobs:
             - run:
                 name: site install
                 command: |
-                  terminus build:workflow:wait ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM}
+                  terminus build:workflow:wait ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} --max=300
                   terminus connection:set ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} sftp
                   terminus env:wake ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM}
                   terminus drush ${TERMINUS_SITE}.${CIRCLE_BUILD_NUM} -- site-install -y
