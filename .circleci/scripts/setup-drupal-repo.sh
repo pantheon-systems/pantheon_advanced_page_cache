@@ -26,12 +26,12 @@ composer update "pantheon-upstreams/upstream-configuration"
 composer -- require "drupal/views_custom_cache_tag:1.x-dev"
 
 # Make a copy of this project and rename it to use in a path repository
-mkdir -p /tmp/pantheon_advanced_page_cache
-rsync -av --exclude='vendor' --exclude='drupal-site' "$PROJECT_DIR/"* /tmp/pantheon_advanced_page_cache
-sed -e 's#"name": "drupal/pantheon_advanced_page_cache"#"version": "dev-circle", "name": "local-path/pantheon_advanced_page_cache"#' "$PROJECT_DIR/composer.json" > /tmp/pantheon_advanced_page_cache/composer.json
+mkdir -p path-repositories/pantheon_advanced_page_cache
+rsync -av --exclude='vendor' --exclude='drupal-site' "$PROJECT_DIR/"* path-repositories/pantheon_advanced_page_cache
+sed -e 's#"name": "drupal/pantheon_advanced_page_cache"#"version": "dev-circle", "name": "local-path/pantheon_advanced_page_cache"#' "$PROJECT_DIR/composer.json" > path-repositories/pantheon_advanced_page_cache/composer.json
 
 # Require via Composer, in case we need to require any dependencies in the future & etc.
-composer -- config repositories.papc path /tmp/pantheon_advanced_page_cache
+composer -- config repositories.papc path path-repositories/pantheon_advanced_page_cache
 composer -- require "local-path/pantheon_advanced_page_cache: dev-circle"
 
 # Make a git commit
