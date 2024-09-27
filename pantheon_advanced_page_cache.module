@@ -19,7 +19,7 @@ function pantheon_advanced_page_cache_file_update(EntityInterface $file) {
 
   // If this is an image, we need to clear the edge cache paths for every
   // image style, or those won't work.
-  if (strpos($file->getMimeType(), 'image', 0) === 0) {
+  if ((class_exists(ImageStyle)) && (strpos($file->getMimeType(), 'image', 0) === 0)) {
     $styles = ImageStyle::loadMultiple();
     foreach ($styles as $style) {
       $file_uri = $file->getFileUri();
