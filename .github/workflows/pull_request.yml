@@ -1,0 +1,127 @@
+name: Pull Request
+on:
+  pull_request:
+    branches:
+      - master
+      - main
+      - 2.x
+
+env:
+  TERMINUS_SITE: d9-papc3
+  TERMINUS_TOKEN: ${{ secrets.TERMINUS_TOKEN }}
+  GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+  TZ: "/usr/share/zoneinfo/America/Los_Angeles"
+  TERM: dumb
+  TERMINUS_ORG: ${{ secrets.TERMINUS_ORG }}
+  GITHUB_RUN_NUMBER: ${{ github.run_number }}
+  COMMIT_SHA: ${{ github.sha }}
+  PUBLIC_KEY: ${{ secrets.PANTHEON_PLATFORM_DEPLOY_KEY_PUBLIC }}
+  PRIVATE_KEY: ${{ secrets.PANTHEON_PLATFORM_DEPLOY_KEY_PRIVATE }}
+  BASH_ENV: ~/.bashrc
+  WORKSPACE: ${{ github.workspace }}
+
+jobs:
+  phpcompatibility:
+    runs-on: ubuntu-latest
+    name: PHP Compatibility
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: PHPCompatibility
+        uses: pantheon-systems/phpcompatibility-action@v1
+        with:
+          test-versions: 8.1
+          ## Soft deprecation of 7.4. Doesn't make it incompatible
+          ## just doesn't make sure it is compatible.
+
+  linting:
+    runs-on: ubuntu-latest
+    name: Code linting
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Composer install
+        run: composer install
+
+      - name: Code sniff
+        run: composer run-script code:lint
+
+  build_test:
+    needs: [ phpcompatibility, linting ]
+    strategy:
+      matrix:
+        drupal-version: [ 10, 11 ]
+      fail-fast: false
+    runs-on: ubuntu-latest
+    name: Build and test (Drupal ${{ matrix.drupal-version }})
+    env:
+      DRUPAL_VERSION: ${{ matrix.drupal-version }}
+    steps:
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.1"
+
+      - name: Install Terminus
+        uses: pantheon-systems/terminus-github-actions@v1
+        with:
+          pantheon-machine-token: ${{ secrets.PANTHEON_MACHINE_TOKEN }}
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Login Pantheon Git
+        run: |
+          git config --global user.email "$GIT_EMAIL"
+          git config --global user.name "Github Actions"
+          git config --global --add safe.directory '*'
+          mkdir -p ~/.ssh && echo "${{ secrets.SSH_CONFIG }}" >> ~/.ssh/config
+
+      - name: Setup SSH Keys
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.PANTHEON_PLATFORM_DEPLOY_KEY_PRIVATE }}
+          ssh-public-key: ${{ secrets.PANTHEON_PLATFORM_DEPLOY_KEY_PUBLIC }}
+
+      - name: Composer install
+        run: composer install --ignore-platform-req=php
+
+      - name: Setup tmate session
+        if: ${{ github.event.inputs.tmate_enabled == 1 }}
+        uses: mxschmitt/action-tmate@v3
+
+      - name: Run tests
+        run: |
+          ./vendor/bin/robo test:full $DRUPAL_VERSION $TERMINUS_SITE
+
+  mirror_do:
+    runs-on: ubuntu-latest
+    name: Checkout & push to remote
+    if: ${{ github.repository == 'pantheon-systems/search_api_pantheon' }}
+    needs: [ build_test ]
+    env:
+      BRANCH: ${{ github.ref_name }}
+      DRUPAL_ORG_REMOTE: ${{ secrets.DRUPAL_ORG_REMOTE }}
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup SSH Keys
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.PANTHEON_PLATFORM_DEPLOY_KEY_PRIVATE }}
+          ssh-public-key: ${{ secrets.PANTHEON_PLATFORM_DEPLOY_KEY_PUBLIC }}
+
+      - name: Pushes to drupal.org repository
+        run: |
+          cd $WORKSPACE
+          git remote add drupalorg $DRUPAL_ORG_REMOTE
+          git push drupalorg $BRANCH

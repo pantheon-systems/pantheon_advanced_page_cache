@@ -1,3 +1,4 @@
 /drush/behat-drush-endpoint
 /vendor
 
+/composer.lock
