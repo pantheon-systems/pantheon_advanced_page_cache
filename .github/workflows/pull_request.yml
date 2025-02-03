@@ -19,6 +19,7 @@ env:
   PRIVATE_KEY: ${{ secrets.PANTHEON_PLATFORM_DEPLOY_KEY_PRIVATE }}
   BASH_ENV: ~/.bashrc
   WORKSPACE: ${{ github.workspace }}
+  GITHUB_REPOSITORY: ${{ github.repository }}
 
 jobs:
   phpcompatibility:
@@ -122,6 +123,6 @@ jobs:
 
       - name: Pushes to drupal.org repository
         run: |
-          cd $WORKSPACE
+          cd ${{ github.workspace }}
           git remote add drupalorg $DRUPAL_ORG_REMOTE
           git push drupalorg $BRANCH
