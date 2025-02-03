@@ -1,5 +1,5 @@
 {
-    "name": "drupal/pantheon_advanced_page_cache",
+    "name": "pantheon-systems/pantheon_advanced_page_cache",
     "type": "drupal-module",
     "description": "Pantheon Advanced Page Cache",
     "license": "MIT",
