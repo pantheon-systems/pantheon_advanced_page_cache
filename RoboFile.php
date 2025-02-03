@@ -25,17 +25,16 @@ class RoboFile extends Tasks {
   public DateTime $started;
 
   /**
-   * configs for module installed by default
-   * @var array $search_index
+   * configs for module installed by default.
+   * @var array
    */
   public array $cache_settings;
 
   /**
-   * configs for module installed by default
-   * @var array $search_server
+   * configs for module installed by default.
+   * @var array
    */
   public array $cache_schema;
-
 
   /**
    * Class constructor.
@@ -46,11 +45,10 @@ class RoboFile extends Tasks {
     $this->getInstallConfigs();
   }
 
-
   /**
    * Run tests.
    */
-  public function testFull(string $drupal_version = '10', string $site_id = null) {
+  public function testFull(string $drupal_version = '10', string $site_id = NULL) {
     $this->output()->writeln('RoboFile constructor: ' . $this->started->format('Y-m-d H:i:s'));
     $this->output()->writeln('Running tests for Drupal ' . $drupal_version);
     $this->output()->writeln('Site ID: ' . $site_id);
@@ -63,11 +61,6 @@ class RoboFile extends Tasks {
 
     throw new TaskException($this, 'No tests implemented yet.');
   }
-
-
-
-
-
 
   /**
    * Get the install configs.
@@ -98,9 +91,11 @@ class RoboFile extends Tasks {
             case 'settings':
               $this->cache_settings = Yaml::parseFile($filePath);
               break;
+
             case 'schema':
               $this->cache_schema = Yaml::parseFile($filePath);
               break;
+
             default:
               break;
           }
@@ -126,6 +121,5 @@ class RoboFile extends Tasks {
       );
     }
   }
-
 
 }
