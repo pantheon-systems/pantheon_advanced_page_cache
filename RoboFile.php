@@ -2,6 +2,10 @@
 
 use Robo\Tasks;
 use Robo\Exception\TaskException;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Finder\Finder;
+
 
 /**
  * This is project's console commands configuration for Robo task runner.
