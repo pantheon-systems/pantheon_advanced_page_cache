@@ -7,8 +7,8 @@ on:
       - 2.x
 
 env:
-  TERMINUS_SITE: d9-papc3
   TERMINUS_TOKEN: ${{ secrets.TERMINUS_TOKEN }}
+  TERMINUS_EMAIL: ${{ secrets.TERMINUS_EMAIL }}
   GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
   TZ: "/usr/share/zoneinfo/America/Los_Angeles"
   TERM: dumb
@@ -19,9 +19,16 @@ env:
   PRIVATE_KEY: ${{ secrets.PANTHEON_PLATFORM_DEPLOY_KEY_PRIVATE }}
   BASH_ENV: ~/.bashrc
   WORKSPACE: ${{ github.workspace }}
+  HOME: ${{ github.workspace }}
   GITHUB_REPOSITORY: ${{ github.repository }}
+  REF: ${{ github.ref }}
+
+concurrency:
+  group: 'ci-${{ github.head_ref || github.ref }}'
+  cancel-in-progress: true
 
 jobs:
+
   phpcompatibility:
     runs-on: ubuntu-latest
     name: PHP Compatibility
@@ -52,7 +59,7 @@ jobs:
         run: composer run-script code:lint
 
   build_test:
-    needs: [ phpcompatibility, linting ]
+    needs: [ linting, phpcompatibility ]
     strategy:
       matrix:
         drupal-version: [ 10, 11 ]
@@ -68,26 +75,28 @@ jobs:
         with:
           php-version: "8.1"
 
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Install Terminus
         uses: pantheon-systems/terminus-github-actions@v1
         with:
-          pantheon-machine-token: ${{ secrets.PANTHEON_MACHINE_TOKEN }}
-
-      - name: Checkout
-        uses: actions/checkout@v2
+          pantheon-machine-token: ${{ secrets.TERMINUS_TOKEN }}
 
       - name: Login Pantheon Git
         run: |
           git config --global user.email "$GIT_EMAIL"
           git config --global user.name "Github Actions"
           git config --global --add safe.directory '*'
-          mkdir -p ~/.ssh && echo "${{ secrets.SSH_CONFIG }}" >> ~/.ssh/config
+
+      - name: Ensure login to Terminus
+        run: |
+          terminus auth:whoami
 
       - name: Setup SSH Keys
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.PANTHEON_PLATFORM_DEPLOY_KEY_PRIVATE }}
-          ssh-public-key: ${{ secrets.PANTHEON_PLATFORM_DEPLOY_KEY_PUBLIC }}
 
       - name: Composer install
         run: composer install --ignore-platform-req=php
@@ -98,31 +107,4 @@ jobs:
 
       - name: Run tests
         run: |
-          ./vendor/bin/robo test:full $DRUPAL_VERSION $TERMINUS_SITE
-
-  mirror_do:
-    runs-on: ubuntu-latest
-    name: Checkout & push to remote
-    if: ${{ github.repository == 'pantheon-systems/search_api_pantheon' }}
-    needs: [ build_test ]
-    env:
-      BRANCH: ${{ github.ref_name }}
-      DRUPAL_ORG_REMOTE: ${{ secrets.DRUPAL_ORG_REMOTE }}
-    steps:
-
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Setup SSH Keys
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.PANTHEON_PLATFORM_DEPLOY_KEY_PRIVATE }}
-          ssh-public-key: ${{ secrets.PANTHEON_PLATFORM_DEPLOY_KEY_PUBLIC }}
-
-      - name: Pushes to drupal.org repository
-        run: |
-          cd ${{ github.workspace }}
-          git remote add drupalorg $DRUPAL_ORG_REMOTE
-          git push drupalorg $BRANCH
+          ./vendor/bin/robo test:full $DRUPAL_VERSION

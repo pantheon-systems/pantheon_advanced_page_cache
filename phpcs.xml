@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ruleset name="search_api_pantheon">
+<ruleset name="pantheon_advanced_page_cache">
   <description>Default PHP CodeSniffer configuration for the search_api_pantheon module.</description>
   <arg name="extensions" value="inc,install,module,php,profile,test,theme,yml"/>
   <!--Exclude third party code.-->
