@@ -697,9 +697,8 @@ class RoboFile extends Tasks {
   }
 
   public function whoami():string {
-    $toReturn = trim(
-        $this->taskExec(static::$TERMINUS_EXE)
-          ->args('auth:whoami')->run());
+    $toReturn = $this->taskExec(static::$TERMINUS_EXE)
+      ->args('auth:whoami')->run();
     if (!$toReturn->wasSuccessful()) {
       $this->output()->writeln("whoami: " . $toReturn->getMessage());
       throw new TaskException($this, 'Error getting whoami');
