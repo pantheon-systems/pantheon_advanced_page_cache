@@ -689,7 +689,6 @@ class RoboFile extends Tasks {
     $this->output()->writeln('Adding the git host to known hosts file');
     $addGitHostToKnownHostsCommand = sprintf(
       'ssh-keyscan -p %d %s',
-      $HOME,
       $gitInfo['git_port'],
       $gitInfo['git_host']
     );
