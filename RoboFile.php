@@ -670,12 +670,8 @@ class RoboFile extends Tasks {
       throw new TaskException($this, 'Failed to retrieve git host and port');
     }
 
-    $mess = $res->getMessage();
-    if (is_array($message)) {
-      $mess = join("", $message);
-    }
     // decode the json response
-    $gitInfo = json_decode($mess, TRUE);
+    $gitInfo = json_decode($res->getMessage(), TRUE);
     if (json_last_error() !== JSON_ERROR_NONE) {
       $this->output()->writeln('Failed to decode json response');
       throw new TaskException($this,
