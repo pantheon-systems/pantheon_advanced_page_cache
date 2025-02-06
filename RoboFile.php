@@ -700,8 +700,14 @@ class RoboFile extends Tasks {
         'Failed to add git host to known hosts file');
     }
     // append the git host to the known_hosts file
-    file_put_contents(sprintf("%s/.ssh/known_hosts", $HOME),
-      join("\n", $output), FILE_APPEND);
+    $bytesWritten = file_put_contents(
+      sprintf("%s/.ssh/known_hosts", $HOME),
+      $output, FILE_APPEND
+    );
+    if ($bytesWritten === FALSE) {
+      $this->output()->writeln('Failed to write to known hosts file');
+      throw new TaskException($this, 'Failed to write to known hosts file');
+    }
   }
 
   /**

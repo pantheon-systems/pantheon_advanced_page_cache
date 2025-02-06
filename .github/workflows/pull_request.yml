@@ -76,7 +76,7 @@ jobs:
           php-version: "8.1"
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install Terminus
         uses: pantheon-systems/terminus-github-actions@v1
@@ -106,5 +106,10 @@ jobs:
         uses: mxschmitt/action-tmate@v3
 
       - name: Run tests
+        env:
+          TERMINUS_TOKEN: ${{ secrets.TERMINUS_TOKEN }}
+          TERMINUS_EMAIL: ${{ secrets.TERMINUS_EMAIL }}
+          TERMINUS_ORG: ${{ secrets.TERMINUS_ORG }}
+          HOME: ${{ github.workspace }}
         run: |
           ./vendor/bin/robo test:full $DRUPAL_VERSION
