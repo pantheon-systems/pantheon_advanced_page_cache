@@ -124,7 +124,7 @@ class RoboFile extends Tasks {
       );
     $this->output()->writeln(str_repeat("=", 80));
     $options = ['drupal_version' => $drupal_version];
-    $org  = getenv('TERMINUS_ORG');
+    $org = getenv('TERMINUS_ORG');
     if ($org) {
       $options['org'] = $org;
     }
@@ -180,7 +180,8 @@ class RoboFile extends Tasks {
           )
         ->run();
       if (!$result->wasSuccessful()) {
-        throw new TaskException($this, 'Error adding allow-plugins section plugin: ' . $plugin_name);
+        throw new TaskException($this,
+          'Error adding allow-plugins section plugin: ' . $plugin_name);
       }
     }
     return ResultData::EXITCODE_OK;
@@ -284,7 +285,9 @@ class RoboFile extends Tasks {
 
     $this->output()->write($info['workflow'], TRUE);
 
-    // Wait for workflow to finish only if it hasn't already. This prevents the workflow:wait command from unnecessarily running for 260 seconds when there's no workflow in progress.
+    // Wait for workflow to finish only if it hasn't already.
+    // This prevents the workflow:wait command from unnecessarily
+    // running for 260 seconds when there's no workflow in progress.
     if ($info['status'] !== 'succeeded') {
       $this->output()->write('Waiting for platform', TRUE);
       exec(
@@ -458,7 +461,8 @@ class RoboFile extends Tasks {
   }
 
   public function getShortRef(): string {
-    return trim($this->taskExec('git rev-parse --short HEAD')->run()->getMessage());
+    return trim($this->taskExec('git rev-parse --short HEAD')
+      ->run()->getMessage());
   }
 
   /**
@@ -612,11 +616,13 @@ class RoboFile extends Tasks {
    * @return array An array of workflow status info.
    */
   private function cleanUpInfo(array $info): array {
-    // Clean up the workflow status data and assign values to an array so it's easier to check.
+    // Clean up the workflow status data and assign values to an array so
+    // it's easier to check.
     foreach ($info as $line => $value) {
       $ln = array_values(array_filter(explode("  ", trim($value))));
 
-      // Skip lines with only one value. This filters out the ASCII dividers output by the command.
+      // Skip lines with only one value. This filters out the ASCII dividers
+      // output by the command.
       if (count($ln) > 1) {
         if (in_array($ln[0], ['Started At', 'Finished At'])) {
           $ln[0] = trim(str_replace('At', '', $ln[0]));
@@ -651,7 +657,7 @@ class RoboFile extends Tasks {
     $HOME = $this->getHomeDir();
     touch(sprintf("%s/.ssh/known_hosts", $HOME));
 
-    $this->output()->writeln('Getting the Site Repo: HOME: '. $HOME);
+    $this->output()->writeln('Getting the Site Repo: HOME: ' . $HOME);
     // get the git host and port from terminus
     $res = $this->taskExec(static::$TERMINUS_EXE)->args(
       'connection:info',
@@ -672,9 +678,11 @@ class RoboFile extends Tasks {
     $gitInfo = json_decode($mess, TRUE);
     if (json_last_error() !== JSON_ERROR_NONE) {
       $this->output()->writeln('Failed to decode json response');
-      throw new TaskException($this, 'Failed to decode json response' . json_last_error_msg());
+      throw new TaskException($this,
+        'Failed to decode json response' . json_last_error_msg());
     }
-    $this->output()->writeln('Retrieved git host and port' . print_r($gitInfo, TRUE));
+    $this->output()->writeln('Retrieved git host and port' .
+      print_r($gitInfo, TRUE));
 
     // check if the git host and port were retrieved
     if (!isset($gitInfo['git_host']) || !isset($gitInfo['git_port'])) {
@@ -682,8 +690,6 @@ class RoboFile extends Tasks {
       throw new TaskException($this, 'Failed to retrieve git host and port');
     }
     // Does the known_hosts file exist?
-}
-
     $this->output()->writeln('Adding the git host to known hosts file');
     $addGitHostToKnownHostsCommand = sprintf(
       'ssh-keyscan -p %d %s',
@@ -695,12 +701,17 @@ class RoboFile extends Tasks {
     exec($addGitHostToKnownHostsCommand, $output, $return_var);
     if ($return_var !== 0) {
       $this->output()->writeln('Failed to add git host to known hosts file');
-      throw new TaskException($this, 'Failed to add git host to known hosts file');
+      throw new TaskException($this,
+        'Failed to add git host to known hosts file');
     }
     // append the git host to the known_hosts file
-    file_put_contents(sprintf("%s/.ssh/known_hosts", $HOME), join("\n", $output), FILE_APPEND);
+    file_put_contents(sprintf("%s/.ssh/known_hosts", $HOME),
+      join("\n", $output), FILE_APPEND);
   }
 
+  /**
+   * Get the current terminus user.
+   */
   public function whoami():string {
     $toReturn = $this->taskExec(static::$TERMINUS_EXE)
       ->args('auth:whoami')->run();
@@ -711,6 +722,9 @@ class RoboFile extends Tasks {
     return trim($toReturn->getMessage());
   }
 
+  /**
+   * Get the home directory. If it's not set, use the workspace default folder.
+   */
   public function getHomeDir():string {
     return getenv('HOME') || getenv('WORKSPACE');
   }
