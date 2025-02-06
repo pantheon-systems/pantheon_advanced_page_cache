@@ -133,11 +133,12 @@ class RoboFile extends Tasks {
         $this->testingSiteName,
         $options,
       );
+    // Step 1b. Update known_hosts file with the git host and port.
+    $this->updateKnownHosts($this->testingSiteName);
     // Step 2: Install the site.
     $this->siteInstall($this->testingSiteName);
     // Step 3: Set the connection mode to git.
     $this->setConnectionGit($this->testingSiteName);
-    $this->updateKnownHosts($this->testingSiteName);
     // Step 4: Clone the site locally.
     $this->cloneSite($this->testingSiteName);
     // Step 5: Require the module.
