@@ -116,6 +116,7 @@ class RoboFile extends Tasks {
         'Module constraint: ' . $this->testModuleConstraint
       );
     $this->output()->writeln('Drupal Version: ' . $drupal_version);
+    $this->output()->writeln('Home: ' . $this->getHomeDir());
     $this->output()->writeln(
         'Cache settings: ' . print_r($this->cache_settings, TRUE)
       );
@@ -687,14 +688,10 @@ class RoboFile extends Tasks {
     }
     // Does the known_hosts file exist?
     $this->output()->writeln('Adding the git host to known hosts file');
-    $addGitHostToKnownHostsCommand = sprintf(
-      'ssh-keyscan -p %d %s',
-      $gitInfo['git_port'],
-      $gitInfo['git_host']
-    );
-    $this->output()->writeln($addGitHostToKnownHostsCommand);
-    exec($addGitHostToKnownHostsCommand, $output, $return_var);
-    if ($return_var !== 0) {
+    $res = $this->taskExec('ssh-keyscan')->args(
+      '-p', $gitInfo['git_port'], $gitInfo['git_host'])->run();
+    $this->output()->writeln($res->getMessage());
+    if (!$res->wasSuccessful()) {
       $this->output()->writeln('Failed to add git host to known hosts file');
       throw new TaskException($this,
         'Failed to add git host to known hosts file');
@@ -702,7 +699,8 @@ class RoboFile extends Tasks {
     // append the git host to the known_hosts file
     $bytesWritten = file_put_contents(
       sprintf("%s/.ssh/known_hosts", $HOME),
-      $output, FILE_APPEND
+      $res->getMessage(),
+      FILE_APPEND,
     );
     if ($bytesWritten === FALSE) {
       $this->output()->writeln('Failed to write to known hosts file');
