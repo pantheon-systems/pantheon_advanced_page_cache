@@ -106,6 +106,7 @@ class RoboFile extends Tasks {
     $this->output()->writeln(
         'RoboFile constructor: ' . $this->started->format('Y-m-d H:i:s')
       );
+    $this->output()->writeln('Who ami I: ' . $this->whoami());
     $this->output()->writeln('Running tests for Drupal ' . $drupal_version);
     $this->output()->writeln('Repository: ' . $this->repository);
     $this->output()->writeln('Owner: ' . $this->owner);
@@ -660,12 +661,12 @@ class RoboFile extends Tasks {
       $mess = join("", $message);
     }
     // decode the json response
-    $gitInfo = json_decode($mess, true);
+    $gitInfo = json_decode($mess, TRUE);
     if (json_last_error() !== JSON_ERROR_NONE) {
       $this->output()->writeln('Failed to decode json response');
       throw new TaskException($this, 'Failed to decode json response' . json_last_error_msg());
     }
-    $this->output()->writeln('Retrieved git host and port' . print_r($gitInfo, true));
+    $this->output()->writeln('Retrieved git host and port' . print_r($gitInfo, TRUE));
 
     // check if the git host and port were retrieved
     if (!isset($gitInfo['git_host']) || !isset($gitInfo['git_port'])) {
@@ -693,6 +694,17 @@ class RoboFile extends Tasks {
       $this->output()->writeln($addGitHostToKnownHostsCommand);
       exec($addGitHostToKnownHostsCommand);
     }
+  }
+
+  public function whoami():string {
+    $toReturn = trim(
+        $this->taskExec(static::$TERMINUS_EXE)
+          ->args('auth:whoami')->run());
+    if (!$toReturn->wasSuccessful()) {
+      $this->output()->writeln("whoami: " . $toReturn->getMessage());
+      throw new TaskException($this, 'Error getting whoami');
+    }
+    return trim($toReturn->getMessage());
   }
 
 }
