@@ -123,11 +123,15 @@ class RoboFile extends Tasks {
         'Cache schema: ' . print_r($this->cache_schema, TRUE)
       );
     $this->output()->writeln(str_repeat("=", 80));
-
+    $options = ['drupal_version' => $drupal_version];
+    $org  = getenv('TERMINUS_ORG');
+    if ($org) {
+      $options['org'] = $org;
+    }
     // Step 1: Create a new site for testing.
     $this->createSite(
         $this->testingSiteName,
-        ['drupal_version' => $drupal_version]
+        $options,
       );
     // Step 2: Install the site.
     $this->siteInstall($this->testingSiteName);
