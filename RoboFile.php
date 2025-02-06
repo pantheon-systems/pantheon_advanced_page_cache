@@ -656,7 +656,15 @@ class RoboFile extends Tasks {
    */
   public function updateKnownHosts(string $site_name) {
     $HOME = $this->getHomeDir();
-    touch(sprintf("%s/.ssh/known_hosts", $HOME));
+    if (!is_dir(sprintf("%s/.ssh", $HOME))) {
+      mkdir(sprintf("%s/.ssh", $HOME));
+    }
+    $touched = touch(sprintf("%s/.ssh/known_hosts", $HOME));
+    if (!$touched) {
+      $this->output()->writeln('Failed to create known_hosts file');
+      throw new TaskException($this, 'Failed to create known_hosts file: ' .
+        sprintf("%s/.ssh/known_hosts", $HOME));
+    }
 
     $this->output()->writeln('Getting the Site Repo: HOME: ' . $HOME);
     // get the git host and port from terminus
