@@ -240,9 +240,9 @@ class RoboFile extends Tasks {
       string $site_name,
       array $options = ['org' => NULL]
     ) {
+    $HOME = $this->getHomeDir();
     $site_info = $this->siteInfo($site_name);
     if (empty($site_info)) {
-      $home = $_SERVER['HOME'];
       $toReturn = $this->taskExec(static::$TERMINUS_EXE)
         ->args(
             'site:create',
@@ -260,7 +260,7 @@ class RoboFile extends Tasks {
       $this->waitForWorkflow($site_name);
       $site_info = $this->siteInfo($site_name);
       // Write to $HOME/.robo-sites-created to delete them later.
-      exec("echo $site_name >> $home/.robo-sites-created");
+      exec("echo $site_name >> $HOME/.robo-sites-created");
     }
     return $site_info;
   }
@@ -444,8 +444,8 @@ class RoboFile extends Tasks {
    * Delete sites created in this test run.
    */
   public function deleteSites() {
-    $home = $_SERVER['HOME'];
-    $file_contents = file_get_contents("$home/.robo-sites-created");
+    $HOME = $this->getHomeDir();
+    $file_contents = file_get_contents($HOME . '/.robo-sites-created');
     $filenames = explode("\n", $file_contents);
     foreach ($filenames as $site_name) {
       if ($site_name) {
@@ -471,7 +471,7 @@ class RoboFile extends Tasks {
    *   Full path to the site folder.
    */
   protected function getSiteFolder(string $site_name): string {
-    return $_SERVER['HOME'] . '/pantheon-local-copies/' . $site_name;
+    return $this->getHomeDir . $site_name;
   }
 
   /**
@@ -648,7 +648,10 @@ class RoboFile extends Tasks {
    *   The machine name of the site to update the known_hosts file for.
    */
   public function updateKnownHosts(string $site_name) {
-    $this->output()->writeln('Getting the Site Repo');
+    $HOME = $this->getHomeDir();
+    touch(sprintf("%s/.ssh/known_hosts", $HOME));
+
+    $this->output()->writeln('Getting the Site Repo: HOME: '. $HOME);
     // get the git host and port from terminus
     $res = $this->taskExec(static::$TERMINUS_EXE)->args(
       'connection:info',
@@ -678,12 +681,8 @@ class RoboFile extends Tasks {
       $this->output()->writeln('Failed to retrieve git host and port');
       throw new TaskException($this, 'Failed to retrieve git host and port');
     }
-    $HOME = getenv("HOME");
     // Does the known_hosts file exist?
-    if (!file_exists(sprintf("%s/.ssh/known_hosts", $HOME))) {
-      // if not, create one
-      touch(sprintf("%s/.ssh/known_hosts", $HOME));
-    }
+}
 
     $this->output()->writeln('Adding the git host to known hosts file');
     $addGitHostToKnownHostsCommand = sprintf(
@@ -710,6 +709,10 @@ class RoboFile extends Tasks {
       throw new TaskException($this, 'Error getting whoami');
     }
     return trim($toReturn->getMessage());
+  }
+
+  public function getHomeDir():string {
+    return getenv('HOME') || getenv('WORKSPACE');
   }
 
 }
