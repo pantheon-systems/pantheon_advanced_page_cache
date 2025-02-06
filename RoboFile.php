@@ -726,8 +726,9 @@ class RoboFile extends Tasks {
   /**
    * Get the home directory. If it's not set, use the workspace default folder.
    */
+  #[Pure]
   public function getHomeDir():string {
-    return getenv('HOME') || getenv('WORKSPACE');
+    return getenv('HOME') ?? getenv('WORKSPACE');
   }
 
 }
