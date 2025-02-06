@@ -97,7 +97,7 @@ class RoboFile extends Tasks {
       string $drupal_version = '10',
     ) {
     $this->testingSiteName = sprintf(
-        'test-%s-d%d',
+        'papc-%s-d%d',
         $this->getShortRef(),
         $drupal_version
       );
