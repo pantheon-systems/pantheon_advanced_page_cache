@@ -678,27 +678,28 @@ class RoboFile extends Tasks {
       $this->output()->writeln('Failed to retrieve git host and port');
       throw new TaskException($this, 'Failed to retrieve git host and port');
     }
-
+    $HOME = getenv("HOME");
     // Does the known_hosts file exist?
-    if (!file_exists(sprintf("%s/.ssh/known_hosts", getenv("HOME")))) {
+    if (!file_exists(sprintf("%s/.ssh/known_hosts", $HOME))) {
       // if not, create one
-      touch(sprintf("%s/.ssh/known_hosts", getenv("HOME")));
+      touch(sprintf("%s/.ssh/known_hosts", $HOME));
     }
 
-    // get the contents of the known_hosts file
-    $knownHosts = file_get_contents(sprintf("%s/.ssh/known_hosts", getenv("HOME")));
-    // check if the git host is already in the known_hosts file
-    if (!str_contains($knownHosts, $gitInfo['git_host'])) {
-      // if not, add it
-      $this->output()->writeln('Adding the git host to known hosts file');
-      $addGitHostToKnownHostsCommand = sprintf(
-        'ssh-keyscan -p %d %s >> ~/.ssh/known_hosts',
-        $gitInfo['git_port'],
-        $gitInfo['git_host']
-      );
-      $this->output()->writeln($addGitHostToKnownHostsCommand);
-      exec($addGitHostToKnownHostsCommand);
+    $this->output()->writeln('Adding the git host to known hosts file');
+    $addGitHostToKnownHostsCommand = sprintf(
+      'ssh-keyscan -p %d %s',
+      $HOME,
+      $gitInfo['git_port'],
+      $gitInfo['git_host']
+    );
+    $this->output()->writeln($addGitHostToKnownHostsCommand);
+    exec($addGitHostToKnownHostsCommand, $output, $return_var);
+    if ($return_var !== 0) {
+      $this->output()->writeln('Failed to add git host to known hosts file');
+      throw new TaskException($this, 'Failed to add git host to known hosts file');
     }
+    // append the git host to the known_hosts file
+    file_put_contents(sprintf("%s/.ssh/known_hosts", $HOME), join("\n", $output), FILE_APPEND);
   }
 
   public function whoami():string {
