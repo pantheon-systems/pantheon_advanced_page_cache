@@ -71,6 +71,9 @@ class RoboFile extends Tasks {
    */
   protected string $testModuleConstraint;
 
+  protected string $localCloneDirectory;
+
+
   /**
    * Class constructor.
    */
@@ -168,7 +171,7 @@ class RoboFile extends Tasks {
         'mglaman/composer-drupal-lenient',
       ];
 
-    $site_folder = $this->getSiteFolder($site_name);
+    $site_folder = $this->getLocalCloneDir($site_name);
     if (!is_dir($site_folder)) {
       throw new TaskException($this, 'Site folder not found: ' . $site_folder);
     }
@@ -200,10 +203,14 @@ class RoboFile extends Tasks {
    * @return \Robo\Result
    */
   public function cloneSite(string $site_name): Result {
-    if (!is_dir($this->getSiteFolder($site_name))) {
-      return $this->taskExec(static::$TERMINUS_EXE)
+    if (!is_dir($this->getLocalCloneDir($site_name))) {
+      $result = $this->taskExec(static::$TERMINUS_EXE)
         ->args('local:clone', $site_name)
         ->run();
+      if (!$result->wasSuccessful()) {
+        throw new TaskException($this, 'Error cloning site');
+      }
+      $this->localCloneDirectory = trim($result->getMessage());
     }
     return ResultData::EXITCODE_OK;
   }
@@ -220,11 +227,11 @@ class RoboFile extends Tasks {
       string $site_name,
       string $constraint = '^2-dev'
     ) {
-    $site_folder = $this->getSiteFolder($site_name);
+    $site_folder = $this->getLocalCloneDir($site_name);
     chdir($site_folder);
     // Always test again latest version of search_api_solr.
     $this->taskExec('composer')
-      ->cwd($this->getSiteFolder($site_name))
+      ->cwd($this->getLocalCloneDir($site_name))
       ->args(
           'require',
           $this->repository,
@@ -340,7 +347,7 @@ class RoboFile extends Tasks {
       string $site_name,
       string $commit_msg = 'Changes committed from demo script.'
     ) {
-    $site_folder = $this->getSiteFolder($site_name);
+    $site_folder = $this->getLocalCloneDir($site_name);
     chdir($site_folder);
     try {
       $git = new Git();
@@ -479,8 +486,11 @@ class RoboFile extends Tasks {
    * @return string
    *   Full path to the site folder.
    */
-  protected function getSiteFolder(string $site_name): string {
-    return $this->getHomeDir() . $site_name;
+  protected function getLocalCloneDir(): string {
+    if (empty($this->localCloneDirectory)) {
+      throw new TaskException($this, 'Local clone directory not set.');
+    }
+    return $this->localCloneDirectory;
   }
 
   /**
@@ -738,7 +748,7 @@ class RoboFile extends Tasks {
    */
   #[Pure]
   public function getHomeDir():string {
-    return getenv('HOME') ?? getenv('WORKSPACE');
+    return getenv('HOME') ?? '/home/runner';
   }
 
 }

@@ -9,10 +9,10 @@ on:
 env:
   TERMINUS_TOKEN: ${{ secrets.TERMINUS_TOKEN }}
   TERMINUS_EMAIL: ${{ secrets.TERMINUS_EMAIL }}
+  TERMINUS_ORG: ${{ secrets.TERMINUS_ORG }}
   GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
   TZ: "/usr/share/zoneinfo/America/Los_Angeles"
   TERM: dumb
-  TERMINUS_ORG: ${{ secrets.TERMINUS_ORG }}
   GITHUB_RUN_NUMBER: ${{ github.run_number }}
   COMMIT_SHA: ${{ github.sha }}
   PUBLIC_KEY: ${{ secrets.PANTHEON_PLATFORM_DEPLOY_KEY_PUBLIC }}
@@ -105,9 +105,5 @@ jobs:
         uses: mxschmitt/action-tmate@v3
 
       - name: Run tests
-        env:
-          TERMINUS_TOKEN: ${{ secrets.TERMINUS_TOKEN }}
-          TERMINUS_EMAIL: ${{ secrets.TERMINUS_EMAIL }}
-          TERMINUS_ORG: ${{ secrets.TERMINUS_ORG }}
         run: |
           ./vendor/bin/robo test:full $DRUPAL_VERSION
