@@ -161,7 +161,7 @@ class RoboFile extends Tasks {
    * @param int $drupal_version
    *   The major version of Drupal to use.
    */
-  public function allowPlugins(string $site_name): Result {
+  public function allowPlugins(string $site_name): int {
     $plugins = [
         'drupal/core-project-message',
         'phpstan/extension-installer',
