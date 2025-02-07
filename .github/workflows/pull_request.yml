@@ -19,7 +19,6 @@ env:
   PRIVATE_KEY: ${{ secrets.PANTHEON_PLATFORM_DEPLOY_KEY_PRIVATE }}
   BASH_ENV: ~/.bashrc
   WORKSPACE: ${{ github.workspace }}
-  HOME: /home/runner
   GITHUB_REPOSITORY: ${{ github.repository }}
   REF: ${{ github.ref }}
 
@@ -110,6 +109,5 @@ jobs:
           TERMINUS_TOKEN: ${{ secrets.TERMINUS_TOKEN }}
           TERMINUS_EMAIL: ${{ secrets.TERMINUS_EMAIL }}
           TERMINUS_ORG: ${{ secrets.TERMINUS_ORG }}
-          HOME: ${{ github.workspace }}
         run: |
           ./vendor/bin/robo test:full $DRUPAL_VERSION
