@@ -169,6 +169,9 @@ class RoboFile extends Tasks {
       ];
 
     $site_folder = $this->getSiteFolder($site_name);
+    if (!is_dir($site_folder)) {
+      throw new TaskException($this, 'Site folder not found: ' . $site_folder);
+    }
     chdir($site_folder);
 
     foreach ($plugins as $plugin_name) {
@@ -221,7 +224,7 @@ class RoboFile extends Tasks {
     chdir($site_folder);
     // Always test again latest version of search_api_solr.
     $this->taskExec('composer')
-      ->cwd($site_folder)
+      ->cwd($this->getSiteFolder($site_name))
       ->args(
           'require',
           $this->repository,
