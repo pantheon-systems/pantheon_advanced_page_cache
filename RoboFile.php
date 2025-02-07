@@ -215,12 +215,13 @@ class RoboFile extends Tasks {
    */
   public function requireMod(
       string $site_name,
-      string $constraint = '^8'
+      string $constraint = '^2-dev'
     ) {
     $site_folder = $this->getSiteFolder($site_name);
     chdir($site_folder);
     // Always test again latest version of search_api_solr.
     $this->taskExec('composer')
+      ->cwd($site_folder)
       ->args(
           'require',
           $this->repository,
