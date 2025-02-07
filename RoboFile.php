@@ -476,7 +476,7 @@ class RoboFile extends Tasks {
    *   Full path to the site folder.
    */
   protected function getSiteFolder(string $site_name): string {
-    return $this->getHomeDir . $site_name;
+    return $this->getHomeDir() . $site_name;
   }
 
   /**
