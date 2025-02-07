@@ -146,7 +146,7 @@ class RoboFile extends Tasks {
     $this->allowPlugins($this->testingSiteName, $drupal_version);
     $this->requireMod($this->testingSiteName, $this->testModuleConstraint);
     // Step 6: Check in and push the changes.
-    $this->testGitPush($this->testingSiteName);
+    $this->checkinAndPush($this->testingSiteName);
     // Step 7: Enable the module.
     $this->moduleEnable($this->testingSiteName);
 
