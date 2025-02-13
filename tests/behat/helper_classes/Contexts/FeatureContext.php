@@ -140,7 +140,7 @@ final class FeatureContext extends RawDrupalContext implements Context
     }
 
     /**
-     * @Given there are :numnber_of_nodes article nodes with a huge number of taxonomy terms each
+     * @Given there are :number_of_nodes article nodes with a huge number of taxonomy terms each
      */
     public function thereAreArticleNodesWithAHugeNumberOfTaxonomyTermsEach($number_of_nodes)
     {

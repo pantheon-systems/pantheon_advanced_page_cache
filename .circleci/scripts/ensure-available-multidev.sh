@@ -30,7 +30,7 @@ echo "Max Multidev Count: ${MAX_CDE_COUNT}"
 
 DOMAINS="$(terminus env:list "${SITE_NAME}" --format=string --fields=ID,Created)"
 
-# Filter out dev, test, live as they don't count agains the Max Multidev count.
+# Filter out dev, test, live as they don't count against the Max Multidev count.
 CDE_DOMAINS=$(echo "$DOMAINS" | grep -vE '\b(dev|test|live)\b')
 
 # Count current environments
@@ -50,7 +50,7 @@ NUMBER_OF_CDES_TO_DELETE=$((POTENTIAL_CDE_COUNT - MAX_CDE_COUNT))
 echo "There are not enough multidevs, deleting the oldest ${NUMBER_OF_CDES_TO_DELETE} environment(s)."
 
 # Filter out any multidev environments that should never be deleted.
-# This is seperate from filtering out dev/test/live above as they still count towards 'Max Multidev'.
+# This is separate from filtering out dev/test/live above as they still count towards 'Max Multidev'.
 # Then, sort the list by the timestamps
 SORTED_DOMAINS=$(echo "$CDE_DOMAINS" | grep -vE '\b(drupal10)\b' | sort -n -k2)
 

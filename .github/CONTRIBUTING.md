@@ -1,6 +1,6 @@
 # Contributing
 
-Pull requests are accepted on the [Github pantheon_advanced_page_cache project](https://github.com/pantheon-systems/pantheon_advanced_page_cache).
+Pull requests are accepted on the [GitHub pantheon_advanced_page_cache project](https://github.com/pantheon-systems/pantheon_advanced_page_cache).
 
 ### Making a new release
 
@@ -13,11 +13,11 @@ $ git tag <x.y.z>
 $ git push origin <x.y.z>
 ```
 
-When you push the tag to Github, automation will mirror the tag on the [drupal.org pantheon_advanced_page_cache project](https://www.drupal.org/project/pantheon_advanced_page_cache).
+When you push the tag to GitHub, automation will mirror the tag on the [drupal.org pantheon_advanced_page_cache project](https://www.drupal.org/project/pantheon_advanced_page_cache).
 
-Next, create a new release on Github.
+Next, create a new release on GitHub.
 
-- Visit the [new release page on Github](https://github.com/pantheon-systems/pantheon_advanced_page_cache/releases/new).
+- Visit the [new release page on GitHub](https://github.com/pantheon-systems/pantheon_advanced_page_cache/releases/new).
 - Select the tag you just pushed.
 - Click on the "generate release notes" button. Edit to suit.
 - Ensure that "set as pre-release" is NOT checked, and "set as the latest release" is checked. These are the defaults.
