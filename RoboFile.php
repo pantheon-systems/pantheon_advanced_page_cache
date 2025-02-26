@@ -213,7 +213,7 @@ class RoboFile extends Tasks {
       $lcd = $result->getMessage();
       if (empty($lcd)) {
       	$this->output()->writeln('Local clone directory not set. Setting default value.');
-        $lcd = $this->getHomeDir() . DIRECTORY_SEPARATER . $site_name;
+        $lcd = $this->getHomeDir() . DIRECTORY_SEPARATOR . $site_name;
       }
       $this->localCloneDirectory = trim($lcd);
     }
@@ -494,7 +494,7 @@ class RoboFile extends Tasks {
   protected function getLocalCloneDir(): string {
     if (empty($this->localCloneDirectory)) {
       $this->writeLn('Local clone directory not set. Setting default value.');
-      $this->localCloneDirectory = $this->getHomeDir() . DIRECTORY_SEPARATER . $site_name;
+      $this->localCloneDirectory = $this->getHomeDir() . DIRECTORY_SEPARATOR . $site_name;
     }
     return $this->localCloneDirectory;
   }
