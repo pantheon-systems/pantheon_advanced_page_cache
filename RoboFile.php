@@ -493,7 +493,8 @@ class RoboFile extends Tasks {
    */
   protected function getLocalCloneDir(): string {
     if (empty($this->localCloneDirectory)) {
-      throw new TaskException($this, 'Local clone directory not set.');
+      $this->writeLn('Local clone directory not set. Setting default value.');
+      $this->localCloneDirectory = $this->getHomeDir() . DIRECTORY_SEPARATER . $site_name;
     }
     return $this->localCloneDirectory;
   }
