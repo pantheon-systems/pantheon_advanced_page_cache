@@ -439,16 +439,7 @@ class RoboFile extends Tasks {
           $this->name,
         )
       ->run(), 'Error enabling module');
-    $this->dieOnError($this->taskExec(static::$TERMINUS_EXE)
-      ->args(
-        'drush',
-        $site_name . '.' . $env,
-        '--',
-        'pm-enable',
-        '--yes',
-        $this->name . "_test",
-      )
-      ->run(), 'Error enabling module');
+
     $this->dieOnError($this->taskExec(static::$TERMINUS_EXE)
       ->args(
           'drush',
