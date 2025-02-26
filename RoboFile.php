@@ -202,7 +202,7 @@ class RoboFile extends Tasks {
    *
    * @return \Robo\Result
    */
-  public function cloneSite(string $site_name): Result {
+  public function cloneSite(string $site_name): int {
     if (!is_dir($this->getLocalCloneDir($site_name))) {
       $result = $this->taskExec(static::$TERMINUS_EXE)
         ->args('local:clone', $site_name)
