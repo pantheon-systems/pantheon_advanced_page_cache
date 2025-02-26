@@ -234,9 +234,7 @@ class RoboFile extends Tasks {
     ) {
     $site_folder = $this->getLocalCloneDir($site_name);
     chdir($site_folder);
-    // Always test again latest version of search_api_solr.
     $this->taskExec('composer')
-      ->cwd($this->getLocalCloneDir($site_name))
       ->args(
           'require',
           $this->repository,
