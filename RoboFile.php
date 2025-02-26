@@ -211,7 +211,7 @@ class RoboFile extends Tasks {
         throw new TaskException($this, 'Error cloning site');
       }
       $lcd = $result->getMessage();
-      if empty($lcd) {
+      if (empty($lcd)) {
       	$this->output()->writeln('Local clone directory not set. Setting default value.');
         $lcd = $this->getHomeDir() . DIRECTORY_SEPARATER . $site_name;
       }
