@@ -491,7 +491,7 @@ class RoboFile extends Tasks {
    * @return string
    *   Full path to the site folder.
    */
-  protected function getLocalCloneDir(): string {
+  protected function getLocalCloneDir($site_name): string {
     if (empty($this->localCloneDirectory)) {
       $this->writeLn('Local clone directory not set. Setting default value.');
       $this->localCloneDirectory = $this->getHomeDir() . DIRECTORY_SEPARATOR . $site_name;
