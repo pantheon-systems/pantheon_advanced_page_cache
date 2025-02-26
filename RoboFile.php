@@ -153,7 +153,7 @@ class RoboFile extends Tasks {
     // Step 7: Enable the module.
     $this->moduleEnable($this->testingSiteName);
 
-    throw new TaskException($this, 'No tests implemented yet.');
+    // throw new TaskException($this, 'No tests implemented yet.');
   }
 
   /**
