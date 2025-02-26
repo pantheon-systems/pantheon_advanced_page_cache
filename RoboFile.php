@@ -306,7 +306,7 @@ class RoboFile extends Tasks {
     if ($info['status'] !== 'succeeded') {
       $this->output()->write('Waiting for platform', TRUE);
       exec(
-          "terminus build:workflow:wait --max=260 $site_name.$env",
+          "terminus workflow:wait --max=260 $site_name.$env",
           $finished,
           $status
         );
