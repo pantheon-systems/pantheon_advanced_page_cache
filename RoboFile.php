@@ -2,11 +2,11 @@
 
 use CzProject\GitPhp\Git;
 use Robo\Exception\TaskException;
+use Robo\Result;
+use Robo\ResultData;
 use Robo\Tasks;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
-use Robo\Result;
-use Robo\ResultData;
 
 /**
  * This is project's console commands configuration for Robo task runner.
@@ -73,7 +73,6 @@ class RoboFile extends Tasks {
 
   protected string $localCloneDirectory;
 
-
   /**
    * Class constructor.
    */
@@ -97,18 +96,18 @@ class RoboFile extends Tasks {
    * Run tests.
    */
   public function testFull(
-      string $drupal_version = '10',
+    string $drupal_version = '10',
     ) {
     $this->testingSiteName = sprintf(
-        'papc-%s-d%d',
-        $this->getShortRef(),
-        $drupal_version
-      );
+      'papc-%s-d%d',
+      $this->getShortRef(),
+      $drupal_version
+    );
     $this->output()->writeln('🧾');
     $this->output()->writeln(str_repeat("=", 80));
     $this->output()->writeln(
-        'RoboFile constructor: ' . $this->started->format('Y-m-d H:i:s')
-      );
+      'RoboFile constructor: ' . $this->started->format('Y-m-d H:i:s')
+    );
     $this->output()->writeln('Who ami I: ' . $this->whoami());
     $this->output()->writeln('Running tests for Drupal ' . $drupal_version);
     $this->output()->writeln('Repository: ' . $this->repository);
@@ -116,16 +115,16 @@ class RoboFile extends Tasks {
     $this->output()->writeln('Name: ' . $this->name);
     $this->output()->writeln('Site ID: ' . $this->testingSiteName);
     $this->output()->writeln(
-        'Module constraint: ' . $this->testModuleConstraint
-      );
+      'Module constraint: ' . $this->testModuleConstraint
+    );
     $this->output()->writeln('Drupal Version: ' . $drupal_version);
     $this->output()->writeln('Home: ' . $this->getHomeDir());
     $this->output()->writeln(
-        'Cache settings: ' . print_r($this->cache_settings, TRUE)
-      );
+      'Cache settings: ' . print_r($this->cache_settings, TRUE)
+    );
     $this->output()->writeln(
-        'Cache schema: ' . print_r($this->cache_schema, TRUE)
-      );
+      'Cache schema: ' . print_r($this->cache_schema, TRUE)
+    );
     $this->output()->writeln(str_repeat("=", 80));
     $options = ['drupal_version' => $drupal_version];
     $org = getenv('TERMINUS_ORG');
@@ -134,9 +133,9 @@ class RoboFile extends Tasks {
     }
     // Step 1: Create a new site for testing.
     $this->createSite(
-        $this->testingSiteName,
-        $options,
-      );
+      $this->testingSiteName,
+      $options,
+    );
     // Step 1b. Update known_hosts file with the git host and port.
     $this->updateKnownHosts($this->testingSiteName);
     // Step 2: Install the site.
@@ -152,7 +151,6 @@ class RoboFile extends Tasks {
     $this->checkinAndPush($this->testingSiteName);
     // Step 7: Enable the module.
     $this->moduleEnable($this->testingSiteName);
-
     // throw new TaskException($this, 'No tests implemented yet.');
   }
 
@@ -166,10 +164,10 @@ class RoboFile extends Tasks {
    */
   public function allowPlugins(string $site_name): int {
     $plugins = [
-        'drupal/core-project-message',
-        'phpstan/extension-installer',
-        'mglaman/composer-drupal-lenient',
-      ];
+      'drupal/core-project-message',
+      'phpstan/extension-installer',
+      'mglaman/composer-drupal-lenient',
+    ];
 
     $site_folder = $this->getLocalCloneDir($site_name);
     if (!is_dir($site_folder)) {
@@ -180,15 +178,17 @@ class RoboFile extends Tasks {
     foreach ($plugins as $plugin_name) {
       $result = $this->taskExec('composer')
         ->args(
-            'config',
-            '--no-interaction',
-            'allow-plugins.' . $plugin_name,
-            'true'
-          )
+          'config',
+          '--no-interaction',
+          'allow-plugins.' . $plugin_name,
+          'true'
+        )
         ->run();
       if (!$result->wasSuccessful()) {
-        throw new TaskException($this,
-          'Error adding allow-plugins section plugin: ' . $plugin_name);
+        throw new TaskException(
+          $this,
+          'Error adding allow-plugins section plugin: ' . $plugin_name
+        );
       }
     }
     return ResultData::EXITCODE_OK;
@@ -212,7 +212,9 @@ class RoboFile extends Tasks {
       }
       $lcd = $result->getMessage();
       if (empty($lcd)) {
-      	$this->output()->writeln('Local clone directory not set. Setting default value.');
+        $this->output()->writeln(
+          'Local clone directory not set. Setting default value.'
+        );
         $lcd = $this->getHomeDir() . DIRECTORY_SEPARATOR . $site_name;
       }
       $this->localCloneDirectory = trim($lcd);
@@ -229,17 +231,17 @@ class RoboFile extends Tasks {
    *   The constraint to use for the search_api_pantheon module.
    */
   public function requireMod(
-      string $site_name,
-      string $constraint = '^2-dev'
-    ) {
+    string $site_name,
+    string $constraint = '^2-dev'
+  ) {
     $site_folder = $this->getLocalCloneDir($site_name);
     chdir($site_folder);
     $this->taskExec('composer')
       ->args(
-          'require',
-          $this->repository,
-          $constraint,
-        )
+        'require',
+        $this->repository,
+        $constraint,
+      )
       ->run();
     return ResultData::EXITCODE_OK;
   }
@@ -253,22 +255,22 @@ class RoboFile extends Tasks {
    * @return \Robo\Result
    */
   public function createSite(
-      string $site_name,
-      array $options = ['org' => NULL]
-    ) {
+    string $site_name,
+    array $options = ['org' => NULL]
+  ) {
     $HOME = $this->getHomeDir();
     $site_info = $this->siteInfo($site_name);
     if (empty($site_info)) {
       $toReturn = $this->taskExec(static::$TERMINUS_EXE)
         ->args(
-            'site:create',
-            $site_name,
-            $site_name,
-            sprintf(
-              'drupal-%d-composer-managed',
-              $options['drupal_version']
-              )
-          );
+          'site:create',
+          $site_name,
+          $site_name,
+          sprintf(
+            'drupal-%d-composer-managed',
+            $options['drupal_version']
+          )
+        );
       if (!empty($options['org'])) {
         $toReturn->option('org', $options['org']);
       }
@@ -290,9 +292,9 @@ class RoboFile extends Tasks {
     $this->output()->write('Checking workflow status', TRUE);
 
     exec(
-        "terminus workflow:info:status --format=json $site_name.$env",
-        $info
-      );
+      "terminus workflow:info:status --format=json $site_name.$env",
+      $info
+    );
     $info = json_decode(join("", $info), TRUE);
     if (empty($info) || json_last_error() !== JSON_ERROR_NONE) {
       throw new TaskException($this, 'Error getting workflow information');
@@ -306,10 +308,10 @@ class RoboFile extends Tasks {
     if ($info['status'] !== 'succeeded') {
       $this->output()->write('Waiting for platform', TRUE);
       exec(
-          "terminus workflow:wait --max=260 $site_name.$env",
-          $finished,
-          $status
-        );
+        "terminus workflow:wait --max=260 $site_name.$env",
+        $finished,
+        $status
+      );
     }
 
     if ($this->output()->isVerbose()) {
@@ -329,10 +331,10 @@ class RoboFile extends Tasks {
    *   The connection mode to set (git/sftp).
    */
   public function setConnectionGit(
-      string $site_name,
-      string $env = 'dev',
-      string $connection = 'git'
-    ) {
+    string $site_name,
+    string $env = 'dev',
+    string $connection = 'git'
+  ) {
     $this->taskExec('terminus')
       ->args('connection:set', $site_name . '.' . $env, $connection)
       ->run();
@@ -347,9 +349,9 @@ class RoboFile extends Tasks {
    *   The commit message to use.
    */
   public function checkinAndPush(
-      string $site_name,
-      string $commit_msg = 'Changes committed from demo script.'
-    ) {
+    string $site_name,
+    string $commit_msg = 'Changes committed from demo script.'
+  ) {
     $site_folder = $this->getLocalCloneDir($site_name);
     chdir($site_folder);
     try {
@@ -362,15 +364,15 @@ class RoboFile extends Tasks {
       $result = $this->taskExec('git push origin master')
         ->run();
       if ($result instanceof Result && !$result->wasSuccessful()) {
-        \Kint::dump($result);
-        throw new \Exception("error occurred");
+        Kint::dump($result);
+        throw new Exception("error occurred");
       }
     }
-    catch (\Exception $e) {
+    catch (Exception $e) {
       $this->output()->write($e->getMessage());
       return ResultData::EXITCODE_ERROR;
     }
-    catch (\Throwable $t) {
+    catch (Throwable $t) {
       $this->output()->write($t->getMessage());
       return ResultData::EXITCODE_ERROR;
     }
@@ -389,25 +391,28 @@ class RoboFile extends Tasks {
    *   The Drupal profile to use during site installation.
    */
   public function siteInstall(
-      string $site_name,
-      string $env = 'dev',
-      string $profile = 'demo_umami'
-    ) {
-    $this->dieOnError($this->taskExec(static::$TERMINUS_EXE)
-      ->args(
-        'drush',
-        $site_name . '.' . $env,
-        '--',
-        'site:install',
-        $profile,
-        '-y'
-      )
-      ->options([
-        'account-name' => 'admin',
-        'site-name'    => $site_name,
-        'locale'       => 'en',
-      ])
-      ->run(), 'Error installing site.');
+    string $site_name,
+    string $env = 'dev',
+    string $profile = 'demo_umami'
+  ) {
+    $this->dieOnError(
+      $this->taskExec(static::$TERMINUS_EXE)
+        ->args(
+          'drush',
+          $site_name . '.' . $env,
+          '--',
+          'site:install',
+          $profile,
+          '-y'
+        )
+        ->options([
+          'account-name' => 'admin',
+          'site-name'    => $site_name,
+          'locale'       => 'en',
+        ])
+        ->run(),
+      'Error installing site.'
+    );
     $this->waitForWorkflow($site_name);
     return ResultData::EXITCODE_OK;
   }
@@ -421,16 +426,20 @@ class RoboFile extends Tasks {
    *   The environment to enable the modules in.
    */
   public function moduleEnable(string $site_name, string $env = 'dev') {
-    $this->dieOnError($this->taskExec(static::$TERMINUS_EXE)
-      ->args(
+    $this->dieOnError(
+      $this->taskExec(static::$TERMINUS_EXE)
+        ->args(
           'drush',
           $site_name . '.' . $env,
           'cr'
         )
-      ->run(), 'Error clearing cache');
+        ->run(),
+      'Error clearing cache'
+    );
     $this->waitForWorkflow($site_name);
-    $this->dieOnError($this->taskExec(static::$TERMINUS_EXE)
-      ->args(
+    $this->dieOnError(
+      $this->taskExec(static::$TERMINUS_EXE)
+        ->args(
           'drush',
           $site_name . '.' . $env,
           '--',
@@ -438,15 +447,20 @@ class RoboFile extends Tasks {
           '--yes',
           $this->name,
         )
-      ->run(), 'Error enabling module');
+        ->run(),
+      'Error enabling module'
+    );
 
-    $this->dieOnError($this->taskExec(static::$TERMINUS_EXE)
-      ->args(
+    $this->dieOnError(
+      $this->taskExec(static::$TERMINUS_EXE)
+        ->args(
           'drush',
           $site_name . '.' . $env,
           'cr'
         )
-      ->run(), 'Error clearing cache after enabling the module.');
+        ->run(),
+      'Error clearing cache after enabling the module.'
+    );
   }
 
   /**
@@ -467,8 +481,117 @@ class RoboFile extends Tasks {
   }
 
   public function getShortRef(): string {
-    return trim($this->taskExec('git rev-parse --short HEAD')
-      ->run()->getMessage());
+    return trim(
+      $this->taskExec('git rev-parse --short HEAD')
+        ->run()->getMessage()
+    );
+  }
+
+  public function dieOnError(Result $result, string $message) {
+    if (!$result->wasSuccessful()) {
+      $this->output()->write($message);
+      throw new TaskException($this, $message);
+    }
+  }
+
+  /**
+   * Update the known_hosts file with the git host and port.
+   *
+   * @param string $site_name
+   *   The machine name of the site to update the known_hosts file for.
+   */
+  public function updateKnownHosts(string $site_name) {
+    $HOME = $this->getHomeDir();
+    if (!is_dir(sprintf("%s/.ssh", $HOME))) {
+      mkdir(sprintf("%s/.ssh", $HOME));
+    }
+    $touched = touch(sprintf("%s/.ssh/known_hosts", $HOME));
+    if (!$touched) {
+      $this->output()->writeln('Failed to create known_hosts file');
+      throw new TaskException(
+        $this, 'Failed to create known_hosts file: ' .
+        sprintf("%s/.ssh/known_hosts", $HOME)
+      );
+    }
+
+    $this->output()->writeln('Getting the Site Repo: HOME: ' . $HOME);
+    // get the git host and port from terminus
+    $res = $this->taskExec(static::$TERMINUS_EXE)->args(
+      'connection:info',
+      $site_name . '.dev',
+      '--fields=git_host,git_port',
+      '--format=json'
+    )->run();
+    if (!$res->wasSuccessful()) {
+      $this->output()->writeln('Failed to retrieve git host and port');
+      throw new TaskException($this, 'Failed to retrieve git host and port');
+    }
+
+    // decode the json response
+    $gitInfo = json_decode($res->getMessage(), TRUE);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+      $this->output()->writeln('Failed to decode json response');
+      throw new TaskException(
+        $this,
+        'Failed to decode json response' . json_last_error_msg()
+      );
+    }
+    $this->output()->writeln(
+      'Retrieved git host and port' .
+      print_r($gitInfo, TRUE)
+    );
+
+    // check if the git host and port were retrieved
+    if (!isset($gitInfo['git_host']) || !isset($gitInfo['git_port'])) {
+      $this->output()->writeln('Failed to retrieve git host and port');
+      throw new TaskException($this, 'Failed to retrieve git host and port');
+    }
+    // Does the known_hosts file exist?
+    $this->output()->writeln('Adding the git host to known hosts file');
+    $res = $this->taskExec('ssh-keyscan')->args(
+      '-p',
+      $gitInfo['git_port'],
+      $gitInfo['git_host']
+    )->run();
+    $this->output()->writeln($res->getMessage());
+    if (!$res->wasSuccessful()) {
+      $this->output()->writeln('Failed to add git host to known hosts file');
+      throw new TaskException(
+        $this,
+        'Failed to add git host to known hosts file'
+      );
+    }
+    // append the git host to the known_hosts file
+    $bytesWritten = file_put_contents(
+      sprintf("%s/.ssh/known_hosts", $HOME),
+      $res->getMessage(),
+      FILE_APPEND,
+    );
+    if ($bytesWritten === FALSE) {
+      $this->output()->writeln('Failed to write to known hosts file');
+      throw new TaskException($this, 'Failed to write to known hosts file');
+    }
+  }
+
+  /**
+   * Get the current terminus user.
+   */
+  public function whoami(): string {
+    $toReturn = $this->taskExec(static::$TERMINUS_EXE)
+      ->args('auth:whoami')->run();
+    if (!$toReturn->wasSuccessful()) {
+      $this->output()->writeln("whoami: " . $toReturn->getMessage());
+      throw new TaskException($this, 'Error getting whoami');
+    }
+    return trim($toReturn->getMessage());
+  }
+
+  /**
+   * Get the home directory. If it's not set, use the workspace default folder.
+   */
+  #[Pure]
+  public function getHomeDir(): string {
+    return getenv('HOME') ?? '/home/runner';
   }
 
   /**
@@ -483,7 +606,8 @@ class RoboFile extends Tasks {
   protected function getLocalCloneDir($site_name): string {
     if (empty($this->localCloneDirectory)) {
       $this->writeLn('Local clone directory not set. Setting default value.');
-      $this->localCloneDirectory = $this->getHomeDir() . DIRECTORY_SEPARATOR . $site_name;
+      $this->localCloneDirectory = $this->getHomeDir(
+        ) . DIRECTORY_SEPARATOR . $site_name;
     }
     return $this->localCloneDirectory;
   }
@@ -499,23 +623,23 @@ class RoboFile extends Tasks {
   protected function siteInfo(string $site_name) {
     try {
       exec(
-          static::$TERMINUS_EXE . ' site:info --format=json ' . $site_name,
-          $output,
-          $status
-        );
+        static::$TERMINUS_EXE . ' site:info --format=json ' . $site_name,
+        $output,
+        $status
+      );
       if (!empty($output)) {
         $result = json_decode(
-        join("", $output),
-        TRUE,
-        512,
-        JSON_THROW_ON_ERROR
-          );
+          join("", $output),
+          TRUE,
+          512,
+          JSON_THROW_ON_ERROR
+        );
         return $result;
       }
     }
-    catch (\Exception $e) {
+    catch (Exception $e) {
     }
-    catch (\Throwable $t) {
+    catch (Throwable $t) {
     }
     return NULL;
   }
@@ -530,13 +654,11 @@ class RoboFile extends Tasks {
       return "{$branch}-dev";
     }
     else {
-      $tag = trim(
-          shell_exec(
-            'git describe --exact-match --tags $(git log -n1 --pretty=\'%h\')'
-          )
-            );
+      $tag = shell_exec(
+        'git describe --exact-match --tags $(git log -n1 --pretty=\'%h\')'
+      );
       if ($tag) {
-        return $tag;
+        return trim($tag);
       }
       else {
         // Maybe we are on a PR.
@@ -564,8 +686,8 @@ class RoboFile extends Tasks {
         ->sortByName();
       if (!$finder->hasResults()) {
         throw new RuntimeException(
-            'No YAML files found in the specified directory.'
-          );
+          'No YAML files found in the specified directory.'
+        );
       }
 
       foreach ($finder as $file) {
@@ -575,10 +697,10 @@ class RoboFile extends Tasks {
         // Remove .yaml extension if present
         $fileName = str_replace('.yaml', '', $fileName);
         $fileName = str_replace(
-            'pantheon_advanced_page_cache.',
-            '',
-            $fileName
-          );
+          'pantheon_advanced_page_cache.',
+          '',
+          $fileName
+        );
 
         try {
           switch (substr($fileName, 0, 16)) {
@@ -596,23 +718,23 @@ class RoboFile extends Tasks {
         }
         catch (Exception $e) {
           throw new RuntimeException(
-                sprintf(
-          'Error parsing YAML file %s: %s',
-          $filePath,
-          $e->getMessage()
-                )
-              );
+            sprintf(
+              'Error parsing YAML file %s: %s',
+              $filePath,
+              $e->getMessage()
+            )
+          );
         }
       }
     }
     catch (Exception $e) {
       throw new RuntimeException(
-          sprintf(
-            'Error accessing directory %s: %s',
-            $directoryPath,
-            $e->getMessage()
-          )
-            );
+        sprintf(
+          'Error accessing directory %s: %s',
+          $directoryPath,
+          $e->getMessage()
+        )
+      );
     }
   }
 
@@ -648,102 +770,6 @@ class RoboFile extends Tasks {
     }
 
     return $info;
-  }
-
-  public function dieOnError(Result $result, string $message) {
-    if (!$result->wasSuccessful()) {
-      $this->output()->write($message);
-      throw new TaskException($this, $message);
-    }
-  }
-
-  /**
-   * Update the known_hosts file with the git host and port.
-   *
-   * @param string $site_name
-   *   The machine name of the site to update the known_hosts file for.
-   */
-  public function updateKnownHosts(string $site_name) {
-    $HOME = $this->getHomeDir();
-    if (!is_dir(sprintf("%s/.ssh", $HOME))) {
-      mkdir(sprintf("%s/.ssh", $HOME));
-    }
-    $touched = touch(sprintf("%s/.ssh/known_hosts", $HOME));
-    if (!$touched) {
-      $this->output()->writeln('Failed to create known_hosts file');
-      throw new TaskException($this, 'Failed to create known_hosts file: ' .
-        sprintf("%s/.ssh/known_hosts", $HOME));
-    }
-
-    $this->output()->writeln('Getting the Site Repo: HOME: ' . $HOME);
-    // get the git host and port from terminus
-    $res = $this->taskExec(static::$TERMINUS_EXE)->args(
-      'connection:info',
-      $site_name . '.dev',
-      '--fields=git_host,git_port',
-      '--format=json'
-    )->run();
-    if (!$res->wasSuccessful()) {
-      $this->output()->writeln('Failed to retrieve git host and port');
-      throw new TaskException($this, 'Failed to retrieve git host and port');
-    }
-
-    // decode the json response
-    $gitInfo = json_decode($res->getMessage(), TRUE);
-    if (json_last_error() !== JSON_ERROR_NONE) {
-      $this->output()->writeln('Failed to decode json response');
-      throw new TaskException($this,
-        'Failed to decode json response' . json_last_error_msg());
-    }
-    $this->output()->writeln('Retrieved git host and port' .
-      print_r($gitInfo, TRUE));
-
-    // check if the git host and port were retrieved
-    if (!isset($gitInfo['git_host']) || !isset($gitInfo['git_port'])) {
-      $this->output()->writeln('Failed to retrieve git host and port');
-      throw new TaskException($this, 'Failed to retrieve git host and port');
-    }
-    // Does the known_hosts file exist?
-    $this->output()->writeln('Adding the git host to known hosts file');
-    $res = $this->taskExec('ssh-keyscan')->args(
-      '-p', $gitInfo['git_port'], $gitInfo['git_host'])->run();
-    $this->output()->writeln($res->getMessage());
-    if (!$res->wasSuccessful()) {
-      $this->output()->writeln('Failed to add git host to known hosts file');
-      throw new TaskException($this,
-        'Failed to add git host to known hosts file');
-    }
-    // append the git host to the known_hosts file
-    $bytesWritten = file_put_contents(
-      sprintf("%s/.ssh/known_hosts", $HOME),
-      $res->getMessage(),
-      FILE_APPEND,
-    );
-    if ($bytesWritten === FALSE) {
-      $this->output()->writeln('Failed to write to known hosts file');
-      throw new TaskException($this, 'Failed to write to known hosts file');
-    }
-  }
-
-  /**
-   * Get the current terminus user.
-   */
-  public function whoami():string {
-    $toReturn = $this->taskExec(static::$TERMINUS_EXE)
-      ->args('auth:whoami')->run();
-    if (!$toReturn->wasSuccessful()) {
-      $this->output()->writeln("whoami: " . $toReturn->getMessage());
-      throw new TaskException($this, 'Error getting whoami');
-    }
-    return trim($toReturn->getMessage());
-  }
-
-  /**
-   * Get the home directory. If it's not set, use the workspace default folder.
-   */
-  #[Pure]
-  public function getHomeDir():string {
-    return getenv('HOME') ?? '/home/runner';
   }
 
 }
