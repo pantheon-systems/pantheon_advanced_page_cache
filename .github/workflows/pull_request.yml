@@ -62,7 +62,6 @@ jobs:
     strategy:
       matrix:
         drupal-version: [ 10, 11 ]
-      fail-fast: false
     runs-on: ubuntu-latest
     name: Build and test (Drupal)
     env:
