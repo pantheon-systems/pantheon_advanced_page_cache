@@ -1,0 +1,109 @@
+name: Pull Request
+on:
+  pull_request:
+    branches:
+      - master
+      - main
+      - 2.x
+
+env:
+  TERMINUS_TOKEN: ${{ secrets.TERMINUS_TOKEN }}
+  TERMINUS_EMAIL: ${{ secrets.TERMINUS_EMAIL }}
+  TERMINUS_ORG: ${{ secrets.TERMINUS_ORG }}
+  GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+  TZ: "/usr/share/zoneinfo/America/Los_Angeles"
+  TERM: dumb
+  GITHUB_RUN_NUMBER: ${{ github.run_number }}
+  COMMIT_SHA: ${{ github.sha }}
+  PUBLIC_KEY: ${{ secrets.PANTHEON_PLATFORM_DEPLOY_KEY_PUBLIC }}
+  PRIVATE_KEY: ${{ secrets.PANTHEON_PLATFORM_DEPLOY_KEY_PRIVATE }}
+  BASH_ENV: ~/.bashrc
+  WORKSPACE: ${{ github.workspace }}
+  GITHUB_REPOSITORY: ${{ github.repository }}
+  REF: ${{ github.ref }}
+
+concurrency:
+  group: 'ci-${{ github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+
+  phpcompatibility:
+    runs-on: ubuntu-latest
+    name: PHP Compatibility
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: PHPCompatibility
+        uses: pantheon-systems/phpcompatibility-action@v1
+        with:
+          test-versions: 8.1
+          ## Soft deprecation of 7.4. Doesn't make it incompatible
+          ## just doesn't make sure it is compatible.
+
+  linting:
+    runs-on: ubuntu-latest
+    name: Code linting
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Composer install
+        run: composer install
+
+      - name: Code sniff
+        run: composer run-script code:lint
+
+  build_test:
+    needs: [ linting, phpcompatibility ]
+    strategy:
+      matrix:
+        drupal-version: [ 10, 11 ]
+    runs-on: ubuntu-latest
+    name: Build and test (Drupal)
+    env:
+      DRUPAL_VERSION: ${{ matrix.drupal-version }}
+    steps:
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.1"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Terminus
+        uses: pantheon-systems/terminus-github-actions@v1
+        with:
+          pantheon-machine-token: ${{ secrets.TERMINUS_TOKEN }}
+          disable-cache: true
+
+      - name: Login Pantheon Git
+        run: |
+          git config --global user.email "$GIT_EMAIL"
+          git config --global user.name "Github Actions"
+          git config --global --add safe.directory '*'
+
+      - name: Ensure login to Terminus
+        run: |
+          terminus auth:whoami
+
+      - name: Setup SSH Keys
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.PANTHEON_PLATFORM_DEPLOY_KEY_PRIVATE }}
+
+      - name: Composer install
+        run: composer install --ignore-platform-req=php
+
+      - name: Setup tmate session
+        if: ${{ github.event.inputs.tmate_enabled == 1 }}
+        uses: mxschmitt/action-tmate@v3
+
+      - name: Run tests
+        run: |
+          ./vendor/bin/robo test:full $DRUPAL_VERSION

@@ -32,7 +32,7 @@ class CacheTagsInvalidator implements CacheTagsInvalidatorInterface {
       // There is a weird interaction with metatag that clear local_tasks key
       // and therefore lots of cached pages.
       '/core/install.php',
-    ];
+      ];
     $current_request = $this->requestStack->getCurrentRequest();
     if ($current_request && in_array($current_request->getBaseUrl(), $do_not_run_urls)) {
       return;
