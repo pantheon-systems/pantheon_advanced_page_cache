@@ -81,6 +81,7 @@ jobs:
         uses: pantheon-systems/terminus-github-actions@v1
         with:
           pantheon-machine-token: ${{ secrets.TERMINUS_TOKEN }}
+          disable-cache: true
 
       - name: Login Pantheon Git
         run: |
