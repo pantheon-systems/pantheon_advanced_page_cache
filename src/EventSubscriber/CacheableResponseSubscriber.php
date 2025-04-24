@@ -65,6 +65,10 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
    *   The event to process.
    */
   public function onRespond(ResponseEvent $event) {
+    // Don't try this if we're not in a Pantheon environment.
+    if (!function_exists('pantheon_clear_edge_paths')) {
+      return;
+    }
     if (method_exists($event, 'isMainRequest')) {
       if (!$event->isMainRequest()) {
         return;
