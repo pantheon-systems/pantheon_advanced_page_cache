@@ -39,7 +39,7 @@ jobs:
       - name: PHPCompatibility
         uses: pantheon-systems/phpcompatibility-action@v1
         with:
-          test-versions: 8.1
+          test-versions: 8.2
           ## Soft deprecation of 7.4. Doesn't make it incompatible
           ## just doesn't make sure it is compatible.
 
@@ -71,7 +71,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.1"
+          php-version: "8.2"
 
       - name: Checkout
         uses: actions/checkout@v4
