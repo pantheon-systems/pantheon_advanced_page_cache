@@ -11,3 +11,4 @@ pantheon_advanced_page_cache.settings:
       type: integer
       label: 'Surrogate Key Header Limit'
       default: 25000
+      
