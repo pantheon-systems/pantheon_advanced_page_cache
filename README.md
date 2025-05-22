@@ -47,7 +47,6 @@ You can override the surrogate key header limit (default 25000 bytes) from your 
 
 `$config['pantheon_advanced_page_cache.settings']['surrogate_key_header_limit'] = 40000;`
 
-
 ## Feedback and collaboration
 
 For real time discussion of the module find Pantheon developers in our [Power Users Slack channel](https://pantheon.io/docs/power-users/). Bug reports and feature requests should be posted in [the drupal.org issue queue.](https://www.drupal.org/project/issues/pantheon_advanced_page_cache?categories=All) For code changes, please submit pull requests against the [GitHub repository](https://github.com/pantheon-systems/pantheon_advanced_page_cache) rather than posting patches to drupal.org.
