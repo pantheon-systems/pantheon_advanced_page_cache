@@ -45,7 +45,7 @@ You will see warning messages in your log directing you to [the issue queue](htt
 
 You can override the surrogate key header limit (default 25000 bytes) from your site's settings.php:
 
-`$config['pantheon_advanced_page_cache.settings']['surrogate_key_header_limit'] = 40000;`
+`$config['pantheon_advanced_page_cache.settings']['surrogate_key_header_limit'] = 10000;`
 
 ## Feedback and collaboration
 
