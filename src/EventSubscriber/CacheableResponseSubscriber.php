@@ -97,7 +97,7 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
         $configured_limit = $this->configFactory->get('pantheon_advanced_page_cache.settings')->get('surrogate_key_header_limit');
         $limit = min((int) ($configured_limit ?? 25000), 25000);
       }
-      
+
       if (strlen($tags_string) > $limit) {
         $tags_string = substr($tags_string, 0, $limit);
         // The string might have cut off in the middle of a tag.
