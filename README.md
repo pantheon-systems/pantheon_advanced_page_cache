@@ -43,7 +43,7 @@ You will see warning messages in your log directing you to [the issue queue](htt
 
 ## Override Surrogate Key Header Limit
 
-You can override and lower the surrogate key header limit (default 25000 bytes) for your local environment from your site's settings.php:
+For your local environment work, you can override and lower the surrogate key header limit (default: 25,000 bytes) in your site's settings.php file by adding the following line and adjusting the value:
 
 `$config['pantheon_advanced_page_cache.settings']['surrogate_key_header_limit'] = 10000;`
 
