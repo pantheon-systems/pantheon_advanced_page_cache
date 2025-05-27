@@ -91,7 +91,7 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
 
       $tags_string = implode(' ', $tags);
       // value also defined in config install and schema files
-      $limit = 25000; 
+      $limit = 25000;
 
       // Allow to lower the surrogate key header limit on non-Pantheon Env
       if (!isset($_ENV['PANTHEON_ENVIRONMENT'])) {
