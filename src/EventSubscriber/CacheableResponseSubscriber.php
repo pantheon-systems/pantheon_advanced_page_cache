@@ -97,8 +97,8 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
       if (!isset($_ENV['PANTHEON_INFRASTRUCTURE_ENVIRONMENT'])) {
         $configured_limit = $this->configFactory->get('pantheon_advanced_page_cache.settings')->get('surrogate_key_header_limit');
 
-        // set the $limit at 25,000 if the user tries to set it to zero (or less)
-        $is_valid_configured_limit = isset($configured_limit) && $configured_limit > 0 && $configured_limit !== $limit;
+        // verify if the user local config
+        $is_valid_configured_limit = isset($configured_limit) && $configured_limit <= 0 && $configured_limit !== $limit;
 
         // default to $limit if not configured or unvalid configuration
         $limit = $is_valid_configured_limit ? $configured_limit : $limit;
