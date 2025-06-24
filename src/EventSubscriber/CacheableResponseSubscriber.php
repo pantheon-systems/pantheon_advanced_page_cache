@@ -90,14 +90,18 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
       }
 
       $tags_string = implode(' ', $tags);
-      // value also defined in config install and schema files
+      // also defined in config install and schema files
       $limit = 25000;
 
-      // Allow to lower the surrogate key header limit on non-Pantheon Env
+      // allow to lower the surrogate key header limit on non-Pantheon Env
       if (!isset($_ENV['PANTHEON_INFRASTRUCTURE_ENVIRONMENT'])) {
         $configured_limit = $this->configFactory->get('pantheon_advanced_page_cache.settings')->get('surrogate_key_header_limit');
-        // if no local config limit, default it to zero and does not exceed 25,000.
-        $limit = min((int) ($configured_limit ?? 0), $limit);
+
+        // set the $limit at 25,000 if the user tries to set it to zero (or less)
+        $is_valid_configured_limit = isset($configured_limit) && $configured_limit > 0 && $configured_limit !== $limit;
+
+        // default to $limit if not configured or unvalid configuration
+        $limit = $is_valid_configured_limit ? $configured_limit : $limit;
       }
 
       if (strlen($tags_string) > $limit) {
