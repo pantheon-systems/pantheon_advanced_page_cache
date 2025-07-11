@@ -94,7 +94,7 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
       // also defined in config install and schema files
       $limit = 25000;
 
-       // allow to lower the surrogate key header limit on non-Pantheon Env
+      // allow to lower the surrogate key header limit on non-Pantheon Env
       if (!isset($_ENV['PANTHEON_INFRASTRUCTURE_ENVIRONMENT'])) {
         $configured_limit = $this->configFactory->get('pantheon_advanced_page_cache.settings')->get('surrogate_key_header_limit');
 
