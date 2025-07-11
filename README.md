@@ -40,6 +40,13 @@ Pantheon's nginx configuration limits total header size to 32k.
 This module caps the `Surrogate-Key` at 25,000 bytes to minimize the chances that a very long `Surrogate-Key` header combines with other long headers to trigger a 502 error.
 This limit can be reached if your site renders thousands of entities in a single response.
 You will see warning messages in your log directing you to [the issue queue](https://www.drupal.org/project/pantheon_advanced_page_cache/issues/2973861) if this limit is reached.
+
+## Override Surrogate Key Header Limit
+
+For your local environment, you can override the surrogate key header limit, which defaults to 25,000 bytes, by adding the following line to your site's settings.php file and adjusting the value as needed. Note that the maximum value is capped at 25,000 bytes.
+
+`$config['pantheon_advanced_page_cache.settings']['surrogate_key_header_limit'] = 10000;`
+
 ## Feedback and collaboration
 
 For real time discussion of the module find Pantheon developers in our [Power Users Slack channel](https://pantheon.io/docs/power-users/). Bug reports and feature requests should be posted in [the drupal.org issue queue.](https://www.drupal.org/project/issues/pantheon_advanced_page_cache?categories=All) For code changes, please submit pull requests against the [GitHub repository](https://github.com/pantheon-systems/pantheon_advanced_page_cache) rather than posting patches to drupal.org.
