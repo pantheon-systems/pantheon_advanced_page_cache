@@ -96,7 +96,7 @@ jobs:
       - name: Setup SSH Keys
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: ${{ secrets.PANTHEON_PLATFORM_DEPLOY_KEY_PRIVATE }}
+          ssh-private-key: ${{ secrets.TERMINUS_CI_RSA_PRIVATE }}
 
       - name: Composer install
         run: composer install --ignore-platform-req=php

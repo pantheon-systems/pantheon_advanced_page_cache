@@ -90,12 +90,27 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
       }
 
       $tags_string = implode(' ', $tags);
-      if (25000 < strlen($tags_string)) {
-        $tags_string = substr($tags_string, 0, 25000);
-        // The string might have cut of in the middle of a tag.
-        // So now find the the last occurence of a space and cut to that length.
+
+      // also defined in config install and schema files
+      $limit = 25000;
+
+      // allow to lower the surrogate key header limit on non-Pantheon Env
+      if (!isset($_ENV['PANTHEON_INFRASTRUCTURE_ENVIRONMENT'])) {
+        $configured_limit = $this->configFactory->get('pantheon_advanced_page_cache.settings')->get('surrogate_key_header_limit');
+
+        // verify if the user local config
+        $is_valid_configured_limit = isset($configured_limit) && $configured_limit >= 0 && $configured_limit <= $limit;
+
+        // default to $limit if not configured or unvalid configuration
+        $limit = $is_valid_configured_limit ? $configured_limit : $limit;
+      }
+
+      if (strlen($tags_string) > $limit) {
+        $tags_string = substr($tags_string, 0, $limit);
+        // The string might have cut off in the middle of a tag.
+        // So now find the the last occurrence of a space and cut to that length.
         $tags_string = substr($tags_string, 0, strrpos($tags_string, ' '));
-        $this->logger->log(RfcLogLevel::WARNING, 'More cache tags were present than could be passed in the Surrogate-Key HTTP Header due to length constraints. To avoid a 502 error the list of surrogate keys was trimmed to a maximum length of 25,000 bytes. Since keys beyond the 25,000 maximum were removed this page will not be cleared from the cache when any of the removed keys are cleared (usually by entity save operations) as they have been stripped from the surrogate key header. See https://www.drupal.org/project/pantheon_advanced_page_cache/issues/2973861 for more information about how you can filter out redundant or unnecessary cache metadata.');
+        $this->logger->log(RfcLogLevel::WARNING, sprintf('More cache tags were present than could be passed in the Surrogate-Key HTTP Header due to length constraints. To avoid a 502 error the list of surrogate keys was trimmed to a maximum length of %d bytes. Since keys beyond the maximum were removed this page will not be cleared from the cache when any of the removed keys are cleared (usually by entity save operations) as they have been stripped from the surrogate key header. See https://www.drupal.org/project/pantheon_advanced_page_cache/issues/2973861 for more information about how you can filter out redundant or unnecessary cache metadata. You can override this limit on your local environment by updating the value of "surrogate_key_header_limit" in the settings.php file.', $limit));
       }
       $response->headers->set('Surrogate-Key', $tags_string);
     }

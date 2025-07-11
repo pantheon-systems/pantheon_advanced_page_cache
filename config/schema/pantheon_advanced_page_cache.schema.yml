@@ -7,3 +7,7 @@ pantheon_advanced_page_cache.settings:
     override_list_tags:
       type: boolean
       label: 'If entity_list tags should be overridden'
+    surrogate_key_header_limit:
+      type: integer
+      label: 'Surrogate Key Header Limit'
+      default: 25000
