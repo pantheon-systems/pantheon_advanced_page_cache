@@ -17,3 +17,24 @@ function pantheon_advanced_page_cache_update_8001() {
     ->set('override_list_tags', TRUE)
     ->save();
 }
+
+/**
+ * Uninstall big_pipe module if it's enabled.
+ */
+function pantheon_advanced_page_cache_update_8002() {
+  if (\Drupal::moduleHandler()->moduleExists('big_pipe')) {
+    \Drupal::service('module_installer')->uninstall(['big_pipe']);
+    \Drupal::messenger()->addWarning(t('The big_pipe module has been uninstalled as it is incompatible with Pantheon Advanced Page Cache.'));
+  }
+}
+
+/**
+ * Implements hook_install().
+ */
+function pantheon_advanced_page_cache_install() {
+  // Check if big_pipe module is enabled and uninstall it.
+  if (\Drupal::moduleHandler()->moduleExists('big_pipe')) {
+    \Drupal::service('module_installer')->uninstall(['big_pipe']);
+    \Drupal::messenger()->addWarning(t('The big_pipe module has been uninstalled as it is incompatible with Pantheon Advanced Page Cache.'));
+  }
+}
