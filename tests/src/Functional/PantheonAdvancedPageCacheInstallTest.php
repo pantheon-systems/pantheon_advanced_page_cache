@@ -61,4 +61,4 @@ class PantheonAdvancedPageCacheInstallTest extends BrowserTestBase {
     $this->assertSession()->pageTextContains('Disable or uninstall Big Pipe immediately');
   }
 
-} 
+}
