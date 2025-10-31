@@ -51,21 +51,3 @@ function pantheon_advanced_page_cache_file_update(EntityInterface $file) {
     ->notice('File paths cleared in edge cache: @paths.',
            ['@paths' => implode(', ', $paths_to_clear)]);
 }
-
-/**
- * Implements hook_requirements().
- */
-function pantheon_advanced_page_cache_requirements($phase) {
-  $requirements = [];
-  if ($phase === 'runtime') {
-    if (\Drupal::moduleHandler()->moduleExists('big_pipe')) {
-      $requirements['pantheon_advanced_page_cache_big_pipe'] = [
-        'title' => t('Pantheon Advanced Page Cache: Big Pipe incompatibility'),
-        'value' => t('Big Pipe module is enabled'),
-        'severity' => REQUIREMENT_ERROR,
-        'description' => t('The Big Pipe module is <strong>incompatible</strong> with Pantheon Advanced Page Cache and can cause fatal errors (such as 504 Gateway Timeout) and site breakage. <strong>Disable or uninstall Big Pipe immediately.</strong>'),
-      ];
-    }
-  }
-  return $requirements;
-}
