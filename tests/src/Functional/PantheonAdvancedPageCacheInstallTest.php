@@ -60,5 +60,4 @@ class PantheonAdvancedPageCacheInstallTest extends BrowserTestBase {
     $this->assertSession()->pageTextContains('504 Gateway Timeout');
     $this->assertSession()->pageTextContains('Disable or uninstall Big Pipe immediately');
   }
-
 } 
