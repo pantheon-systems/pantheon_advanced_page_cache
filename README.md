@@ -20,6 +20,8 @@ The **Big Pipe** module is incompatible with Pantheon Advanced Page Cache. Both 
 
 **Warning:** Enabling Big Pipe alongside Pantheon Advanced Page Cache can cause fatal errors, such as 504 Gateway Timeout errors, and may break your site. Do not use these modules together.
 
+**Recommendation:** Big Pipe module should not be enabled on Pantheon, even in absence of Pantheon Advanced Page Cache. Big Pipe requires that web results be streamed to the browser, which Pantheon does not support.
+
 If Big Pipe is enabled, an error will be shown on the Drupal status report page (`/admin/reports/status`) warning about the incompatibility and risk of fatal errors. You must disable or uninstall Big Pipe manually.
 
 ## Debugging
