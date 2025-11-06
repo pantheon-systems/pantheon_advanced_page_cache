@@ -12,6 +12,18 @@ This module has no configuration settings of its own, just enable it and it will
 
 If you want to take finer grain control of how Drupal is handling it's cache data (in ways that will interact with both the Global CDN and internal Drupal caches) consider using [Views Custom Cache Tags](https://www.drupal.org/project/views_custom_cache_tag) and [Cache Control Override](https://www.drupal.org/project/cache_control_override).
 
+## Module Incompatibilities
+
+### Big Pipe Module
+
+The **Big Pipe** module is incompatible with Pantheon Advanced Page Cache. Both modules handle page rendering and caching differently, and Big Pipe can interfere with the advanced caching mechanisms provided by this module.
+
+**Warning:** Enabling Big Pipe alongside Pantheon Advanced Page Cache can cause fatal errors, such as 504 Gateway Timeout errors, and may break your site. Do not use these modules together.
+
+**Recommendation:** Big Pipe module should not be enabled on Pantheon, even in absence of Pantheon Advanced Page Cache. Big Pipe requires that web results be streamed to the browser, which Pantheon does not support.
+
+If Big Pipe is enabled, an error will be shown on the Drupal status report page (`/admin/reports/status`) warning about the incompatibility and risk of fatal errors. You must disable or uninstall Big Pipe manually.
+
 ## Debugging
 
 By default, Pantheon's infrastructure strips out the `Surrogate-Key` response header before responses are served to clients. The contents of this header can be viewed as `Surrogate-Key-Raw` by adding on a debugging header to the request.
