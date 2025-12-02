@@ -34,10 +34,10 @@ jobs:
     steps:
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
 
       - name: PHPCompatibility
-        uses: pantheon-systems/phpcompatibility-action@v1
+        uses: pantheon-systems/phpcompatibility-action@7bf1b2881e207c80ad4569874ceee225f59537d1 # v1.1.1
         with:
           test-versions: 8.1
           ## Soft deprecation of 7.4. Doesn't make it incompatible
@@ -49,7 +49,7 @@ jobs:
     steps:
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
 
       - name: Composer install
         run: composer install
@@ -69,15 +69,15 @@ jobs:
     steps:
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1 # v2
         with:
           php-version: "8.1"
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Install Terminus
-        uses: pantheon-systems/terminus-github-actions@v1
+        uses: pantheon-systems/terminus-github-actions@8e024bd89ff46ed2aa4e0663c6b54c87a94344f8 # v1.2.7
         with:
           pantheon-machine-token: ${{ secrets.TERMINUS_TOKEN }}
           disable-cache: true
@@ -94,7 +94,7 @@ jobs:
           terminus auth:whoami
 
       - name: Setup SSH Keys
-        uses: webfactory/ssh-agent@v0.5.3
+        uses: webfactory/ssh-agent@5f066a372ec13036ab7cb9a8adf18c936f8d2043 # v0.5.3
         with:
           ssh-private-key: ${{ secrets.TERMINUS_CI_RSA_PRIVATE }}
 
@@ -103,7 +103,7 @@ jobs:
 
       - name: Setup tmate session
         if: ${{ github.event.inputs.tmate_enabled == 1 }}
-        uses: mxschmitt/action-tmate@v3
+        uses: mxschmitt/action-tmate@c0afd6f790e3a5564914980036ebf83216678101 # v3.23
 
       - name: Run tests
         run: |
