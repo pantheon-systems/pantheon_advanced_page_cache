@@ -39,7 +39,7 @@ jobs:
       - name: PHPCompatibility
         uses: pantheon-systems/phpcompatibility-action@v1
         with:
-          test-versions: 8.1
+          test-versions: 8.1-8.5
           ## Soft deprecation of 7.4. Doesn't make it incompatible
           ## just doesn't make sure it is compatible.
 
