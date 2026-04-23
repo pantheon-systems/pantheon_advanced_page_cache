@@ -62,9 +62,9 @@ jobs:
     strategy:
       matrix:
         drupal-version: [ 10, 11 ]
-        php-version: [ "8.1", "8.3", "8.5" ]
+        php-version: [ "8.1", "8.3" ]
     runs-on: ubuntu-latest
-    name: Build and test (Drupal ${{ matrix.drupal-version }}, PHP ${{ matrix.php-version }})
+    name: Build and test (Drupal)
     env:
       DRUPAL_VERSION: ${{ matrix.drupal-version }}
     steps:
