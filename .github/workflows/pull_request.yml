@@ -71,6 +71,7 @@ jobs:
     name: Build and test (Drupal ${{ matrix.drupal-version }}, PHP ${{ matrix.php-version }})
     env:
       DRUPAL_VERSION: ${{ matrix.drupal-version }}
+      PHP_VERSION: ${{ matrix.php-version }}
     steps:
 
       - name: Login Pantheon Git

@@ -98,10 +98,12 @@ class RoboFile extends Tasks {
   public function testFull(
     string $drupal_version = '10',
     ) {
+    $php_version = getenv('PHP_VERSION') ?: PHP_MAJOR_VERSION . PHP_MINOR_VERSION;
     $this->testingSiteName = sprintf(
-      'papc-%s-d%d',
+      'papc-%s-d%d-p%s',
       $this->getShortRef(),
-      $drupal_version
+      $drupal_version,
+      str_replace('.', '', $php_version)
     );
     $this->output()->writeln('🧾');
     $this->output()->writeln(str_repeat("=", 80));
