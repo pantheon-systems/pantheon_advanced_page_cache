@@ -62,26 +62,16 @@ jobs:
     strategy:
       matrix:
         drupal-version: [ 10, 11 ]
+        php-version: [ "8.1", "8.3" ]
+      fail-fast: false
     runs-on: ubuntu-latest
-    name: Build and test (Drupal)
+    container:
+      image: quay.io/pantheon-public/build-tools-ci:8.x-php${{ matrix.php-version }}
+      options: --user root
+    name: Build and test (Drupal ${{ matrix.drupal-version }}, PHP ${{ matrix.php-version }})
     env:
       DRUPAL_VERSION: ${{ matrix.drupal-version }}
     steps:
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: "8.1"
-
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Terminus
-        uses: pantheon-systems/terminus-github-actions@v1
-        with:
-          pantheon-machine-token: ${{ secrets.TERMINUS_TOKEN }}
-          disable-cache: true
-          terminus-version: 3.6.2
 
       - name: Login Pantheon Git
         run: |
@@ -89,14 +79,18 @@ jobs:
           git config --global user.name "Github Actions"
           git config --global --add safe.directory '*'
 
-      - name: Ensure login to Terminus
+      - name: Log in to Terminus
         run: |
+          terminus auth:login --machine-token="$TERMINUS_TOKEN"
           terminus auth:whoami
 
       - name: Setup SSH Keys
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.TERMINUS_CI_RSA_PRIVATE }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Composer install
         run: composer install --ignore-platform-req=php
