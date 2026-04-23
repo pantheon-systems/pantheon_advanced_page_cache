@@ -62,7 +62,7 @@ jobs:
     strategy:
       matrix:
         drupal-version: [ 10, 11 ]
-        php-version: [ "8.1", "8.3" ]
+        php-version: [ "8.1", "8.2", "8.3", "8.4", "8.5" ]
       fail-fast: false
     runs-on: ubuntu-latest
     name: Build and test (Drupal ${{ matrix.drupal-version }}, PHP ${{ matrix.php-version }})
@@ -83,7 +83,7 @@ jobs:
         with:
           pantheon-machine-token: ${{ secrets.TERMINUS_TOKEN }}
           disable-cache: true
-          terminus-version: 3.6.2
+          terminus-version: ${{ matrix.php-version >= '8.4' && '4.1.4' || '3.6.2' }}
 
       - name: Login Pantheon Git
         run: |
