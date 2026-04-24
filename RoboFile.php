@@ -149,6 +149,8 @@ class RoboFile extends Tasks {
     // Step 5: Require the module.
     $this->allowPlugins($this->testingSiteName, $drupal_version);
     $this->requireMod($this->testingSiteName, $this->testModuleConstraint);
+    // Step 5b: Set PHP version in pantheon.yml to match CI matrix.
+    $this->setPHPVersion($this->testingSiteName, $php_version);
     // Step 6: Check in and push the changes.
     $this->checkinAndPush($this->testingSiteName);
     // Step 7: Enable the module.
@@ -245,6 +247,31 @@ class RoboFile extends Tasks {
         $constraint,
       )
       ->run();
+    return ResultData::EXITCODE_OK;
+  }
+
+  /**
+   * Set PHP version in pantheon.yml for the given site.
+   *
+   * @param string $site_name
+   *   The machine name of the site.
+   * @param string $php_version
+   *   The PHP version to set (e.g. "8.5").
+   */
+  public function setPHPVersion(string $site_name, string $php_version): int {
+    $site_folder = $this->getLocalCloneDir($site_name);
+    $pantheon_yml = $site_folder . DIRECTORY_SEPARATOR . 'pantheon.yml';
+
+    if (file_exists($pantheon_yml)) {
+      $config = Yaml::parseFile($pantheon_yml);
+    } else {
+      $config = ['api_version' => 1];
+    }
+
+    $config['php_version'] = (float) $php_version;
+    file_put_contents($pantheon_yml, Yaml::dump($config, 2));
+    $this->output()->writeln("Set PHP version to {$php_version} in pantheon.yml");
+
     return ResultData::EXITCODE_OK;
   }
 

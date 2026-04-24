@@ -59,10 +59,22 @@ jobs:
 
   build_test:
     needs: [ linting, phpcompatibility ]
+    # Test combinations (floor + ceiling per Drupal version):
+    #   Drupal 10: PHP 8.1, 8.4
+    #   Drupal 11: PHP 8.3, 8.5
     strategy:
       matrix:
         drupal-version: [ 10, 11 ]
-        php-version: [ "8.1", "8.2", "8.5" ]
+        php-version: [ "8.1", "8.3", "8.4", "8.5" ]
+        exclude:
+          - drupal-version: 10
+            php-version: "8.3"
+          - drupal-version: 10
+            php-version: "8.5"
+          - drupal-version: 11
+            php-version: "8.1"
+          - drupal-version: 11
+            php-version: "8.4"
       fail-fast: false
     runs-on: ubuntu-latest
     name: Build and test (Drupal ${{ matrix.drupal-version }}, PHP ${{ matrix.php-version }})
@@ -108,5 +120,14 @@ jobs:
         uses: mxschmitt/action-tmate@v3
 
       - name: Run tests
+        env:
+          PHP_VERSION: ${{ matrix.php-version }}
         run: |
           ./vendor/bin/robo test:full $DRUPAL_VERSION
+
+      - name: Show PHP versions
+        if: always()
+        run: |
+          SITE_NAME="papc-$(git rev-parse --short HEAD)-d${DRUPAL_VERSION}-p$(echo ${{ matrix.php-version }} | tr -d '.')"
+          echo "Runner PHP: $(php -v | head -1)"
+          echo "Multidev PHP: $(terminus env:info ${SITE_NAME}.dev --field=php_version 2>/dev/null || echo 'unavailable')"

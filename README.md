@@ -8,7 +8,7 @@ Pantheon Advanced Page Cache module is a bridge between [Drupal cache metadata](
 
 ## Requirements
 
-- PHP 7.4 or later (compatible with PHP 7.4 through 8.5)
+- PHP 8.1 or later (compatible with PHP 8.1, 8.3, 8.4, 8.5)
 - Drupal 9.4, 10, or 11
 
 Just by turning on this module your Drupal site will start emitting the HTTP headers necessary to make the Pantheon Global CDN aware of data underlying the response. Then, when the underlying data changes (nodes and taxonomy terms are updated, user permissions changed) this module will clear only the relevant pages from the edge cache.
