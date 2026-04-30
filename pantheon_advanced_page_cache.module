@@ -21,17 +21,21 @@ function pantheon_advanced_page_cache_file_update(EntityInterface $file) {
   // No matter what, the file's base URL needs to be cleared out.
   $paths_to_clear = [$file->createFileUrl()];
 
-  // If this is an image, we need to clear the edge cache paths for every
-  // image style, or those won't work.
+  // For images, clear edge cache paths for image style derivatives that have
+  // actually been generated. Derivatives are created on first access, so new
+  // uploads have none -- clearing nonexistent derivatives is wasted work that
+  // can overwhelm the cache proxy when many styles are configured.
   if ((class_exists(ImageStyle::class)) && $file->getMimeType() !== NULL && (strpos($file->getMimeType(), 'image', 0) === 0)) {
     $styles = ImageStyle::loadMultiple();
+    $file_uri = $file->getFileUri();
     foreach ($styles as $style) {
-      $file_uri = $file->getFileUri();
-      $url      = $style->buildUrl($file_uri);
-
-      $paths_to_clear[] = parse_url($url)['path'];
+      if (file_exists($style->buildUri($file_uri))) {
+        $paths_to_clear[] = parse_url($style->buildUrl($file_uri))['path'];
+      }
     }
   }
+
+  $paths_to_clear = array_unique($paths_to_clear);
 
   try {
     pantheon_clear_edge_paths($paths_to_clear);
