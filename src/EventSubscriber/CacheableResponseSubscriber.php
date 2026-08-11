@@ -82,7 +82,8 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
       $tags = $response->getCacheableMetadata()->getCacheTags();
 
       // Rename all _list cache tags to _emit_list to avoid clearing list cache
-      // tags by default.
+      // tags by default. CacheTagsInvalidator::mapTagsForEdge() must apply the
+      // same str_replace transformation when purging — keep them in sync.
       if ($this->getOverrideListTagsSetting()) {
         foreach ($tags as $key => $tag) {
           $tags[$key] = str_replace('_list', '_emit_list', $tag);
