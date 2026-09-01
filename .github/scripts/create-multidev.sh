@@ -28,7 +28,7 @@ if ! terminus multidev:create "$TERMINUS_SITE.dev" "$MULTIDEV"; then
   HEALTHCHECK_URL="$(terminus env:view "$TERMINUS_SITE.$MULTIDEV" --print)pantheon_healthcheck"
   echo "Polling $HEALTHCHECK_URL"
   HEALTHY=0
-  for _ in $(seq 1 30); do
+  for _ in $(seq 1 12); do
     if [ "$(curl -s -o /dev/null -w '%{http_code}' "$HEALTHCHECK_URL")" = "200" ]; then
       HEALTHY=1
       break
