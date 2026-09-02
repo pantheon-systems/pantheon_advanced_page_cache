@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@fcafdd6392932010c2bd5094439b8e33be2a8a09 # v2.37.0
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
           php-version: ${{ matrix.php-version }}
 
@@ -86,12 +86,12 @@ jobs:
           GIT_REF_TYPE: ${{ github.ref_type }}
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@fcafdd6392932010c2bd5094439b8e33be2a8a09 # v2.37.0
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
           php-version: ${{ env.PHP_VERSION }}
 
       - name: Install Terminus
-        uses: pantheon-systems/terminus-github-actions@409451ede17f75acac08f42edc823fee6c435057 # v1.2.8
+        uses: pantheon-systems/terminus-github-actions@b0a005d0e886678b25cb6cd7833cf8d8cf779900 # v1.2.9
         with:
           pantheon-machine-token: ${{ env.TERMINUS_TOKEN }}
           terminus-version: ${{ env.TERMINUS_VERSION }}
