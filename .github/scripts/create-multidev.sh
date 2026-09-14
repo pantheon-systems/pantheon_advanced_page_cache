@@ -15,8 +15,33 @@ if terminus multidev:list "$TERMINUS_SITE" --format=list | grep -q "^$MULTIDEV$"
   terminus multidev:delete "$TERMINUS_SITE.$MULTIDEV" --delete-branch --yes
 fi
 
-# Create new multidev from dev environment
-terminus multidev:create "$TERMINUS_SITE.dev" "$MULTIDEV"
+# Create new multidev from dev environment.
+# If terminus fails its own health check, verify the environment and poll it here.
+if ! terminus multidev:create "$TERMINUS_SITE.dev" "$MULTIDEV"; then
+  echo "multidev:create returned an error, verifying the environment directly..."
+
+  if ! terminus multidev:list "$TERMINUS_SITE" --format=list | grep -q "^$MULTIDEV$"; then
+    echo "Environment $MULTIDEV was not created."
+    exit 1
+  fi
+
+  HEALTHCHECK_URL="$(terminus env:view "$TERMINUS_SITE.$MULTIDEV" --print)pantheon_healthcheck"
+  echo "Polling $HEALTHCHECK_URL"
+  HEALTHY=0
+  for _ in $(seq 1 12); do
+    if [ "$(curl -s -o /dev/null -w '%{http_code}' "$HEALTHCHECK_URL")" = "200" ]; then
+      HEALTHY=1
+      break
+    fi
+    sleep 10
+  done
+
+  if [ "$HEALTHY" -ne 1 ]; then
+    echo "Environment $MULTIDEV did not respond to the health check."
+    exit 1
+  fi
+  echo "Environment $MULTIDEV is healthy."
+fi
 
 # Get git URL
 echo "Getting Pantheon git URL..."
