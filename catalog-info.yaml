@@ -1,12 +1,13 @@
+# Managed by github-terraform — do not edit manually
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: pantheon_advanced_page_cache
-  description: Auto-generated catalog info for pantheon-systems/pantheon_advanced_page_cache
+  name: "pantheon_advanced_page_cache"
+  description: "Drupal cache metadata + Pantheon's Global CDN"
   annotations:
-    backstage.io/techdocs-ref: dir:docs/
+    "backstage.io/techdocs-ref": "dir:docs/"
 spec:
-  type: library
-  lifecycle: mature
-  owner: site
+  type: "library"
+  lifecycle: "mature"
+  owner: "site-experience"
