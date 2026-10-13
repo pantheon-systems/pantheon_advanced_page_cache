@@ -38,7 +38,14 @@ class CacheTagsInvalidator implements CacheTagsInvalidatorInterface {
       return;
     }
     if (function_exists('pantheon_clear_edge_keys')) {
-      pantheon_clear_edge_keys($tags);
+      try {
+        pantheon_clear_edge_keys($tags);
+      }
+      catch (\Exception $e) {
+        \Drupal::logger('pantheon_advanced_page_cache')
+          ->warning('Failed to clear edge cache keys: @error. Caches may need to be cleared manually.',
+            ['@error' => $e->getMessage()]);
+      }
     }
   }
 
