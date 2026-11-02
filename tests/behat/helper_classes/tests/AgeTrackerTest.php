@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PantheonSystems\CDNBehatHelpers\tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use PantheonSystems\CDNBehatHelpers\AgeTracker;
 
@@ -23,6 +24,7 @@ final class AgeTrackerTest extends TestCase {
    * @dataProvider providerPathsAndHeaders
    * @covers ::getTrackedHeaders
    */
+  #[DataProvider('providerPathsAndHeaders')]
   public function testGetTrackedHeaders($path, array $headers_set) {
     $ageTracker = new AgeTracker();
     foreach ($headers_set as $headers) {
@@ -82,6 +84,7 @@ final class AgeTrackerTest extends TestCase {
    * @covers ::wasCacheClearedBetweenLastTwoRequests
    * @covers ::ageIncreasedBetweenLastTwoRequests
    */
+  #[DataProvider('providerExpectedCacheClears')]
   public function testCheckCacheClear($path, array $headers_set, $expected_cache_clear) {
     $ageTracker = new AgeTracker();
 
