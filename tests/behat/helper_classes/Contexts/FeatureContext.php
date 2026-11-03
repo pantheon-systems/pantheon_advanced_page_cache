@@ -36,9 +36,11 @@ final class FeatureContext extends RawDrupalContext implements Context {
   private $ageTracker;
 
   /**
-   * @var \Drupal\DrupalExtension\Context\DrupalContext
+   * Users created during the scenario.
+   *
+   * @var string[]
    */
-  private $DrupalContext;
+  private $createdUsers = [];
 
   /**
    * @BeforeScenario
@@ -46,7 +48,49 @@ final class FeatureContext extends RawDrupalContext implements Context {
   public function gatherContexts(BeforeScenarioScope $scope) {
     $environment = $scope->getEnvironment();
     $this->minkContext = $environment->getContext('Drupal\DrupalExtension\Context\MinkContext');
-    $this->DrupalContext = $environment->getContext('Drupal\DrupalExtension\Context\DrupalContext');
+    if ($token = getenv('BOT_BYPASS_TOKEN')) {
+      $this->minkContext->getSession()->getDriver()->getClient()->setServerParameter('HTTP_X_PANTHEON_BOT_BYPASS', $token);
+    }
+  }
+
+  /**
+   * @AfterScenario
+   */
+  public function deleteCreatedUsers() {
+    foreach ($this->createdUsers as $name) {
+      $this->getDriver('drush')->drush('user:cancel', ['-y', '--reassign-content', escapeshellarg($name)]);
+    }
+    $this->createdUsers = [];
+  }
+
+  /**
+   * @Given I am logged in as a user with the :role role
+   */
+  public function iAmLoggedInAsAUserWithTheRole($role) {
+    $drush = $this->getDriver('drush');
+    $name = 'behat_' . bin2hex(random_bytes(4));
+    $drush->drush('user:create', [escapeshellarg($name)]);
+    $this->createdUsers[] = $name;
+    $drush->drush('user:role:add', [escapeshellarg($role), escapeshellarg($name)]);
+    $base_url = rtrim($this->getMinkParameter('base_url'), '/');
+    $output = $drush->drush('user:login', ['--name=' . escapeshellarg($name), '--uri=' . escapeshellarg($base_url)]);
+    if (!preg_match('#https?://\S+/user/reset/\S+#', $output, $matches)) {
+      throw new \Exception(sprintf('No login link in drush output: %s', $output));
+    }
+    $this->minkContext->visit($matches[0]);
+  }
+
+  /**
+   * @When I click :link in the :rowText row
+   */
+  public function iClickInTheRow($link, $rowText) {
+    foreach ($this->minkContext->getSession()->getPage()->findAll('css', 'tr') as $row) {
+      if (str_contains($row->getText(), $rowText) && $link_element = $row->findLink($link)) {
+        $link_element->click();
+        return;
+      }
+    }
+    throw new \Exception(sprintf('No row containing "%s" with a "%s" link', $rowText, $link));
   }
 
   /**

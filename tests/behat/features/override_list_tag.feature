@@ -5,7 +5,9 @@ I want to toggle the setting for overriding cache tags
 
   @api
   Scenario: Core behavior
-    Given there are some "article" nodes
+    Given I run drush "config:set pantheon_advanced_page_cache.settings --input-format=yaml override_list_tags false"
+    And I run drush "cr"
+    And there are some "article" nodes
     When I visit "/"
     Then "/" is caching
     When a generate a "article" node
@@ -16,6 +18,7 @@ I want to toggle the setting for overriding cache tags
   Scenario: Old override
     Given there are some "article" nodes
     When I run drush "config:set pantheon_advanced_page_cache.settings --input-format=yaml   override_list_tags true"
+    And I run drush "cr"
     And I visit "/"
     Then "/" is caching
     When a generate a "article" node

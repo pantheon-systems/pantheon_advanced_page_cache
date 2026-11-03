@@ -1,0 +1,97 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.article
+  module:
+    - node
+    - pantheon_advanced_page_cache_test
+    - user
+  enforced:
+    module:
+      - pantheon_advanced_page_cache_test
+id: custom_cache_tags_article
+label: 'Custom cache tags: article'
+module: views
+description: ''
+tag: ''
+base_table: node_field_data
+base_field: nid
+display:
+  default:
+    id: default
+    display_title: Default
+    display_plugin: default
+    position: 0
+    display_options:
+      title: 'Custom cache tags: article'
+      fields:
+        title:
+          id: title
+          table: node_field_data
+          field: title
+          entity_type: node
+          entity_field: title
+          plugin_id: field
+          label: ''
+          type: string
+          settings:
+            link_to_entity: true
+      pager:
+        type: some
+        options:
+          offset: 0
+          items_per_page: 10
+      exposed_form:
+        type: basic
+      access:
+        type: perm
+        options:
+          perm: 'access content'
+      cache:
+        type: pantheon_advanced_page_cache_test_bundle_tag
+        options: {  }
+      sorts:
+        created:
+          id: created
+          table: node_field_data
+          field: created
+          entity_type: node
+          entity_field: created
+          plugin_id: date
+          order: DESC
+          granularity: second
+      filters:
+        status:
+          id: status
+          table: node_field_data
+          field: status
+          entity_type: node
+          entity_field: status
+          plugin_id: boolean
+          value: '1'
+          group: 1
+        type:
+          id: type
+          table: node_field_data
+          field: type
+          entity_type: node
+          entity_field: type
+          plugin_id: bundle
+          operator: in
+          value:
+            article: article
+          group: 1
+      style:
+        type: html_list
+      row:
+        type: fields
+      query:
+        type: views_query
+  page_1:
+    id: page_1
+    display_title: Page
+    display_plugin: page
+    position: 1
+    display_options:
+      path: custom-cache-tags/article
