@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Extension\Requirement\RequirementSeverity;
+use Drupal\Core\Hook\Attribute\LegacyRequirementsHook;
 
 /**
  * Set override_list_tags to TRUE for backwards compatibility.
@@ -23,6 +24,7 @@ function pantheon_advanced_page_cache_update_8001() {
 /**
  * Implements hook_requirements().
  */
+#[LegacyRequirementsHook]
 function pantheon_advanced_page_cache_requirements($phase) {
   $requirements = [];
   if ($phase === 'runtime') {
