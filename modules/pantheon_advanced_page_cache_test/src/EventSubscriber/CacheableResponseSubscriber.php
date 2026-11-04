@@ -19,15 +19,8 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
    *   The event to process.
    */
   public function onRespond(ResponseEvent $event) {
-    if (method_exists($event, 'isMainRequest')) {
-      if (!$event->isMainRequest()) {
-        return;
-      }
-    }
-    else {
-      if (!$event->isMainRequest()) {
-        return;
-      }
+    if (!$event->isMainRequest()) {
+      return;
     }
 
     $response = $event->getResponse();
