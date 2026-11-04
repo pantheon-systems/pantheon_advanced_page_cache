@@ -31,7 +31,6 @@ echo "::endgroup::"
 # ── Site setup ───────────────────────────────────────────────────────
 echo "::group::Site setup"
 terminus drush "$SITE_ENV" -- config:set system.performance cache.page.max_age 600 -y
-terminus drush "$SITE_ENV" -- role:perm:add anonymous "create page content,create article content"
 sleep 15
 echo "::endgroup::"
 

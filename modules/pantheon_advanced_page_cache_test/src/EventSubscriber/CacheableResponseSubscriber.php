@@ -38,18 +38,16 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
       // This is a contrived example of how custom code can be used
       // to limit a giant list of tags.
       // In this case, automated Behat tests generate nodes
-      // tagged in 100s of taxonomy terms each. Then when
-      // those nodes are rendered on a view like frontpage
+      // tagged in 1000s of taxonomy terms. Then when
+      // those nodes are rendered
       // they result in too many total surrogate-keys being set.
-      if (in_array("config:views.view.frontpage", $tags)) {
-        $new_tags = [];
-        foreach ($tags as $tag) {
-          if (strpos($tag, "taxonomy_term:") === FALSE) {
-            $new_tags[] = $tag;
-          }
+      $new_tags = [];
+      foreach ($tags as $tag) {
+        if (strpos($tag, "taxonomy_term:") === FALSE) {
+          $new_tags[] = $tag;
         }
-        $response->getCacheableMetadata()->setCacheTags($new_tags);
       }
+      $response->getCacheableMetadata()->setCacheTags($new_tags);
 
     }
   }
