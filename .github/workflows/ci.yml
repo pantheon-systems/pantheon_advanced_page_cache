@@ -128,6 +128,14 @@ jobs:
       - name: Run tests
         run: bash .github/scripts/run-tests.sh
 
+      - name: Install Behat dependencies
+        if: matrix.php-version != '8.1'
+        run: composer install --no-interaction --no-progress
+
+      - name: Run Behat tests
+        if: matrix.php-version != '8.1'
+        run: bash .github/scripts/run-behat.sh
+
       - name: Delete current multidev
         if: success()
         run: terminus multidev:delete "$TERMINUS_SITE.${MULTIDEV_ENV}" --delete-branch --yes || true

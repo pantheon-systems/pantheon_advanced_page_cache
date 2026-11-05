@@ -5,7 +5,10 @@ I want to use granular cache tags for Views that reflect the type of content dis
 
   @api
   Scenario: Node type-based expiration
-    Given there are some "page" nodes
+    Given I run drush "en -y pantheon_advanced_page_cache_test"
+    And I run drush "config:set pantheon_advanced_page_cache.settings --input-format=yaml override_list_tags false"
+    And I run drush "cr"
+    And there are some "page" nodes
     And "custom-cache-tags/page" is caching
     And there are some "article" nodes
     And "custom-cache-tags/article" is caching
