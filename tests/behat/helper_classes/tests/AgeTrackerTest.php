@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PantheonSystems\CDNBehatHelpers\tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use PantheonSystems\CDNBehatHelpers\AgeTracker;
 
@@ -23,6 +24,7 @@ final class AgeTrackerTest extends TestCase {
    * @dataProvider providerPathsAndHeaders
    * @covers ::getTrackedHeaders
    */
+  #[DataProvider('providerPathsAndHeaders')]
   public function testGetTrackedHeaders($path, array $headers_set) {
     $ageTracker = new AgeTracker();
     foreach ($headers_set as $headers) {
@@ -38,30 +40,30 @@ final class AgeTrackerTest extends TestCase {
    * @return array
    *   An array of test data.
    */
-  public function providerPathsAndHeaders() {
+  public static function providerPathsAndHeaders() {
     $data = [];
     $data[] = [
           '/home',
-          $this->cacheLifeIncreasing(),
+          static::cacheLifeIncreasing(),
       ];
     $data[] = [
           '/cache-got-cleared',
-          $this->cacheGotClearedHeaders(),
+          static::cacheGotClearedHeaders(),
       ];
 
     return $data;
   }
 
-  public function providerExpectedCacheClears() {
+  public static function providerExpectedCacheClears() {
     $data = [];
     $data[] = [
           '/home',
-          $this->cacheLifeIncreasing(),
+          static::cacheLifeIncreasing(),
           FALSE,
       ];
     $data[] = [
           '/cache-got-cleared',
-          $this->cacheGotClearedHeaders(),
+          static::cacheGotClearedHeaders(),
           TRUE,
       ];
 
@@ -82,6 +84,7 @@ final class AgeTrackerTest extends TestCase {
    * @covers ::wasCacheClearedBetweenLastTwoRequests
    * @covers ::ageIncreasedBetweenLastTwoRequests
    */
+  #[DataProvider('providerExpectedCacheClears')]
   public function testCheckCacheClear($path, array $headers_set, $expected_cache_clear) {
     $ageTracker = new AgeTracker();
 
@@ -92,7 +95,7 @@ final class AgeTrackerTest extends TestCase {
     $this->assertEquals(!$expected_cache_clear, $ageTracker->ageIncreasedBetweenLastTwoRequests($path));
   }
 
-  protected function cacheLifeIncreasing() {
+  protected static function cacheLifeIncreasing() {
     return [
         [
             'cache-control' => 'max-age=600, public',
@@ -107,7 +110,7 @@ final class AgeTrackerTest extends TestCase {
       ];
   }
 
-  protected function cacheGotClearedHeaders() {
+  protected static function cacheGotClearedHeaders() {
     return [
           [
               'cache-control' => 'max-age=600, public',

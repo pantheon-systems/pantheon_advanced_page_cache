@@ -3,12 +3,16 @@
 namespace Drupal\Tests\pantheon_advanced_page_cache\Functional;
 
 use Drupal\Tests\BrowserTestBase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 /**
  * Tests the installation and incompatibility handling.
  *
  * @group pantheon_advanced_page_cache
  */
+#[Group('pantheon_advanced_page_cache')]
+#[RunTestsInSeparateProcesses]
 class PantheonAdvancedPageCacheInstallTest extends BrowserTestBase {
 
   /**
@@ -40,12 +44,12 @@ class PantheonAdvancedPageCacheInstallTest extends BrowserTestBase {
    * Tests that the status report page shows an error if big_pipe is enabled.
    */
   public function testStatusReportShowsBigPipeError() {
-    // Enable big_pipe module.
-    $this->container->get('module_installer')->install(['big_pipe']);
-    $this->assertTrue($this->container->get('module_handler')->moduleExists('big_pipe'));
-
     // Install pantheon_advanced_page_cache module.
     $this->container->get('module_installer')->install(['pantheon_advanced_page_cache']);
+
+    // Enable big_pipe module after, since hook_install() removes it.
+    $this->container->get('module_installer')->install(['big_pipe']);
+    $this->assertTrue($this->container->get('module_handler')->moduleExists('big_pipe'));
 
     // Login as admin user.
     $this->drupalLogin($this->createUser(['administer site configuration']));

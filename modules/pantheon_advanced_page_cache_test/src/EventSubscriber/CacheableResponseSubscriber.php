@@ -19,15 +19,8 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
    *   The event to process.
    */
   public function onRespond(ResponseEvent $event) {
-    if (method_exists($event, 'isMainRequest')) {
-      if (!$event->isMainRequest()) {
-        return;
-      }
-    }
-    else {
-      if (!$event->isMasterRequest()) {
-        return;
-      }
+    if (!$event->isMainRequest()) {
+      return;
     }
 
     $response = $event->getResponse();
@@ -57,7 +50,7 @@ class CacheableResponseSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     $events[KernelEvents::RESPONSE][] = ['onRespond', 100];
     return $events;
   }

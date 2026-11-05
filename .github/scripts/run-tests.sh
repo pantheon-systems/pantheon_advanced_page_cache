@@ -37,4 +37,18 @@ echo "::group::Smoke test - cache clear"
 terminus drush "$SITE_ENV" -- cr
 echo "::endgroup::"
 
+# ── Enable another module and check requirements ───────────────────
+echo "::group::Enable big_pipe and check requirements"
+terminus drush "$SITE_ENV" -- pm:enable big_pipe -y
+REQUIREMENTS=$(terminus drush "$SITE_ENV" -- core:requirements --severity=2 --field=title)
+terminus drush "$SITE_ENV" -- pm:uninstall big_pipe -y
+if echo "$REQUIREMENTS" | grep -q "Big Pipe incompatibility"; then
+  echo "::notice::Big Pipe incompatibility requirement reported"
+else
+  echo "::error::Big Pipe incompatibility requirement NOT reported"
+  echo "$REQUIREMENTS"
+  exit 1
+fi
+echo "::endgroup::"
+
 echo "::notice::All checks passed"

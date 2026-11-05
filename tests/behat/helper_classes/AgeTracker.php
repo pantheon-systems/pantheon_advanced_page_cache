@@ -11,6 +11,13 @@ use Behat\Mink\Session;
 final class AgeTracker {
 
   /**
+   * Tracked headers, keyed by path.
+   *
+   * @var array
+   */
+  private array $headers = [];
+
+  /**
    * @return string[]
    */
   public function headersToTrack() {
